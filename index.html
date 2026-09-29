@@ -57,7 +57,7 @@
     <link rel="apple-touch-icon" href="./logo.jpg" />
 
     <link rel="icon" type="image/jpeg" href="./logo.jpg" />
-    <link rel="stylesheet" href="./portal-style.css?v=7.0" />
+    <link rel="stylesheet" href="./portal-style.css?v=8.0" />
     <script src="./theme-toggle.js"></script>
   </head>
   <body>
@@ -160,21 +160,22 @@
           </h2>
         </div>
 
-        <!-- Mobile & Desktop Category Chips -->
-        <div class="category-chips" id="category-chips">
-          <button class="chip active" data-filter="all">🔥 All (15)</button>
-          <button class="chip" data-filter="2p">👥 2-Player Local</button>
-          <button class="chip" data-filter="bot">🤖 VS Bot AI</button>
-          <button class="chip" data-filter="arcade">🕹️ Arcade</button>
-          <button class="chip" data-filter="puzzle">🧩 Brain & Logic</button>
-          <button class="chip" data-filter="board">♟️ Board Games</button>
-          <button class="chip" data-filter="math">➗ Math</button>
+        <!-- Player Mode Switcher (2 Player vs 1 Player) -->
+        <div class="player-mode-toggle" id="player-mode-toggle">
+          <button class="mode-btn active" data-filter="2p">
+            <span class="mode-icon">👥</span>
+            <span class="mode-label">2 Player Games</span>
+          </button>
+          <button class="mode-btn" data-filter="1p">
+            <span class="mode-icon">👤</span>
+            <span class="mode-label">1 Player Games</span>
+          </button>
         </div>
 
         <div class="game-grid">
 
           <!-- CARD: LIGHTS OUT -->
-          <a href="./games/logic-puzzle/index.html" class="game-card" data-category="all bot puzzle">
+          <a href="./games/logic-puzzle/index.html" class="game-card" data-mode="1p">
             <div class="card-badge">NEW!</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -208,7 +209,7 @@
           </a>
 
           <!-- CARD: TIC TAC TOE -->
-          <a href="./games/tic-tac-toe/index.html" class="game-card" data-category="all 2p bot board puzzle">
+          <a href="./games/tic-tac-toe/index.html" class="game-card" data-mode="2p 1p">
             <div class="card-badge">2P / BOT</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -238,7 +239,7 @@
           </a>
 
           <!-- CARD: CHESS MASTER -->
-          <a href="./games/chess/index.html" class="game-card" data-category="all 2p bot board">
+          <a href="./games/chess/index.html" class="game-card" data-mode="2p 1p">
             <div class="card-badge">2P / BOT</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -275,7 +276,7 @@
           </a>
 
           <!-- CARD: FLAPPY BIRD -->
-          <a href="./games/flappy-bird/index.html" class="game-card" data-category="all bot arcade">
+          <a href="./games/flappy-bird/index.html" class="game-card" data-mode="1p">
             <div class="card-badge">NEW!</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -310,7 +311,7 @@
           </a>
 
           <!-- CARD: CARROM CLASH -->
-          <a href="./games/carrom/index.html" class="game-card" data-category="all 2p bot board arcade">
+          <a href="./games/carrom/index.html" class="game-card" data-mode="2p 1p">
             <div class="card-badge">2P / BOT</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -341,7 +342,7 @@
           </a>
 
           <!-- CARD: LUDO KING -->
-          <a href="./games/ludo/index.html" class="game-card" data-category="all 2p bot board">
+          <a href="./games/ludo/index.html" class="game-card" data-mode="2p 1p">
             <div class="card-badge">2P / BOT</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -370,7 +371,7 @@
           </a>
 
           <!-- CARD: CHECKERS PRO -->
-          <a href="./games/checkers/index.html" class="game-card" data-category="all 2p bot board">
+          <a href="./games/checkers/index.html" class="game-card" data-mode="2p 1p">
             <div class="card-badge">2P / BOT</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -401,7 +402,7 @@
           </a>
 
           <!-- CARD: NEON BOWLING -->
-          <a href="./games/bowling/index.html" class="game-card" data-category="all 2p bot arcade">
+          <a href="./games/bowling/index.html" class="game-card" data-mode="2p 1p">
             <div class="card-badge">2P / BOT</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -432,7 +433,7 @@
           </a>
 
           <!-- CARD: DART MASTER -->
-          <a href="./games/darts/index.html" class="game-card" data-category="all 2p bot arcade">
+          <a href="./games/darts/index.html" class="game-card" data-mode="2p 1p">
             <div class="card-badge">2P / BOT</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -460,7 +461,7 @@
           </a>
 
           <!-- CARD: RPS CLASH -->
-          <a href="./games/rock-paper-scissors/index.html" class="game-card" data-category="all bot arcade">
+          <a href="./games/rock-paper-scissors/index.html" class="game-card" data-mode="2p 1p">
             <div class="card-badge">BOT ONLY</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -483,7 +484,7 @@
           </a>
 
           <!-- CARD: SUDOKU MASTER -->
-          <a href="./games/sudoku/index.html" class="game-card" data-category="all bot puzzle">
+          <a href="./games/sudoku/index.html" class="game-card" data-mode="1p">
             <div class="card-badge">LOGIC</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -510,7 +511,7 @@
           </a>
 
           <!-- CARD: MATH QUIZ -->
-          <a href="./games/math-quiz/index.html" class="game-card" data-category="all bot math puzzle">
+          <a href="./games/math-quiz/index.html" class="game-card" data-mode="1p">
             <div class="card-badge">TIMED</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -532,7 +533,7 @@
           </a>
 
           <!-- CARD: ZEBRA PUZZLES -->
-          <a href="./games/zebra-puzzles/index.html" class="game-card" data-category="all bot puzzle">
+          <a href="./games/zebra-puzzles/index.html" class="game-card" data-mode="1p">
             <div class="card-badge">LOGIC</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -557,7 +558,7 @@
           </a>
 
           <!-- CARD: SPEND TRILLIONS -->
-          <a href="https://abhinavgamer730-ops.github.io/Spendtrillions/" class="game-card" data-category="all bot simulation">
+          <a href="https://abhinavgamer730-ops.github.io/Spendtrillions/" class="game-card" data-mode="1p">
             <div class="card-badge">ONLINE</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -578,7 +579,7 @@
           </a>
 
           <!-- CARD: SPACE SHOOTER -->
-          <a href="https://space-shooter-x.onrender.com" class="game-card" data-category="all bot arcade">
+          <a href="https://space-shooter-x.onrender.com" class="game-card" data-mode="1p">
             <div class="card-badge">ONLINE</div>
             <div class="card-art">
               <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
@@ -616,21 +617,17 @@
 
     <!-- Native Mobile App Bottom Navigation Bar -->
     <nav class="mobile-bottom-nav">
-      <button class="nav-tab active" data-tab="all">
+      <button class="nav-tab" data-tab="home" id="nav-home-btn">
         <span class="tab-icon">🏠</span>
         <span class="tab-text">Home</span>
       </button>
-      <button class="nav-tab" data-tab="arcade">
-        <span class="tab-icon">🕹️</span>
-        <span class="tab-text">Arcade</span>
-      </button>
-      <button class="nav-tab" data-tab="2p">
+      <button class="nav-tab active" data-tab="2p">
         <span class="tab-icon">👥</span>
-        <span class="tab-text">2-Player</span>
+        <span class="tab-text">2 Players</span>
       </button>
-      <button class="nav-tab" data-tab="puzzle">
-        <span class="tab-icon">🧩</span>
-        <span class="tab-text">Puzzles</span>
+      <button class="nav-tab" data-tab="1p">
+        <span class="tab-icon">👤</span>
+        <span class="tab-text">1 Player</span>
       </button>
       <button class="nav-tab" id="mobile-theme-btn">
         <span class="tab-icon">🌙</span>
@@ -651,38 +648,39 @@
         });
       }
 
-      // 0. Mobile Category Chips Filter
-      const chips = document.querySelectorAll('.category-chips .chip');
-      chips.forEach(chip => {
-        chip.addEventListener('click', () => {
-          chips.forEach(c => c.classList.remove('active'));
-          chip.classList.add('active');
-          const filter = chip.getAttribute('data-filter');
+      // 0. Player Mode Filter (2 Player vs 1 Player)
+      const modeButtons = document.querySelectorAll('.player-mode-toggle .mode-btn');
+      const navTabs = document.querySelectorAll('.mobile-bottom-nav .nav-tab');
 
-          document.querySelectorAll('.game-card').forEach(card => {
-            if (filter === 'all') {
-              card.style.display = 'flex';
-            } else {
-              const cat = (card.getAttribute('data-category') || '').toLowerCase();
-              const text = card.textContent.toLowerCase();
-              let match = cat.includes(filter) ||
-                (filter === '2p' && (cat.includes('2p') || text.includes('2p') || text.includes('2-player') || text.includes('local'))) ||
-                (filter === 'bot' && (cat.includes('bot') || text.includes('bot') || text.includes('ai') || text.includes('solo'))) ||
-                (filter === 'arcade' && (cat.includes('arcade') || text.includes('arcade') || text.includes('flappy') || text.includes('bowling') || text.includes('darts') || text.includes('rps'))) ||
-                (filter === 'puzzle' && (cat.includes('puzzle') || text.includes('puzzle') || text.includes('logic') || text.includes('sudoku') || text.includes('zebra') || text.includes('lights out'))) ||
-                (filter === 'board' && (cat.includes('board') || text.includes('chess') || text.includes('checkers') || text.includes('ludo') || text.includes('carrom') || text.includes('tic-tac-toe'))) ||
-                (filter === 'math' && (cat.includes('math') || text.includes('quiz') || text.includes('calc')));
-              
-              card.style.display = match ? 'flex' : 'none';
-            }
-          });
+      function filterGamesByMode(mode) {
+        modeButtons.forEach(b => {
+          b.classList.toggle('active', b.getAttribute('data-filter') === mode);
+        });
+        navTabs.forEach(t => {
+          if (t.getAttribute('data-tab') && t.getAttribute('data-tab') !== 'home') {
+            t.classList.toggle('active', t.getAttribute('data-tab') === mode);
+          }
+        });
+
+        document.querySelectorAll('.game-card').forEach(card => {
+          const modes = (card.getAttribute('data-mode') || '').toLowerCase();
+          if (mode === 'all') {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = modes.includes(mode) ? 'flex' : 'none';
+          }
+        });
+      }
+
+      modeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const filter = btn.getAttribute('data-filter');
+          filterGamesByMode(filter);
         });
       });
 
       // 1. Mobile Bottom Navigation Tabs Handler
-      const navTabs = document.querySelectorAll('.mobile-bottom-nav .nav-tab');
       const mobileThemeBtn = document.getElementById('mobile-theme-btn');
-
       if (mobileThemeBtn) {
         mobileThemeBtn.addEventListener('click', () => {
           const themeBtn = document.getElementById('theme-toggle-btn');
@@ -693,23 +691,21 @@
       navTabs.forEach(tab => {
         if (tab.id === 'mobile-theme-btn') return;
         tab.addEventListener('click', () => {
-          navTabs.forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
           const tabFilter = tab.getAttribute('data-tab');
-
-          // Sync with category chips
-          chips.forEach(c => {
-            if (c.getAttribute('data-filter') === tabFilter) c.click();
-          });
-
-          if (tabFilter === 'all') {
+          if (tabFilter === 'home') {
+            navTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-          } else {
+          } else if (tabFilter === '2p' || tabFilter === '1p') {
+            filterGamesByMode(tabFilter);
             const gridEl = document.getElementById('grid');
             if (gridEl) gridEl.scrollIntoView({ behavior: 'smooth' });
           }
         });
       });
+
+      // Initialize default mode (2 Player Games)
+      filterGamesByMode('2p');
 
       // 2. Register Service Worker with Automatic Update Reload
       if ('serviceWorker' in navigator) {

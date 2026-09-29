@@ -376,48 +376,63 @@ img {
   margin-bottom: 1rem;
 }
 
-.category-chips {
+/* PLAYER MODE TOGGLE (2 PLAYERS VS 1 PLAYER) */
+.player-mode-toggle {
   display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
-  padding: 0.25rem 0.25rem 0.75rem;
-  margin-bottom: 1rem;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.category-chips::-webkit-scrollbar {
-  display: none;
-}
-
-.chip {
-  font-family: var(--font-cartoon);
-  font-size: 0.88rem;
-  font-weight: 800;
-  padding: 0.45rem 0.95rem;
-  border-radius: 999px;
-  border: var(--border);
-  box-shadow: var(--shadow-sm);
   background: var(--card-bg);
+  border: 3.5px solid var(--border-color);
+  border-radius: 1.35rem;
+  padding: 0.35rem;
+  gap: 0.4rem;
+  margin: 0 auto 1.5rem 0;
+  box-shadow: 0 4px 0 var(--border-color), 0 8px 16px rgba(0, 0, 0, 0.08);
+  max-width: 480px;
+  width: 100%;
+}
+
+.mode-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  border: 2px solid transparent;
+  background: transparent;
+  font-family: var(--font-cartoon);
+  font-size: 1.05rem;
+  font-weight: 900;
   color: var(--text-color);
   cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.15s ease;
-  flex-shrink: 0;
+  transition: all 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   touch-action: manipulation;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.chip:hover, .chip.active {
+.mode-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.mode-btn.active {
   background: var(--bubblegum);
   color: #ffffff;
-  border-color: #0f172a;
+  border: 2.5px solid #0f172a;
+  box-shadow: 2px 2px 0px #0f172a;
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
 }
 
-[data-theme="dark"] .chip.active {
+[data-theme="dark"] .mode-btn.active {
   background: var(--sky);
   color: #0f172a;
+  border: 2.5px solid #0f172a;
+  box-shadow: 2px 2px 0px #0f172a;
+}
+
+.mode-icon {
+  font-size: 1.25rem;
+  line-height: 1;
 }
 
 .section-title {
@@ -713,11 +728,29 @@ img {
   }
 
   .section-header {
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
   }
 
   .section-title {
     font-size: 1.35rem;
+  }
+
+  .player-mode-toggle {
+    margin-bottom: 1.15rem;
+    padding: 0.3rem;
+    border-radius: 1.15rem;
+    border-width: 3px;
+  }
+
+  .mode-btn {
+    font-size: 0.88rem;
+    padding: 0.65rem 0.4rem;
+    gap: 0.35rem;
+    border-radius: 0.85rem;
+  }
+
+  .mode-icon {
+    font-size: 1.1rem;
   }
 
   .game-grid {
