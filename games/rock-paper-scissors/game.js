@@ -238,9 +238,28 @@ function resetMatch() {
    EVENT LISTENERS
    ========================================================================== */
 
-btnRock.addEventListener('click', () => playRound('rock'));
-btnPaper.addEventListener('click', () => playRound('paper'));
-btnScissors.addEventListener('click', () => playRound('scissors'));
-btnReset.addEventListener('click', resetMatch);
+if (btnStartEl) {
+  btnStartEl.addEventListener('click', () => {
+    if (startOverlayEl) {
+      startOverlayEl.classList.add('hidden');
+    }
+    updateModeBadgeUI();
+    resetMatch();
+  });
+}
 
+if (btnRock) btnRock.addEventListener('click', () => playRound('rock'));
+if (btnPaper) btnPaper.addEventListener('click', () => playRound('paper'));
+if (btnScissors) btnScissors.addEventListener('click', () => playRound('scissors'));
+
+if (btnReset) {
+  btnReset.addEventListener('click', () => {
+    if (startOverlayEl) {
+      startOverlayEl.classList.remove('hidden');
+    }
+    resetMatch();
+  });
+}
+
+updateModeBadgeUI();
 resetMatch();
