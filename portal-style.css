@@ -368,12 +368,56 @@ img {
   transform: scale(1.05);
 }
 
-/* GAME GRID */
+/* GAME GRID & CATEGORY CHIPS */
 .section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.category-chips {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.25rem 0.25rem 0.75rem;
+  margin-bottom: 1rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.category-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  font-family: var(--font-cartoon);
+  font-size: 0.88rem;
+  font-weight: 800;
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  background: var(--card-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  touch-action: manipulation;
+}
+
+.chip:hover, .chip.active {
+  background: var(--bubblegum);
+  color: #ffffff;
+  border-color: #0f172a;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+[data-theme="dark"] .chip.active {
+  background: var(--sky);
+  color: #0f172a;
 }
 
 .section-title {

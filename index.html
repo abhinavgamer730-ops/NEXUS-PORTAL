@@ -152,12 +152,23 @@
         </div>
       </section>
 
-      <!-- RESPONSIVE GAME GRID (8 PLAYABLE GAMES) -->
+      <!-- RESPONSIVE GAME GRID (15 PLAYABLE GAMES) -->
       <section id="grid">
         <div class="section-header">
           <h2 class="section-title">
-            🕹️ ALL 8 PLAYABLE GAMES
+            🕹️ ALL 15 PLAYABLE GAMES
           </h2>
+        </div>
+
+        <!-- Mobile & Desktop Category Chips -->
+        <div class="category-chips" id="category-chips">
+          <button class="chip active" data-filter="all">🔥 All (15)</button>
+          <button class="chip" data-filter="2p">👥 2-Player Local</button>
+          <button class="chip" data-filter="bot">🤖 VS Bot AI</button>
+          <button class="chip" data-filter="arcade">🕹️ Arcade</button>
+          <button class="chip" data-filter="puzzle">🧩 Brain & Logic</button>
+          <button class="chip" data-filter="board">♟️ Board Games</button>
+          <button class="chip" data-filter="math">➗ Math</button>
         </div>
 
         <div class="game-grid">
@@ -614,8 +625,8 @@
         <img src="./logo.jpg" alt="Nexus Game Portal Logo" width="28" height="28" style="width: 28px; height: 28px; max-width: 28px; max-height: 28px; object-fit: cover; border-radius: 6px; border: 1.5px solid #000; flex-shrink: 0;" />
         <div class="portal-brand-text" style="font-size: 1.1rem;">NEXUS <span>PORTAL</span></div>
       </div>
-      <p>© 2026 Nexus Game Portal. Play 14 free online arcade, puzzle, classic, board, and logic games.</p>
     </footer>
+
     <!-- Real-time Game Search & PWA Install Script -->
     <script>
       const searchInput = document.getElementById('portal-search-input');
@@ -628,6 +639,33 @@
           });
         });
       }
+
+      // 0. Mobile Category Chips Filter
+      const chips = document.querySelectorAll('.category-chips .chip');
+      chips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          chips.forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          const filter = chip.getAttribute('data-filter');
+
+          document.querySelectorAll('.game-card').forEach(card => {
+            if (filter === 'all') {
+              card.style.display = 'flex';
+            } else {
+              const text = card.textContent.toLowerCase();
+              let match = false;
+              if (filter === '2p' && (text.includes('2p') || text.includes('2-player') || text.includes('local'))) match = true;
+              else if (filter === 'bot' && (text.includes('bot') || text.includes('ai') || text.includes('solo'))) match = true;
+              else if (filter === 'arcade' && (text.includes('arcade') || text.includes('flappy') || text.includes('bowling') || text.includes('darts') || text.includes('rps'))) match = true;
+              else if (filter === 'puzzle' && (text.includes('puzzle') || text.includes('logic') || text.includes('sudoku') || text.includes('zebra') || text.includes('lights out'))) match = true;
+              else if (filter === 'board' && (text.includes('chess') || text.includes('checkers') || text.includes('ludo') || text.includes('carrom') || text.includes('tic-tac-toe'))) match = true;
+              else if (filter === 'math' && (text.includes('math') || text.includes('quiz') || text.includes('calc'))) match = true;
+              
+              card.style.display = match ? 'flex' : 'none';
+            }
+          });
+        });
+      });
 
       // 1. Register Service Worker for PWA (Offline & Fast Cache)
       if ('serviceWorker' in navigator) {
