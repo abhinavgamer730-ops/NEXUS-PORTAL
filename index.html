@@ -47,8 +47,17 @@
     }
     </script>
 
+    <!-- PWA Web App Manifest & iOS Tags -->
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Nexus Portal" />
+    <link rel="apple-touch-icon" href="./logo.jpg" />
+
     <link rel="icon" type="image/jpeg" href="./logo.jpg" />
-    <link rel="stylesheet" href="./portal-style.css?v=4.0" />
+    <link rel="stylesheet" href="./portal-style.css?v=5.0" />
     <script src="./theme-toggle.js"></script>
   </head>
   <body>
@@ -63,15 +72,16 @@
       <ul class="portal-nav-links">
         <li><a href="./index.html" class="portal-nav-link active">Home</a></li>
         <li><a href="#featured" class="portal-nav-link">Featured</a></li>
-        <li><a href="#grid" class="portal-nav-link">All 14 Games</a></li>
+        <li><a href="#grid" class="portal-nav-link">All 15 Games</a></li>
       </ul>
 
       <div class="header-right">
+        <button class="pwa-install-btn" id="pwa-install-btn" style="display: none;">📲 INSTALL APP</button>
         <button class="theme-toggle-btn" id="theme-toggle-btn">🌙 DARK MODE</button>
 
         <div class="portal-search">
           <span>🔍</span>
-          <input type="text" placeholder="Search 14 games..." id="portal-search-input" />
+          <input type="text" placeholder="Search 15 games..." id="portal-search-input" />
         </div>
       </div>
     </header>
@@ -606,7 +616,7 @@
       </div>
       <p>© 2026 Nexus Game Portal. Play 14 free online arcade, puzzle, classic, board, and logic games.</p>
     </footer>
-    <!-- Real-time Game Search Script -->
+    <!-- Real-time Game Search & PWA Install Script -->
     <script>
       const searchInput = document.getElementById('portal-search-input');
       if (searchInput) {
@@ -616,6 +626,49 @@
             const text = card.textContent.toLowerCase();
             card.style.display = text.includes(query) ? 'flex' : 'none';
           });
+        });
+      }
+
+      // 1. Register Service Worker for PWA (Offline & Fast Cache)
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then((reg) => console.log('Nexus Portal PWA Registered:', reg.scope))
+            .catch((err) => console.log('PWA ServiceWorker Notice:', err));
+        });
+      }
+
+      // 2. PWA Native Install Button Prompt
+      let deferredPrompt = null;
+      const installBtn = document.getElementById('pwa-install-btn');
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (installBtn) {
+          installBtn.style.display = 'inline-flex';
+        }
+      });
+
+      if (installBtn) {
+        // Show button on mobile iOS as well
+        const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        if (isIos && !isStandalone) {
+          installBtn.style.display = 'inline-flex';
+        }
+
+        installBtn.addEventListener('click', async () => {
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+              installBtn.style.display = 'none';
+            }
+            deferredPrompt = null;
+          } else {
+            alert("📲 To install Nexus Portal on your phone:\n\n1. Tap the browser menu / Share button (⬆️ or ⋮)\n2. Select 'Add to Home Screen'\n\nEnjoy full-screen gaming with 0 download!");
+          }
         });
       }
     </script>

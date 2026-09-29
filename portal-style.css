@@ -181,6 +181,35 @@ img {
   gap: 0.85rem;
 }
 
+.pwa-install-btn {
+  font-family: var(--font-cartoon);
+  font-weight: 900;
+  font-size: 0.85rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 1rem;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  background: var(--mint);
+  color: #0f172a;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  animation: pulseGlow 2.5s infinite;
+}
+
+.pwa-install-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  background: var(--mint-dark);
+  color: #ffffff;
+}
+
+.pwa-install-btn:active {
+  transform: translateY(2px);
+}
+
 .theme-toggle-btn {
   font-family: var(--font-cartoon);
   font-weight: 900;
