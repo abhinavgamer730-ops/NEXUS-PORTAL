@@ -1,60 +1,36 @@
-// Nexus Portal Service Worker (PWA Offline & Fast Load Engine)
-const CACHE_NAME = 'nexus-portal-v1';
-const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './portal-style.css?v=4.0',
-  './theme-toggle.js',
-  './logo.jpg',
-  './manifest.json'
-];
+// Nexus Portal Service Worker v2 (Instant Network First)
+const CACHE_NAME = 'nexus-portal-v2';
 
-// Install Event
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE).catch((err) => {
-        console.warn('Cache addAll warning:', err);
-      });
-    })
-  );
   self.skipWaiting();
 });
 
-// Activate Event
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        keys.map((key) => caches.delete(key))
       );
     })
   );
   self.clients.claim();
 });
 
-// Fetch Event (Network First, Cache Fallback)
+// Always fetch fresh network copy first, fallback to cache if completely offline
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
     fetch(event.request)
-      .then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200) {
-          const clonedResponse = networkResponse.clone();
+      .then((response) => {
+        if (response && response.status === 200) {
+          const responseClone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, clonedResponse);
+            cache.put(event.request, responseClone);
           });
         }
-        return networkResponse;
+        return response;
       })
-      .catch(() => {
-        return caches.match(event.request).then((cachedResponse) => {
-          if (cachedResponse) return cachedResponse;
-          if (event.request.headers.get('accept')?.includes('text/html')) {
-            return caches.match('./index.html');
-          }
-        });
-      })
+      .catch(() => caches.match(event.request))
   );
 });

@@ -57,7 +57,7 @@
     <link rel="apple-touch-icon" href="./logo.jpg" />
 
     <link rel="icon" type="image/jpeg" href="./logo.jpg" />
-    <link rel="stylesheet" href="./portal-style.css?v=5.0" />
+    <link rel="stylesheet" href="./portal-style.css?v=6.0" />
     <script src="./theme-toggle.js"></script>
   </head>
   <body>
@@ -627,6 +627,30 @@
       </div>
     </footer>
 
+    <!-- Native Mobile App Bottom Navigation Bar -->
+    <nav class="mobile-bottom-nav">
+      <button class="nav-tab active" data-tab="all">
+        <span class="tab-icon">🏠</span>
+        <span class="tab-text">Home</span>
+      </button>
+      <button class="nav-tab" data-tab="arcade">
+        <span class="tab-icon">🕹️</span>
+        <span class="tab-text">Arcade</span>
+      </button>
+      <button class="nav-tab" data-tab="2p">
+        <span class="tab-icon">👥</span>
+        <span class="tab-text">2-Player</span>
+      </button>
+      <button class="nav-tab" data-tab="puzzle">
+        <span class="tab-icon">🧩</span>
+        <span class="tab-text">Puzzles</span>
+      </button>
+      <button class="nav-tab" id="mobile-theme-btn">
+        <span class="tab-icon">🌙</span>
+        <span class="tab-text">Theme</span>
+      </button>
+    </nav>
+
     <!-- Real-time Game Search & PWA Install Script -->
     <script>
       const searchInput = document.getElementById('portal-search-input');
@@ -667,16 +691,57 @@
         });
       });
 
-      // 1. Register Service Worker for PWA (Offline & Fast Cache)
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js')
-            .then((reg) => console.log('Nexus Portal PWA Registered:', reg.scope))
-            .catch((err) => console.log('PWA ServiceWorker Notice:', err));
+      // 1. Mobile Bottom Navigation Tabs Handler
+      const navTabs = document.querySelectorAll('.mobile-bottom-nav .nav-tab');
+      const mobileThemeBtn = document.getElementById('mobile-theme-btn');
+
+      if (mobileThemeBtn) {
+        mobileThemeBtn.addEventListener('click', () => {
+          const themeBtn = document.getElementById('theme-toggle-btn');
+          if (themeBtn) themeBtn.click();
         });
       }
 
-      // 2. PWA Native Install Button Prompt
+      navTabs.forEach(tab => {
+        if (tab.id === 'mobile-theme-btn') return;
+        tab.addEventListener('click', () => {
+          navTabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const tabFilter = tab.getAttribute('data-tab');
+
+          // Sync with category chips
+          chips.forEach(c => {
+            if (c.getAttribute('data-filter') === tabFilter) c.click();
+          });
+
+          if (tabFilter === 'all') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            const gridEl = document.getElementById('grid');
+            if (gridEl) gridEl.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+
+      // 2. Register Service Worker with Automatic Update Reload
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').then((reg) => {
+            reg.addEventListener('updatefound', () => {
+              const newWorker = reg.installing;
+              if (newWorker) {
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    window.location.reload();
+                  }
+                });
+              }
+            });
+          }).catch((err) => console.log('PWA ServiceWorker Notice:', err));
+        });
+      }
+
+      // 3. PWA Native Install Button Prompt
       let deferredPrompt = null;
       const installBtn = document.getElementById('pwa-install-btn');
 
