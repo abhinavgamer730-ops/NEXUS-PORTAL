@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Ludo King Edition 🎲 - Play Free Ludo Board Game Online | Nexus Portal</title>
+    <meta name="description" content="Play Ludo King Edition online for free! 4-color classic race board, interactive dice roller, token capture mechanics, 🤖 VS Bot & 👥 2-Player Local match modes. Instant play!" />
+    <meta name="keywords" content="ludo online free, play ludo vs bot, 2 player ludo browser game, classic ludo board game" />
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:title" content="Ludo King Edition 🎲 - Play Free Ludo Online" />
+    <meta property="og:description" content="Classic 4-Color Ludo race board with dice roller, token capture, 🤖 VS Bot and 👥 2-Player Local modes." />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Ludo King Edition",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Board Game / Family",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["4-Color Race Board", "🤖 VS Bot Mode", "👥 2-Player Local Mode"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+  </head>
+  <body>
+    <div class="nav-header">
+      <a href="../../index.html" class="btn btn-slate">⬅️ PORTAL MENU</a>
+      <button class="btn btn-gold" id="theme-toggle-btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">🌙 DARK MODE</button>
+      <span style="font-size: 1.1rem; color: var(--yellow);">🎲 LUDO KING</span>
+    </div>
+
+    <div class="game-card">
+      <h1 class="ludo-title">LUDO KING</h1>
+
+      <!-- Active Mode Badge -->
+      <div id="mode-badge" class="mode-badge">
+        MODE: 🤖 VS BOT (IMPOSSIBLE 💀)
+      </div>
+
+      <!-- Turn Badge -->
+      <div id="turn-info" class="turn-badge red-turn">
+        CURRENT TURN: RED PLAYER 🔴
+      </div>
+
+      <!-- Symmetrical 15x15 Ludo King Board -->
+      <div class="ludo-board-wrapper">
+        <div class="ludo-grid-15" id="ludo-grid">
+          
+          <!-- TOP-LEFT: Red Yard (6x6) -->
+          <div class="yard yard-red" style="grid-area: 1 / 1 / 7 / 7;">
+            <div class="yard-card">
+              <div class="yard-slot" id="slot-red-0"></div>
+              <div class="yard-slot" id="slot-red-1"></div>
+              <div class="yard-slot" id="slot-red-2"></div>
+              <div class="yard-slot" id="slot-red-3"></div>
+            </div>
+          </div>
+
+          <!-- TOP-RIGHT: Green Yard (6x6) -->
+          <div class="yard yard-green" style="grid-area: 1 / 10 / 7 / 16;">
+            <div class="yard-card">
+              <div class="yard-slot" id="slot-green-0"></div>
+              <div class="yard-slot" id="slot-green-1"></div>
+              <div class="yard-slot" id="slot-green-2"></div>
+              <div class="yard-slot" id="slot-green-3"></div>
+            </div>
+          </div>
+
+          <!-- BOTTOM-LEFT: Blue Yard (6x6) -->
+          <div class="yard yard-blue" style="grid-area: 10 / 1 / 16 / 7;">
+            <div class="yard-card">
+              <div class="yard-slot" id="slot-blue-0"></div>
+              <div class="yard-slot" id="slot-blue-1"></div>
+              <div class="yard-slot" id="slot-blue-2"></div>
+              <div class="yard-slot" id="slot-blue-3"></div>
+            </div>
+          </div>
+
+          <!-- BOTTOM-RIGHT: Yellow Yard (6x6) -->
+          <div class="yard yard-yellow" style="grid-area: 10 / 10 / 16 / 16;">
+            <div class="yard-card">
+              <div class="yard-slot" id="slot-yellow-0"></div>
+              <div class="yard-slot" id="slot-yellow-1"></div>
+              <div class="yard-slot" id="slot-yellow-2"></div>
+              <div class="yard-slot" id="slot-yellow-3"></div>
+            </div>
+          </div>
+
+          <!-- CENTER HOME GOAL (3x3) -->
+          <div class="center-home-3x3" style="grid-area: 7 / 7 / 10 / 10;">
+            <div class="tri tri-red"></div>
+            <div class="tri tri-green"></div>
+            <div class="tri tri-yellow"></div>
+            <div class="tri tri-blue"></div>
+            <span class="crown-icon">👑</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Roll Dice Controls -->
+      <div class="dice-container">
+        <div class="dice-box" id="dice-val">🎲</div>
+        <button class="btn btn-yellow" id="btn-roll" style="font-size: 1.1rem; padding: 0.8rem 1.8rem;">
+          🎲 ROLL DICE
+        </button>
+      </div>
+
+      <button class="btn btn-gold" id="btn-reset" style="width: 100%; margin-top: 0.5rem;">🔄 MATCH SETTINGS / RESET</button>
+
+      <!-- Start Screen Modal Overlay -->
+      <div id="start-overlay" class="modal-overlay">
+        <div class="modal-content">
+          <h2 class="modal-title">🎲 LUDO MATCH</h2>
+          <p class="modal-desc">Select game mode & bot difficulty to start!</p>
+
+          <!-- Mode Selector inside Modal -->
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="btn-mode-bot">🤖 VS BOT</button>
+            <button class="mode-btn" id="btn-mode-2p">👥 2-PLAYER</button>
+          </div>
+
+          <!-- Difficulty Slider Bar inside Modal -->
+          <div class="diff-container" id="diff-container">
+            <div class="diff-header">
+              <span>BOT DIFFICULTY:</span>
+              <strong id="diff-label" style="color: var(--yellow);">IMPOSSIBLE 💀</strong>
+            </div>
+            <input type="range" min="1" max="4" value="4" step="1" id="diff-slider" class="diff-slider" />
+            <div class="diff-ticks">
+              <span>EASY</span>
+              <span>MEDIUM</span>
+              <span>HARD</span>
+              <span>IMPOSSIBLE</span>
+            </div>
+          </div>
+
+          <div class="rules-list">
+            <div>🎲 <strong>Roll 6:</strong> Unlocks token from yard onto track</div>
+            <div>⚡ <strong>Captures:</strong> Landing on opponent's token sends it back home</div>
+            <div>👑 <strong>Victory:</strong> Race all 4 tokens home first</div>
+          </div>
+
+          <button class="btn btn-gold modal-btn" id="btn-start">🚀 START MATCH NOW</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./ludo.js"></script>
+  </body>
+</html>

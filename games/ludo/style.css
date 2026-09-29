@@ -1,0 +1,455 @@
+/* Ludo King Edition Styling - Symmetrical 15x15 Master Grid */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800;900&family=Sniglet:wght@400;800&display=swap');
+
+:root {
+  --bubblegum: #fb6f99;
+  --sunny: #facc15;
+  --mint: #4ade80;
+  --sky: #38bdf8;
+
+  --red: #ef4444;
+  --red-light: #fee2e2;
+  --green: #22c55e;
+  --green-light: #dcfce7;
+  --yellow: #eab308;
+  --yellow-light: #fef9c3;
+  --blue: #3b82f6;
+  --blue-light: #dbeafe;
+
+  --dark: #0f172a;
+  --light: #ffffff;
+
+  --font-cartoon: 'Fredoka', 'Sniglet', cursive, sans-serif;
+  --border: 3px solid #0f172a;
+  --border-lg: 4px solid #0f172a;
+  --shadow-sm: 2px 2px 0px #0f172a;
+  --shadow-md: 4px 4px 0px #0f172a;
+  --shadow-lg: 6px 6px 0px #0f172a;
+  --shadow-xl: 8px 8px 0px #0f172a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: var(--font-cartoon);
+  background: linear-gradient(135deg, #fff1f8 0%, #fef9c3 50%, #e0f2fe 100%);
+  color: var(--dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem;
+}
+
+.nav-header {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.btn {
+  font-family: var(--font-cartoon);
+  font-weight: 800;
+  padding: 0.6rem 1.2rem;
+  border-radius: 1.25rem;
+  border: var(--border);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn:active { transform: translateY(2px); box-shadow: var(--shadow-sm); }
+.btn-yellow { background: var(--sunny); color: var(--dark); }
+.btn-slate { background: #ffffff; color: var(--dark); }
+
+.game-card {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border: var(--border-lg);
+  box-shadow: var(--shadow-xl);
+  border-radius: 2rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.ludo-title {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: var(--dark);
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0px var(--sunny-light);
+}
+
+/* Mode Selector */
+.mode-toggle {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 0.55rem;
+  border-radius: 1rem;
+  border: var(--border);
+  background: #f1f5f9;
+  color: var(--dark);
+  font-family: var(--font-cartoon);
+  font-size: 0.95rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s ease;
+}
+
+.mode-btn.active {
+  background: var(--yellow);
+  color: var(--dark);
+  box-shadow: var(--shadow-md);
+}
+
+/* Bot Difficulty Slider */
+.diff-container {
+  width: 100%;
+  background: #f8fafc;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 0.75rem 1rem;
+  border-radius: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.diff-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 900;
+  font-size: 0.9rem;
+  color: var(--dark);
+}
+
+.diff-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 12px;
+  background: #e2e8f0;
+  border-radius: 6px;
+  border: 2px solid #0f172a;
+  outline: none;
+  cursor: pointer;
+}
+
+.diff-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--yellow);
+  border: 2px solid #0f172a;
+  box-shadow: 2px 2px 0px #0f172a;
+  cursor: pointer;
+}
+
+.diff-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: #64748b;
+}
+
+.turn-badge {
+  padding: 0.5rem 1.2rem;
+  border-radius: 1rem;
+  font-weight: 900;
+  font-size: 1rem;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  background: #f1f5f9;
+  color: var(--dark);
+}
+.turn-badge.red-turn { background: var(--red); color: #fff; }
+.turn-badge.green-turn { background: var(--green); color: #fff; }
+.turn-badge.yellow-turn { background: var(--yellow); color: #0f172a; }
+.turn-badge.blue-turn { background: var(--blue); color: #fff; }
+
+/* Board Container & Master 15x15 CSS Grid */
+.ludo-board-wrapper {
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 1;
+  background: #ffffff;
+  border: var(--border-lg);
+  border-radius: 1.75rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  padding: 4px;
+}
+
+.ludo-grid-15 {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  grid-template-rows: repeat(15, 1fr);
+  gap: 1px;
+  background: #0f172a;
+}
+
+/* Base Yards */
+.yard {
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #0f172a;
+}
+.yard-red { background: var(--red); }
+.yard-green { background: var(--green); }
+.yard-yellow { background: var(--yellow); }
+.yard-blue { background: var(--blue); }
+
+.yard-card {
+  width: 85%;
+  height: 85%;
+  background: #ffffff;
+  border: 3px solid #0f172a;
+  border-radius: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0.35rem;
+  padding: 0.35rem;
+}
+
+.yard-slot {
+  background: #f1f5f9;
+  border-radius: 50%;
+  border: 2px dashed #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Center 3x3 Home Triangle Goal */
+.center-home-3x3 {
+  background: #ffffff;
+  border: 2px solid #0f172a;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crown-icon {
+  font-size: 1.6rem;
+  z-index: 5;
+  filter: drop-shadow(2px 2px 0px #000);
+}
+
+.tri {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.tri-red {
+  top: 0; left: 0; right: 0;
+  border-left: 38px solid transparent;
+  border-right: 38px solid transparent;
+  border-top: 38px solid var(--red);
+}
+.tri-green {
+  top: 0; bottom: 0; right: 0;
+  border-top: 38px solid transparent;
+  border-bottom: 38px solid transparent;
+  border-right: 38px solid var(--green);
+}
+.tri-yellow {
+  bottom: 0; left: 0; right: 0;
+  border-left: 38px solid transparent;
+  border-right: 38px solid transparent;
+  border-bottom: 38px solid var(--yellow);
+}
+.tri-blue {
+  top: 0; bottom: 0; left: 0;
+  border-top: 38px solid transparent;
+  border-bottom: 38px solid transparent;
+  border-left: 38px solid var(--blue);
+}
+
+/* Track Cell Styles */
+.track-cell {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.cell-red-home { background: var(--red-light); }
+.cell-green-home { background: var(--green-light); }
+.cell-yellow-home { background: var(--yellow-light); }
+.cell-blue-home { background: var(--blue-light); }
+
+.cell-red-start { background: var(--red) !important; color: #fff; }
+.cell-green-start { background: var(--green) !important; color: #fff; }
+.cell-yellow-start { background: var(--yellow) !important; color: #0f172a; }
+.cell-blue-start { background: var(--blue) !important; color: #fff; }
+
+.safe-star-cell::after {
+  content: '⭐';
+  font-size: 0.85rem;
+}
+
+/* Pawns */
+.pawn {
+  width: 85%;
+  height: 85%;
+  border-radius: 50%;
+  border: 2.5px solid #0f172a;
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: transform 0.15s ease;
+  z-index: 10;
+}
+.pawn:active { transform: scale(1.25); }
+
+.pawn-red { background: var(--red); color: #fff; }
+.pawn-green { background: var(--green); color: #fff; }
+.pawn-yellow { background: var(--yellow); color: #0f172a; }
+.pawn-blue { background: var(--blue); color: #fff; }
+
+.movable-pulse {
+  animation: pulsePawn 0.7s infinite alternate;
+  box-shadow: 0 0 14px var(--sunny), 2px 2px 0px #0f172a;
+}
+
+@keyframes pulsePawn {
+  0% { transform: scale(1.05); }
+  100% { transform: scale(1.25); }
+}
+
+/* Dice Box Controls */
+.dice-container {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.dice-box {
+  width: 4rem;
+  height: 4rem;
+  background: #ffffff;
+  border: var(--border-lg);
+  box-shadow: var(--shadow-sm);
+  border-radius: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.25rem;
+  color: #0f172a;
+}
+
+/* Active Mode Badge */
+.mode-badge {
+  font-size: 0.8rem;
+  font-weight: 900;
+  padding: 0.35rem 0.85rem;
+  border-radius: 0.75rem;
+  background: var(--sub-bg);
+  border: 2px solid #0f172a;
+  color: var(--sky);
+  text-transform: uppercase;
+}
+
+/* Modal Overlay Styling */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.25rem;
+  z-index: 10;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  border: var(--border-lg);
+  box-shadow: var(--shadow-xl);
+  border-radius: 1.5rem;
+  padding: 1.5rem 1.1rem;
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.modal-title {
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: var(--text-color);
+}
+
+.modal-desc {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.rules-list {
+  background: var(--sub-bg);
+  border: var(--border);
+  border-radius: 1rem;
+  padding: 0.65rem 0.85rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-align: left;
+}
+
+.modal-btn {
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 1.05rem;
+}
+

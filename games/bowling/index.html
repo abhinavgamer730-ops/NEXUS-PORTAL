@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Neon Strike Bowling 🎳⚡ - Play 3D Bowling Online Free | Nexus Portal</title>
+    <meta name="description" content="Play Neon Strike 3D Bowling online for free! Master 10-frame bowling with physics control, 🤖 VS Bot, and 👥 2-Player Local match modes. Instant browser play, no signup required!" />
+    <meta name="keywords" content="3d bowling game online, play bowling free in browser, neon bowling game, 2 player bowling game, bowling vs bot" />
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:title" content="Neon Strike Bowling 🎳⚡ - Play 3D Bowling Online Free" />
+    <meta property="og:description" content="10-Frame 3D Bowling game with physics control, 🤖 VS Bot and 👥 2-Player Local modes." />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Neon Strike Bowling",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Sports / Arcade",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["10-Frame Bowling", "🤖 VS Bot Mode", "👥 2-Player Local Mode"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+  </head>
+  <body>
+    <div class="nav-header">
+      <a href="../../index.html" class="btn btn-slate">⬅️ PORTAL MENU</a>
+      <button class="btn btn-gold" id="theme-toggle-btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">🌙 DARK MODE</button>
+      <span style="font-size: 1.1rem; color: var(--sky);">🎳⚡ NEON STRIKE</span>
+    </div>
+
+    <div class="game-card">
+      <h1 class="game-title">NEON STRIKE BOWLING</h1>
+
+      <!-- Active Mode Badge -->
+      <div id="mode-badge" class="mode-badge">
+        MODE: 🤖 VS BOT (IMPOSSIBLE 💀)
+      </div>
+
+      <!-- Turn Info Badge -->
+      <div id="turn-info" class="turn-badge p1-turn">
+        CURRENT TURN: PLAYER 1 🔴 (FRAME 1 / ROLL 1)
+      </div>
+
+      <!-- 10-Frame Bowling Scoreboard -->
+      <div class="score-table-wrapper">
+        <table class="bowling-score-table">
+          <thead>
+            <tr>
+              <th>PLAYER</th>
+              <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+              <th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+              <th>TOT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="score-row-p1">
+              <td class="p-col">P1 🔴</td>
+              <td id="f1-p1">-</td><td id="f2-p1">-</td><td id="f3-p1">-</td><td id="f4-p1">-</td><td id="f5-p1">-</td>
+              <td id="f6-p1">-</td><td id="f7-p1">-</td><td id="f8-p1">-</td><td id="f9-p1">-</td><td id="f10-p1">-</td>
+              <td class="tot-col" id="tot-p1">0</td>
+            </tr>
+            <tr id="score-row-p2">
+              <td class="p-col" id="p2-name-label">BOT 🤖</td>
+              <td id="f1-p2">-</td><td id="f2-p2">-</td><td id="f3-p2">-</td><td id="f4-p2">-</td><td id="f5-p2">-</td>
+              <td id="f6-p2">-</td><td id="f7-p2">-</td><td id="f8-p2">-</td><td id="f9-p2">-</td><td id="f10-p2">-</td>
+              <td class="tot-col" id="tot-p2">0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Status Banner -->
+      <div id="status-banner" class="status-banner">
+        👆 SWIPE OR DRAG THE BALL UPWARD TO BOWL!
+      </div>
+
+      <!-- 400x550 Bowling Lane Canvas -->
+      <div class="canvas-wrapper">
+        <canvas id="bowling-canvas" width="400" height="550"></canvas>
+      </div>
+
+      <!-- Gesture Hint Footer -->
+      <div class="gesture-hint">
+        📱 <strong>Touch:</strong> Touch & swipe ball up | 🖱️ <strong>PC:</strong> Click & drag ball up to flick!
+      </div>
+
+      <button class="btn btn-gold" id="btn-reset" style="width: 100%;">🔄 MATCH SETTINGS / RESET</button>
+
+      <!-- Start Screen Modal Overlay -->
+      <div id="start-overlay" class="modal-overlay">
+        <div class="modal-content">
+          <h2 class="modal-title">🎳 NEON STRIKE MATCH</h2>
+          <p class="modal-desc">Select game mode & bot difficulty to start!</p>
+
+          <!-- Mode Selector inside Modal -->
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="btn-mode-bot">🤖 VS BOT</button>
+            <button class="mode-btn" id="btn-mode-2p">👥 2-PLAYER</button>
+          </div>
+
+          <!-- Difficulty Slider Bar inside Modal -->
+          <div class="diff-container" id="diff-container">
+            <div class="diff-header">
+              <span>BOT DIFFICULTY:</span>
+              <strong id="diff-label" style="color: var(--sunny);">IMPOSSIBLE 💀</strong>
+            </div>
+            <input type="range" min="1" max="4" value="4" step="1" id="diff-slider" class="diff-slider" />
+            <div class="diff-ticks">
+              <span>EASY</span>
+              <span>MEDIUM</span>
+              <span>HARD</span>
+              <span>IMPOSSIBLE</span>
+            </div>
+          </div>
+
+          <div class="rules-list">
+            <div>📱 <strong>Mobile:</strong> Swipe ball upward towards the pins</div>
+            <div>🖱️ <strong>PC Mouse:</strong> Click, drag upward & release</div>
+            <div>🏆 <strong>10 Frames:</strong> Standard bowling scoring rules</div>
+          </div>
+
+          <button class="btn btn-gold modal-btn" id="btn-start">🚀 START MATCH NOW</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

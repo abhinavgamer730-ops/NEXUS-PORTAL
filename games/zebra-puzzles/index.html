@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zebra Deduction Puzzles 🦓 - Play Logic Riddles Free | Nexus Portal</title>
+    <meta name="description" content="Solve Einstein's Zebra Logic Puzzles online for free! Matrix deduction grid, clue verification system, 🤖 VS Bot solver tips & 👥 2-Player Local race modes. Fast browser game!" />
+    <meta name="keywords" content="zebra puzzle online free, einstein riddle browser game, logic matrix puzzle, 2 player logic riddle" />
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:title" content="Zebra Deduction Puzzles 🦓 - Play Logic Riddles Free" />
+    <meta property="og:description" content="Einstein's famous 5-house Zebra logic riddle with deduction matrix, clue checks, 🤖 VS Bot and 👥 2P modes." />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Zebra Deduction Puzzles",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Puzzle / Logic",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["Einstein's Riddle Matrix", "🤖 VS Bot Mode", "👥 2-Player Local Mode"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+  </head>
+  <body>
+    <div class="nav-header">
+      <a href="../../index.html" class="btn btn-slate">⬅️ PORTAL MENU</a>
+      <button class="btn btn-emerald" id="theme-toggle-btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">🌙 DARK MODE</button>
+      <span style="font-family: 'Fredoka', cursive; font-size: 1.1rem; color: var(--green);">🦓 ZEBRA RIDDLE</span>
+    </div>
+
+    <div class="game-container">
+      
+      <!-- Left: Deduction Matrix -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <h2 class="card-title">Deduction Grid</h2>
+          <div id="mode-badge" class="mode-badge">
+            PUZZLE: 5 HOUSES (EINSTEIN)
+          </div>
+        </div>
+
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th>House</th>
+              <th>1</th>
+              <th>2</th>
+              <th>3</th>
+              <th>4</th>
+              <th>5</th>
+            </tr>
+          </thead>
+          <tbody id="matrix-body">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+
+        <div style="display: flex; gap: 0.5rem; width: 100%; margin-top: auto;">
+          <button class="btn btn-emerald" id="btn-submit" style="flex: 1.5;">✓ SUBMIT SOLUTION</button>
+          <button class="btn btn-slate" id="btn-reset" style="flex: 1;">🔄 SETTINGS</button>
+        </div>
+      </div>
+
+      <!-- Right: Clue Checklist -->
+      <div class="card">
+        <h2 class="card-title">Clues</h2>
+        <div class="clue-list" id="clue-list">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Start Screen Modal Overlay -->
+      <div id="start-overlay" class="modal-overlay">
+        <div class="modal-content">
+          <h2 class="modal-title">🦓 ZEBRA LOGIC PUZZLE</h2>
+          <p class="modal-desc">Use logical deduction to solve the famous 5-House Riddle!</p>
+
+          <div class="rules-list">
+            <div>🔎 <strong>Read Clues:</strong> Cross-reference color, nationality, drink, pet, and cigar</div>
+            <div>🧩 <strong>Fill Grid:</strong> Select options for each house column</div>
+            <div>🏆 <strong>Goal:</strong> Correctly identify who owns the Zebra!</div>
+          </div>
+
+          <button class="btn btn-emerald modal-btn" id="btn-start">🚀 START PUZZLE NOW</button>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="./zebra.js"></script>
+  </body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Rock Paper Scissors 🪨📄✂️ - Play Free Online (VS Bot & 2P) | Nexus Portal</title>
+    <meta name="description" content="Play Rock Paper Scissors online for free! Enjoy best-of-5 round matches, win streak tracking, 🤖 VS Bot mode (4 difficulties) & 👥 2-Player Local match mode. Fast browser game!" />
+    <meta name="keywords" content="rock paper scissors online free, play rps vs bot, 2 player rock paper scissors, browser rps game" />
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:title" content="Rock Paper Scissors 🪨📄✂️ - Play Free Online" />
+    <meta property="og:description" content="Best-of-5 Rock Paper Scissors duel with win streak counter, 🤖 VS Bot and 👥 2-Player Local modes." />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Rock Paper Scissors Clash",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Arcade / Casual",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["Best of 5 Rounds", "🤖 VS Bot Mode", "👥 2-Player Local Mode"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+  </head>
+  <body>
+    <div class="nav-header">
+      <a href="../../index.html" class="btn btn-slate">⬅️ PORTAL MENU</a>
+      <button class="btn btn-gold" id="theme-toggle-btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">🌙 DARK MODE</button>
+      <span style="font-size: 1.1rem; color: var(--sunny);">🪨📄✂️ RPS CLASH</span>
+    </div>
+
+    <div class="game-card">
+      <h1 class="game-title">ROCK PAPER SCISSORS</h1>
+      
+      <!-- Active Mode Badge -->
+      <div id="mode-badge" class="mode-badge">
+        MODE: 🤖 VS BOT (IMPOSSIBLE 💀)
+      </div>
+
+      <!-- Match Target Pill -->
+      <div class="match-target-pill">
+        🏆 FIRST TO 5 ROUND WINS TAKES THE MATCH!
+      </div>
+
+      <!-- HUD Scoreboard -->
+      <div class="scoreboard">
+        <div class="score-box">
+          <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 800;">YOU</span>
+          <span class="score-num" id="score-player" style="color: var(--mint);">0</span>
+          <span class="score-target">/ 5</span>
+        </div>
+        <div class="score-box">
+          <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 800;">DRAWS</span>
+          <span class="score-num" id="score-draw" style="color: #cbd5e1;">0</span>
+        </div>
+        <div class="score-box">
+          <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 800;">BOT</span>
+          <span class="score-num" id="score-bot" style="color: var(--bubblegum);">0</span>
+          <span class="score-target">/ 5</span>
+        </div>
+      </div>
+
+      <!-- Status Banner -->
+      <div id="status-banner" class="status-banner">
+        CHOOSE ROCK, PAPER, OR SCISSORS TO START!
+      </div>
+
+      <!-- Battle Arena -->
+      <div class="battle-arena">
+        <div class="hand-card" id="player-hand-card">
+          <span class="hand-label">YOU</span>
+          <div class="hand-icon" id="player-hand">✊</div>
+        </div>
+
+        <div class="vs-badge">VS</div>
+
+        <div class="hand-card" id="bot-hand-card">
+          <span class="hand-label">BOT</span>
+          <div class="hand-icon" id="bot-hand">✊</div>
+        </div>
+      </div>
+
+      <!-- Choice Selection Buttons -->
+      <div class="choice-bar">
+        <button class="choice-btn" id="btn-rock">
+          <span class="choice-emoji">🪨</span>
+          <span class="choice-name">ROCK</span>
+        </button>
+        <button class="choice-btn" id="btn-paper">
+          <span class="choice-emoji">📄</span>
+          <span class="choice-name">PAPER</span>
+        </button>
+        <button class="choice-btn" id="btn-scissors">
+          <span class="choice-emoji">✂️</span>
+          <span class="choice-name">SCISSORS</span>
+        </button>
+      </div>
+
+      <button class="btn btn-gold" id="btn-reset" style="width: 100%;">🔄 MATCH SETTINGS / RESET</button>
+
+      <!-- Start Screen Modal Overlay -->
+      <div id="start-overlay" class="modal-overlay">
+        <div class="modal-content">
+          <h2 class="modal-title">🪨📄✂️ RPS CLASH MATCH</h2>
+          <p class="modal-desc">Select bot difficulty level to start!</p>
+
+          <!-- Bot Difficulty Slider Bar inside Modal -->
+          <div class="diff-container" id="diff-container">
+            <div class="diff-header">
+              <span>BOT DIFFICULTY:</span>
+              <strong id="diff-label" style="color: var(--sunny);">IMPOSSIBLE 💀</strong>
+            </div>
+            <input type="range" min="1" max="4" value="4" step="1" id="diff-slider" class="diff-slider" />
+            <div class="diff-ticks">
+              <span>EASY</span>
+              <span>MEDIUM</span>
+              <span>HARD</span>
+              <span>IMPOSSIBLE</span>
+            </div>
+          </div>
+
+          <div class="rules-list">
+            <div>🪨 <strong>Rock beats Scissors</strong></div>
+            <div>📄 <strong>Paper beats Rock</strong></div>
+            <div>✂️ <strong>Scissors beats Paper</strong></div>
+            <div>🏆 <strong>Win Condition:</strong> First to 5 round wins</div>
+          </div>
+
+          <button class="btn btn-gold modal-btn" id="btn-start">🚀 START MATCH NOW</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

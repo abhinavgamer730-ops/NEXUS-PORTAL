@@ -1,0 +1,412 @@
+/* ==========================================================================
+   ROCK PAPER SCISSORS 🪨📄✂️ - Cartoon Arcade Styling
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800;900&family=Sniglet:wght@400;800&display=swap');
+
+:root {
+  --bubblegum: #ef4444;
+  --sunny: #facc15;
+  --mint: #22c55e;
+  --sky: #38bdf8;
+  --purple: #c084fc;
+  --dark: #0f172a;
+  --light: #ffffff;
+
+  --font-cartoon: 'Fredoka', 'Sniglet', cursive, sans-serif;
+  --border: 3px solid #0f172a;
+  --border-lg: 4px solid #0f172a;
+  --shadow-sm: 2px 2px 0px #0f172a;
+  --shadow-md: 4px 4px 0px #0f172a;
+  --shadow-lg: 6px 6px 0px #0f172a;
+  --shadow-xl: 8px 8px 0px #0f172a;
+
+  --bg-gradient: linear-gradient(135deg, #fff1f8 0%, #fef9c3 50%, #e0f2fe 100%);
+  --card-bg: #ffffff;
+  --text-color: #0f172a;
+  --sub-bg: #f8fafc;
+}
+
+[data-theme="dark"] {
+  --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0284c7 100%);
+  --card-bg: #1e293b;
+  --text-color: #f8fafc;
+  --border: 3px solid #38bdf8;
+  --border-lg: 4px solid #38bdf8;
+  --shadow-sm: 2px 2px 0px rgba(56, 189, 248, 0.4);
+  --shadow-md: 4px 4px 0px rgba(56, 189, 248, 0.4);
+  --shadow-lg: 6px 6px 0px rgba(56, 189, 248, 0.4);
+  --shadow-xl: 8px 8px 0px rgba(56, 189, 248, 0.4);
+  --sub-bg: #0f172a;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-cartoon);
+  background: var(--bg-gradient);
+  color: var(--text-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem;
+}
+
+/* Navigation Header */
+.nav-header {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+/* Base Buttons */
+.btn {
+  font-family: var(--font-cartoon);
+  font-weight: 800;
+  padding: 0.6rem 1.2rem;
+  border-radius: 1.25rem;
+  border: var(--border);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn:active {
+  transform: translateY(2px);
+  box-shadow: var(--shadow-sm);
+}
+.btn-gold { background: var(--sunny); color: #0f172a; }
+.btn-slate { background: #ffffff; color: #0f172a; }
+
+/* Main Container Card */
+.game-card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--card-bg);
+  border: var(--border-lg);
+  box-shadow: var(--shadow-xl);
+  border-radius: 2rem;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.game-title {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--text-color);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.bot-only-badge {
+  padding: 0.25rem 0.85rem;
+  border-radius: 0.75rem;
+  font-weight: 900;
+  font-size: 0.8rem;
+  background: var(--sky);
+  color: #0f172a;
+  border: 2px solid #0f172a;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Difficulty Slider Bar */
+.diff-container {
+  width: 100%;
+  background: var(--sub-bg);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 0.75rem 1rem;
+  border-radius: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.diff-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 900;
+  font-size: 0.9rem;
+}
+
+.diff-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 12px;
+  background: #e2e8f0;
+  border-radius: 6px;
+  border: 2px solid #0f172a;
+  outline: none;
+  cursor: pointer;
+}
+
+.diff-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--sunny);
+  border: 2px solid #0f172a;
+  box-shadow: 2px 2px 0px #0f172a;
+  cursor: pointer;
+}
+
+.diff-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: #64748b;
+}
+
+/* Match Target Pill */
+.match-target-pill {
+  padding: 0.35rem 0.85rem;
+  border-radius: 0.85rem;
+  font-weight: 900;
+  font-size: 0.8rem;
+  background: #fef9c3;
+  color: #0f172a;
+  border: 2px solid #0f172a;
+  width: 100%;
+  text-align: center;
+}
+
+/* Scoreboard */
+.scoreboard {
+  width: 100%;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.score-box {
+  flex: 1;
+  background: var(--sub-bg);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  border-radius: 1rem;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.score-num {
+  font-size: 1.75rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.score-target {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #94a3b8;
+}
+
+/* Status Banner */
+.status-banner {
+  padding: 0.55rem 1rem;
+  border-radius: 1rem;
+  font-weight: 900;
+  font-size: 0.9rem;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  background: var(--sub-bg);
+  color: var(--text-color);
+  width: 100%;
+  text-align: center;
+}
+
+/* Battle Arena */
+.battle-arena {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
+}
+
+.hand-card {
+  flex: 1;
+  background: var(--sub-bg);
+  border: var(--border-lg);
+  box-shadow: var(--shadow-md);
+  border-radius: 1.5rem;
+  padding: 0.75rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.hand-label {
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #64748b;
+}
+
+.hand-icon {
+  font-size: 3.5rem;
+  transition: transform 0.2s ease;
+}
+
+.vs-badge {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--sunny);
+  background: #0f172a;
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.85rem;
+}
+
+.shaking {
+  animation: handShake 0.4s ease infinite alternate;
+}
+
+@keyframes handShake {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-12px) rotate(-10deg); }
+}
+
+/* Choice Buttons */
+.choice-bar {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.choice-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 0.25rem;
+  background: #ffffff;
+  border: var(--border);
+  box-shadow: var(--shadow-md);
+  border-radius: 1.25rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+.choice-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  background: #f0f9ff;
+}
+.choice-btn:active {
+  transform: translateY(2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.choice-emoji {
+  font-size: 2.25rem;
+}
+
+.choice-name {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: var(--dark);
+  margin-top: 2px;
+}
+
+/* Active Mode Badge */
+.mode-badge {
+  font-size: 0.8rem;
+  font-weight: 900;
+  padding: 0.35rem 0.85rem;
+  border-radius: 0.75rem;
+  background: var(--sub-bg);
+  border: 2px solid #0f172a;
+  color: var(--sky);
+  text-transform: uppercase;
+}
+
+/* Modal Overlay Styling */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.25rem;
+  z-index: 10;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  border: var(--border-lg);
+  box-shadow: var(--shadow-xl);
+  border-radius: 1.5rem;
+  padding: 1.5rem 1.1rem;
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.modal-title {
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: var(--text-color);
+}
+
+.modal-desc {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.rules-list {
+  background: var(--sub-bg);
+  border: var(--border);
+  border-radius: 1rem;
+  padding: 0.65rem 0.85rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-align: left;
+}
+
+.modal-btn {
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 1.05rem;
+}
+

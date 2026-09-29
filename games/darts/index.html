@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Darts Clash 🎯 - Play 501 Target Darts Online Free | Nexus Portal</title>
+    <meta name="description" content="Play Darts Clash online for free! Aim, power up, and throw darts in 501 / 301 match modes against 🤖 VS Bot or 👥 2-Player Local friends. Fast browser darts game with no download!" />
+    <meta name="keywords" content="darts game online free, 501 darts browser game, play darts vs bot, 2 player darts game" />
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:title" content="Darts Clash 🎯 - Play 501 Darts Online Free" />
+    <meta property="og:description" content="Precision 501 Target Darts game featuring 🤖 VS Bot and 👥 2-Player Local modes." />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Darts Clash",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Sports / Arcade",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["501/301 Target Darts", "🤖 VS Bot Mode", "👥 2-Player Local Mode"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+  </head>
+  <body>
+    <div class="nav-header">
+      <a href="../../index.html" class="btn btn-slate">⬅️ PORTAL MENU</a>
+      <button class="btn btn-gold" id="theme-toggle-btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">🌙 DARK MODE</button>
+      <span style="font-size: 1.1rem; color: var(--sunny);">🎯 DARTS CLASH</span>
+    </div>
+
+    <div class="game-card">
+      <h1 class="game-title">DARTS CLASH</h1>
+
+      <!-- Active Mode Badge -->
+      <div id="mode-badge" class="mode-badge">
+        MODE: 🤖 VS BOT (IMPOSSIBLE 💀)
+      </div>
+
+      <!-- Turn Info Badge -->
+      <div id="turn-info" class="turn-badge p1-turn">
+        CURRENT TURN: PLAYER 1 🔴 (THROW 1/3)
+      </div>
+
+      <!-- Scoreboard HUD -->
+      <div class="hud-bar">
+        <div class="hud-player hud-p1">
+          <span class="p-name">PLAYER 1 🔴</span>
+          <span class="p-score" id="score-p1">0</span>
+          <div class="dart-count" id="darts-p1">🔴 🔴 🔴</div>
+        </div>
+
+        <div class="hud-vs">VS</div>
+
+        <div class="hud-player hud-p2">
+          <span class="p-name" id="p2-name-label">BOT 🤖</span>
+          <span class="p-score" id="score-p2">0</span>
+          <div class="dart-count" id="darts-p2">🔵 🔵 🔵</div>
+        </div>
+      </div>
+
+      <!-- Throw Result Banner -->
+      <div id="throw-badge" class="throw-badge">
+        READY TO THROW! AIM AND PRESS YOUR KEY
+      </div>
+
+      <!-- Canvas Board -->
+      <div class="canvas-wrapper">
+        <canvas id="dartboard" width="400" height="400"></canvas>
+      </div>
+
+      <!-- Action Buttons for Touch / Mouse -->
+      <div class="control-bar">
+        <button class="btn btn-throw btn-p1" id="btn-throw-p1">
+          🔴 P1 THROW<br /><small>(SPACEBAR)</small>
+        </button>
+        <button class="btn btn-throw btn-p2" id="btn-throw-p2">
+          🔵 P2 THROW<br /><small>(ENTER KEY)</small>
+        </button>
+      </div>
+
+      <button class="btn btn-gold" id="btn-reset" style="width: 100%;">🔄 MATCH SETTINGS / RESET</button>
+
+      <!-- Keyboard Hint -->
+      <div class="keyboard-hint">
+        ⌨️ <strong>CONTROLS:</strong> Player 1 press <kbd>SPACEBAR</kbd> | Player 2 press <kbd>ENTER</kbd>
+      </div>
+
+      <!-- Start Screen Modal Overlay -->
+      <div id="start-overlay" class="modal-overlay">
+        <div class="modal-content">
+          <h2 class="modal-title">🎯 DARTS CLASH MATCH</h2>
+          <p class="modal-desc">Select game mode & bot difficulty to start!</p>
+
+          <!-- Mode Selector inside Modal -->
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="btn-mode-bot">🤖 VS BOT</button>
+            <button class="mode-btn" id="btn-mode-2p">👥 2-PLAYER</button>
+          </div>
+
+          <!-- Difficulty Slider Bar inside Modal -->
+          <div class="diff-container" id="diff-container">
+            <div class="diff-header">
+              <span>BOT DIFFICULTY:</span>
+              <strong id="diff-label" style="color: var(--sunny);">IMPOSSIBLE 💀</strong>
+            </div>
+            <input type="range" min="1" max="4" value="4" step="1" id="diff-slider" class="diff-slider" />
+            <div class="diff-ticks">
+              <span>EASY</span>
+              <span>MEDIUM</span>
+              <span>HARD</span>
+              <span>IMPOSSIBLE</span>
+            </div>
+          </div>
+
+          <div class="rules-list">
+            <div>🎯 <strong>Timing Reticle:</strong> Stop horizontal & vertical moving crosshairs</div>
+            <div>🔴 <strong>P1 Control:</strong> Tap button or press <kbd>SPACEBAR</kbd></div>
+            <div>🔵 <strong>P2 Control:</strong> Tap button or press <kbd>ENTER</kbd></div>
+          </div>
+
+          <button class="btn btn-gold modal-btn" id="btn-start">🚀 START MATCH NOW</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

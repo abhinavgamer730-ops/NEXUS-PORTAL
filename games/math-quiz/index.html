@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Quick Math Quiz 🧮⚡ - Play Free Math Speed Game Online | Nexus Portal</title>
+    <meta name="description" content="Test your mental math speed in Quick Math Quiz! Play free online in browser with 60s timer, 🤖 VS Bot (4 difficulty levels) and 👥 2-Player Local modes. Instant play, no download required!" />
+    <meta name="keywords" content="quick math quiz, math speed test online, mental math practice game, 2 player math game, math game vs bot, free browser math game" />
+    
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:title" content="Quick Math Quiz 🧮⚡ - Play Free Online" />
+    <meta property="og:description" content="Fast-paced 60-second mental math drill game with 🤖 VS Bot and 👥 2-Player Local modes." />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Quick Math Quiz",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Educational / Math",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["60s Speed Timer", "🤖 VS Bot Mode", "👥 2-Player Local Mode"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+  </head>
+  <body>
+    <div class="nav-header">
+      <a href="../../index.html" class="btn btn-slate">⬅️ PORTAL MENU</a>
+      <button class="btn btn-gold" id="theme-toggle-btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">🌙 DARK MODE</button>
+      <span style="font-size: 1.1rem; color: var(--sky);">🧮⚡ QUICK MATH</span>
+    </div>
+
+    <div class="game-card">
+      <h1 class="game-title">QUICK MATH QUIZ</h1>
+
+      <!-- Active Game Mode Badge -->
+      <div id="mode-badge" class="mode-badge">
+        MODE: 🤖 VS BOT (IMPOSSIBLE 💀)
+      </div>
+
+      <!-- Turn Info Badge -->
+      <div id="turn-badge" class="turn-badge p1-turn">
+        CURRENT TURN: PLAYER 1 🔴 (60s)
+      </div>
+
+      <!-- Stats Bar: P1 Score, Timer, P2/Bot Score -->
+      <div class="stats-bar">
+        <div class="stat-box">
+          <span class="stat-label">P1 🔴 SCORE</span>
+          <span class="stat-value" id="score-p1">0</span>
+        </div>
+        <div class="stat-box timer-box">
+          <span class="stat-label">TIME LEFT</span>
+          <span class="stat-value" id="timer-val">60s</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label" id="p2-score-label">BOT 🤖 SCORE</span>
+          <span class="stat-value" id="score-p2">0</span>
+        </div>
+      </div>
+
+      <!-- Timer Progress Bar -->
+      <div class="timer-bar-container">
+        <div class="timer-bar" id="timer-bar"></div>
+      </div>
+
+      <!-- Equation Display Box -->
+      <div class="question-container">
+        <div class="equation-display" id="equation-display">12 + 8 = ?</div>
+      </div>
+
+      <!-- 3 Choice Buttons Container -->
+      <div class="choices-container">
+        <button class="choice-btn" id="choice-btn-0">20</button>
+        <button class="choice-btn" id="choice-btn-1">18</button>
+        <button class="choice-btn" id="choice-btn-2">24</button>
+      </div>
+
+      <!-- Visual Feedback Status Toast -->
+      <div id="status-toast" class="status-toast">
+        ⚡ SELECT THE CORRECT ANSWER BEFORE TIME RUNS OUT!
+      </div>
+
+      <!-- Start Screen Modal Overlay -->
+      <div id="start-overlay" class="modal-overlay">
+        <div class="modal-content">
+          <h2 class="modal-title">⚡ QUICK MATH MATCH</h2>
+          <p class="modal-desc">
+            Select game mode & difficulty to start!
+          </p>
+
+          <!-- Mode Selector inside Modal -->
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="btn-mode-bot">🤖 VS BOT</button>
+            <button class="mode-btn" id="btn-mode-2p">👥 2-PLAYER</button>
+          </div>
+
+          <!-- Difficulty Slider Bar inside Modal -->
+          <div class="diff-container" id="diff-container">
+            <div class="diff-header">
+              <span>BOT DIFFICULTY:</span>
+              <strong id="diff-label" style="color: var(--sunny);">IMPOSSIBLE 💀</strong>
+            </div>
+            <input type="range" min="1" max="4" value="4" step="1" id="diff-slider" class="diff-slider" />
+            <div class="diff-ticks">
+              <span>EASY</span>
+              <span>MEDIUM</span>
+              <span>HARD</span>
+              <span>IMPOSSIBLE</span>
+            </div>
+          </div>
+
+          <!-- Game Rules List -->
+          <div class="rules-list">
+            <div>✅ <strong>Correct:</strong> +10 Points & +2s Bonus Time</div>
+            <div>❌ <strong>Wrong:</strong> -5s Time Penalty</div>
+            <div>⏱️ <strong>Timer:</strong> 60 Seconds per Player</div>
+          </div>
+
+          <button class="btn btn-gold modal-btn" id="btn-start">🚀 START MATCH NOW</button>
+        </div>
+      </div>
+
+      <!-- Game Over Modal Overlay -->
+      <div id="gameover-overlay" class="modal-overlay hidden">
+        <div class="modal-content">
+          <h2 class="modal-title" id="winner-title">🏆 MATCH FINISHED!</h2>
+          <div class="final-score-box">
+            <div class="final-scores-row">
+              <div class="p-final">
+                <span class="p-name">PLAYER 1 🔴</span>
+                <span class="p-score-num" id="final-p1-score">0</span>
+              </div>
+              <div class="vs-divider">VS</div>
+              <div class="p-final">
+                <span class="p-name" id="final-p2-name">BOT 🤖</span>
+                <span class="p-score-num" id="final-p2-score">0</span>
+              </div>
+            </div>
+            <div class="new-highscore-badge hidden" id="new-highscore-badge">🏆 NEW HIGH SCORE!</div>
+          </div>
+          <div class="modal-actions-row">
+            <button class="btn btn-gold modal-btn" id="btn-restart">🔄 REPLAY MATCH</button>
+            <button class="btn btn-slate modal-btn" id="btn-change-settings">⚙️ CHANGE MODE</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

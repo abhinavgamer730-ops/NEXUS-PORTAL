@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Tic Tac Toe ❌⭕ - Play Free Tic Tac Toe Online | Nexus Portal</title>
+    <meta name="description" content="Play Tic Tac Toe online for free! 3x3 classic grid featuring unbeatable Minimax AI bot (4 difficulty levels) & 👥 2-Player Local pass & play mode. Fast browser game, no download!" />
+    <meta name="keywords" content="tic tac toe online free, play tic tac toe vs bot, 2 player tic tac toe local, unbeatable tic tac toe bot" />
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:title" content="Tic Tac Toe ❌⭕ - Play Free Online" />
+    <meta property="og:description" content="Classic 3x3 Tic Tac Toe game with unbeatable Minimax Bot and 👥 2-Player Local modes." />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Tic Tac Toe Clash",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Casual / Strategy",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["Unbeatable Minimax AI", "🤖 VS Bot Mode", "👥 2-Player Local Mode"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+  </head>
+  <body>
+    <div class="nav-header">
+      <a href="../../index.html" class="btn btn-slate">⬅️ PORTAL MENU</a>
+      <button class="btn btn-gold" id="theme-toggle-btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">🌙 DARK MODE</button>
+      <span style="font-family: 'Fredoka', cursive; font-size: 1.1rem; color: var(--pink);">❌⭕ TIC TAC TOE</span>
+    </div>
+
+    <div class="game-card">
+      <h1 class="game-title">TIC TAC TOE</h1>
+
+      <!-- Active Mode Badge -->
+      <div id="mode-badge" class="mode-badge">
+        MODE: 🤖 VS BOT (IMPOSSIBLE 💀)
+      </div>
+
+      <!-- Match Target Pill -->
+      <div class="match-target-pill">
+        🏆 FIRST PLAYER TO 5 ROUND WINS THE MATCH!
+      </div>
+
+      <!-- Scoreboard -->
+      <div class="scoreboard">
+        <div class="score-box">
+          <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 800;">PLAYER (X)</span>
+          <span class="score-num" id="score-x" style="color: var(--pink);">0</span>
+          <span class="score-target">/ 5</span>
+        </div>
+        <div class="score-box">
+          <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 800;">DRAWS</span>
+          <span class="score-num" id="score-draw" style="color: #cbd5e1;">0</span>
+        </div>
+        <div class="score-box">
+          <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 800;">OPPONENT (O)</span>
+          <span class="score-num" id="score-o" style="color: var(--cyan);">0</span>
+          <span class="score-target">/ 5</span>
+        </div>
+      </div>
+
+      <!-- Game Status Banner -->
+      <div id="status-banner" class="status-banner">
+        CLICK A CELL TO MAKE YOUR MOVE!
+      </div>
+
+      <!-- 3x3 Grid -->
+      <div class="grid">
+        <div class="cell" data-idx="0"></div>
+        <div class="cell" data-idx="1"></div>
+        <div class="cell" data-idx="2"></div>
+        <div class="cell" data-idx="3"></div>
+        <div class="cell" data-idx="4"></div>
+        <div class="cell" data-idx="5"></div>
+        <div class="cell" data-idx="6"></div>
+        <div class="cell" data-idx="7"></div>
+        <div class="cell" data-idx="8"></div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 0.75rem; width: 100%;">
+        <button class="btn btn-gold" id="btn-reset" style="flex: 1; font-size: 1rem; padding: 0.8rem;">
+          🔄 MATCH SETTINGS / RESET
+        </button>
+      </div>
+
+      <!-- Start Screen Modal Overlay -->
+      <div id="start-overlay" class="modal-overlay">
+        <div class="modal-content">
+          <h2 class="modal-title">❌⭕ TIC TAC TOE MATCH</h2>
+          <p class="modal-desc">Select game mode & bot difficulty to start!</p>
+
+          <!-- Mode Selector inside Modal -->
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="btn-mode-bot">🤖 VS BOT</button>
+            <button class="mode-btn" id="btn-mode-2p">👥 2-PLAYER</button>
+          </div>
+
+          <!-- Difficulty Slider Bar inside Modal -->
+          <div class="diff-container" id="diff-container">
+            <div class="diff-header">
+              <span>BOT DIFFICULTY:</span>
+              <strong id="diff-label" style="color: var(--gold);">IMPOSSIBLE 💀</strong>
+            </div>
+            <input type="range" min="1" max="4" value="4" step="1" id="diff-slider" class="diff-slider" />
+            <div class="diff-ticks">
+              <span>EASY</span>
+              <span>MEDIUM</span>
+              <span>HARD</span>
+              <span>IMPOSSIBLE</span>
+            </div>
+          </div>
+
+          <div class="rules-list">
+            <div>❌ <strong>Player X:</strong> Moves first</div>
+            <div>⭕ <strong>Player O / Bot:</strong> Moves second</div>
+            <div>🏆 <strong>Objective:</strong> Connect 3 symbols in a row, column, or diagonal</div>
+          </div>
+
+          <button class="btn btn-gold modal-btn" id="btn-start">🚀 START MATCH NOW</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./tictactoe.js"></script>
+  </body>
+</html>

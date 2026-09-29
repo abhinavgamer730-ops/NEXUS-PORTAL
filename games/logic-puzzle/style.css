@@ -1,0 +1,626 @@
+/* ==========================================================================
+   GRID POP 100! 🐾⚡ - Cartoon Lights Out Logic Puzzle Styling
+   Vibrant, Cute, Bouncy Design Language
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Sniglet:wght@400;800&display=swap');
+
+:root {
+  --bubblegum: #fb6f99;
+  --bubblegum-dark: #e11d56;
+  --bubblegum-light: #ffe4f3;
+  --sunny: #facc15;
+  --sunny-dark: #eab308;
+  --sunny-light: #fef9c3;
+  --mint: #4ade80;
+  --mint-dark: #16a34a;
+  --mint-light: #dcfce7;
+  --sky: #38bdf8;
+  --sky-dark: #0284c7;
+  --sky-light: #e0f2fe;
+  --purple: #c084fc;
+  --purple-dark: #9333ea;
+  --purple-light: #f3e8ff;
+  
+  --dark: #0f172a;
+  --light: #ffffff;
+  --gray-locked: #cbd5e1;
+  --gray-locked-dark: #94a3b8;
+
+  --border: 3px solid #0f172a;
+  --border-lg: 4px solid #0f172a;
+  
+  --shadow-sm: 2px 2px 0px #0f172a;
+  --shadow-md: 4px 4px 0px #0f172a;
+  --shadow-lg: 6px 6px 0px #0f172a;
+  --shadow-xl: 8px 8px 0px #0f172a;
+  
+  --font-cartoon: 'Fredoka', 'Sniglet', 'Comic Sans MS', cursive, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-cartoon);
+  background: linear-gradient(135deg, #fff1f8 0%, #fef9c3 50%, #e0f2fe 100%);
+  color: var(--dark);
+  min-h-screen: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 1rem;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   CARTOON UI CONTAINERS & CARDS
+   ========================================================================== */
+
+.app-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Header Navbar */
+.app-header {
+  width: 100%;
+  background: #ffffff;
+  border: var(--border-lg);
+  box-shadow: var(--shadow-md);
+  border-radius: 1.5rem;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--dark);
+}
+
+.brand-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  background: var(--bubblegum);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  animation: float 4s ease-in-out infinite;
+}
+
+.brand-title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.brand-title span {
+  color: var(--bubblegum-dark);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--sunny);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Cartoon Buttons */
+.btn-cartoon {
+  font-family: var(--font-cartoon);
+  font-weight: 800;
+  font-size: 1rem;
+  text-transform: uppercase;
+  padding: 0.6rem 1.2rem;
+  border-radius: 1.25rem;
+  border: var(--border);
+  box-shadow: var(--shadow-md);
+  background: var(--sunny);
+  color: var(--dark);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-cartoon:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-cartoon:active {
+  transform: translateY(2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-icon {
+  padding: 0.6rem;
+  border-radius: 1rem;
+}
+
+.btn-pink { background: var(--bubblegum); color: #fff; }
+.btn-pink:hover { background: var(--bubblegum-dark); }
+
+.btn-sunny { background: var(--sunny); color: var(--dark); }
+.btn-sunny:hover { background: var(--sunny-dark); }
+
+.btn-mint { background: var(--mint); color: var(--dark); }
+.btn-mint:hover { background: var(--mint-dark); color: #fff; }
+
+.btn-sky { background: var(--sky); color: var(--dark); }
+.btn-sky:hover { background: var(--sky-dark); color: #fff; }
+
+.btn-purple { background: var(--purple); color: var(--dark); }
+.btn-purple:hover { background: var(--purple-dark); color: #fff; }
+
+.btn-slate { background: #e2e8f0; color: var(--dark); }
+.btn-slate:hover { background: #cbd5e1; }
+
+/* ==========================================================================
+   SCREENS (Main Menu, Level Select, Game Board)
+   ========================================================================== */
+
+.screen {
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.screen.active {
+  display: flex;
+}
+
+/* --- SCREEN 1: MAIN MENU --- */
+.menu-card {
+  width: 100%;
+  max-width: 550px;
+  background: #ffffff;
+  border: var(--border-lg);
+  box-shadow: var(--shadow-xl);
+  border-radius: 2rem;
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--sunny-light);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.menu-title {
+  font-size: 3rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1;
+  text-shadow: 2px 2px 0px var(--sunny);
+}
+
+.menu-title-highlight {
+  color: var(--bubblegum);
+  background: var(--sunny-light);
+  padding: 0.2rem 0.75rem;
+  border-radius: 1rem;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  display: inline-block;
+  transform: rotate(-3deg);
+}
+
+.menu-subtitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #475569;
+  max-width: 400px;
+}
+
+.menu-buttons {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.btn-hero {
+  width: 100%;
+  padding: 1.2rem;
+  font-size: 1.35rem;
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-lg);
+}
+
+/* --- SCREEN 2: LEVEL SELECT GRID --- */
+.level-select-card {
+  width: 100%;
+  background: #ffffff;
+  border: var(--border-lg);
+  box-shadow: var(--shadow-xl);
+  border-radius: 2rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.level-select-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid #e2e8f0;
+}
+
+.level-progress-badge {
+  background: var(--sunny-light);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 0.4rem 0.85rem;
+  border-radius: 1rem;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+/* 100 Level Grid */
+.level-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 0.75rem;
+  max-height: 480px;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.level-btn {
+  aspect-ratio: 1;
+  font-family: var(--font-cartoon);
+  font-weight: 800;
+  font-size: 1.15rem;
+  border-radius: 1.25rem;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  position: relative;
+}
+
+/* Unlocked vs Locked Levels */
+.level-btn.unlocked {
+  box-shadow: var(--shadow-md);
+}
+
+.level-btn.unlocked:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: var(--shadow-lg);
+}
+
+.level-btn.unlocked.bubblegum { background: var(--bubblegum-light); color: var(--bubblegum-dark); }
+.level-btn.unlocked.sunny { background: var(--sunny-light); color: var(--sunny-dark); }
+.level-btn.unlocked.mint { background: var(--mint-light); color: var(--mint-dark); }
+.level-btn.unlocked.sky { background: var(--sky-light); color: var(--sky-dark); }
+.level-btn.unlocked.purple { background: var(--purple-light); color: var(--purple-dark); }
+
+.level-btn.current {
+  border-width: 4px;
+  animation: pulseGlow 2s infinite;
+}
+
+.level-btn.locked {
+  background: var(--gray-locked);
+  color: var(--gray-locked-dark);
+  border-color: #64748b;
+  cursor: not-allowed;
+  opacity: 0.7;
+  box-shadow: none;
+}
+
+.level-btn.locked .lock-icon {
+  font-size: 1.1rem;
+}
+
+.level-stars {
+  font-size: 0.75rem;
+  margin-top: -2px;
+}
+
+/* --- SCREEN 3: GAME BOARD VIEW --- */
+.game-card {
+  width: 100%;
+  max-width: 580px;
+  background: #ffffff;
+  border: var(--border-lg);
+  box-shadow: var(--shadow-xl);
+  border-radius: 2rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.game-hud {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  border-radius: 1.25rem;
+  padding: 0.75rem 1rem;
+}
+
+.hud-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hud-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.hud-value {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--dark);
+}
+
+/* Dynamic CSS Grid Board */
+.puzzle-board-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.puzzle-board {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 1;
+  background: #f1f5f9;
+  border: var(--border-lg);
+  box-shadow: var(--shadow-lg);
+  border-radius: 1.75rem;
+  padding: 0.75rem;
+}
+
+/* Dynamic Grid Cols */
+.puzzle-board[data-cols="3"] { grid-template-columns: repeat(3, 1fr); }
+.puzzle-board[data-cols="4"] { grid-template-columns: repeat(4, 1fr); }
+.puzzle-board[data-cols="5"] { grid-template-columns: repeat(5, 1fr); }
+
+/* Puzzle Tile Buttons */
+.tile-btn {
+  font-family: var(--font-cartoon);
+  font-size: 1.75rem;
+  font-weight: 900;
+  border: var(--border-lg);
+  border-radius: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.tile-btn:hover {
+  transform: scale(1.04);
+}
+
+.tile-btn:active {
+  transform: scale(0.94);
+}
+
+/* Tile ON (Active Light) State */
+.tile-btn.on {
+  background: var(--sunny);
+  box-shadow: var(--shadow-md);
+  color: var(--dark);
+  animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tile-btn.on.theme-bubblegum { background: var(--bubblegum); color: #fff; }
+.tile-btn.on.theme-sunny { background: var(--sunny); color: var(--dark); }
+.tile-btn.on.theme-mint { background: var(--mint); color: var(--dark); }
+.tile-btn.on.theme-sky { background: var(--sky); color: var(--dark); }
+.tile-btn.on.theme-purple { background: var(--purple); color: #fff; }
+
+/* Tile OFF State */
+.tile-btn.off {
+  background: #e2e8f0;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
+  color: #94a3b8;
+  border-color: #64748b;
+}
+
+.game-controls {
+  width: 100%;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.game-controls button {
+  flex: 1;
+}
+
+/* ==========================================================================
+   MODALS (How to Play & Celebration)
+   ========================================================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.modal-backdrop.active {
+  display: flex;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border: var(--border-lg);
+  box-shadow: var(--shadow-xl);
+  border-radius: 2rem;
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.modal-icon {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 1.5rem;
+  border: var(--border-lg);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.25rem;
+  background: var(--sunny);
+}
+
+.modal-title {
+  font-size: 2rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.modal-stars {
+  font-size: 2.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.modal-body {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ==========================================================================
+   KEYFRAME ANIMATIONS
+   ========================================================================== */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(4deg); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.85); opacity: 0; }
+  70% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 12px var(--sunny), var(--shadow-md); }
+  50% { box-shadow: 0 0 24px var(--bubblegum), var(--shadow-lg); }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--sunny-light);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bubblegum);
+  border-radius: 999px;
+  border: 2px solid var(--sunny-light);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bubblegum-dark);
+}

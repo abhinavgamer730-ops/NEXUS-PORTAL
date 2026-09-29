@@ -1,0 +1,264 @@
+/* Sudoku Logic - Cute Pastel Cartoon Style */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800;900&family=Sniglet:wght@400;800&display=swap');
+
+:root {
+  --bubblegum: #fb6f99;
+  --bubblegum-dark: #e11d56;
+  --bubblegum-light: #ffe4f3;
+
+  --sunny: #facc15;
+  --sunny-dark: #eab308;
+  --sunny-light: #fef9c3;
+
+  --mint: #4ade80;
+  --mint-dark: #16a34a;
+  --mint-light: #dcfce7;
+
+  --sky: #38bdf8;
+  --sky-dark: #0284c7;
+  --sky-light: #e0f2fe;
+
+  --purple: #c084fc;
+  --purple-dark: #9333ea;
+  --purple-light: #f3e8ff;
+
+  --dark: #0f172a;
+  --light: #ffffff;
+
+  --font-cartoon: 'Fredoka', 'Sniglet', cursive, sans-serif;
+  --border: 3px solid #0f172a;
+  --border-lg: 4px solid #0f172a;
+  --shadow-sm: 2px 2px 0px #0f172a;
+  --shadow-md: 4px 4px 0px #0f172a;
+  --shadow-lg: 6px 6px 0px #0f172a;
+  --shadow-xl: 8px 8px 0px #0f172a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: var(--font-cartoon);
+  background: linear-gradient(135deg, #fff1f8 0%, #fef9c3 50%, #e0f2fe 100%);
+  color: var(--dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem;
+}
+
+.nav-header {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.btn {
+  font-family: var(--font-cartoon);
+  font-weight: 800;
+  padding: 0.6rem 1.2rem;
+  border-radius: 1.25rem;
+  border: var(--border);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn:active { transform: translateY(2px); box-shadow: var(--shadow-sm); }
+.btn-gold { background: var(--sunny); color: var(--dark); }
+.btn-cyan { background: var(--sky); color: var(--dark); }
+.btn-slate { background: #ffffff; color: var(--dark); }
+
+.game-card {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border: var(--border-lg);
+  box-shadow: var(--shadow-xl);
+  border-radius: 2rem;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sudoku-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sudoku-title {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: var(--dark);
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0px var(--sunny-light);
+}
+
+.diff-selector {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.diff-btn {
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.85rem;
+  border: var(--border);
+  background: #f1f5f9;
+  font-family: var(--font-cartoon);
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.diff-btn.active {
+  background: var(--sunny);
+  box-shadow: var(--shadow-sm);
+}
+
+/* 9x9 Sudoku Grid */
+.sudoku-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  gap: 2px;
+  width: 100%;
+  aspect-ratio: 1;
+  background: #0f172a;
+  border: var(--border-lg);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.cell {
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  font-weight: 900;
+  cursor: pointer;
+  color: var(--dark);
+}
+
+.cell:nth-child(3n) { border-right: 3px solid #0f172a; }
+.cell:nth-child(9n) { border-right: none; }
+.cell:nth-child(n+19):nth-child(-n+27),
+.cell:nth-child(n+46):nth-child(-n+54) { border-bottom: 3px solid #0f172a; }
+
+.cell.given { background: #f8fafc; color: var(--sky-dark); font-weight: 900; }
+.cell.user-filled { color: var(--bubblegum-dark); }
+.cell.selected { background: var(--sunny-light); outline: 3px solid var(--bubblegum); z-index: 5; }
+
+/* Numpad */
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.num-btn {
+  padding: 0.65rem;
+  border-radius: 1rem;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  background: var(--sky-light);
+  font-family: var(--font-cartoon);
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: var(--sky-dark);
+  cursor: pointer;
+}
+.num-btn:active { transform: scale(0.95); }
+.num-btn.erase { background: var(--bubblegum-light); color: var(--bubblegum-dark); grid-column: span 2; font-size: 0.95rem; }
+
+/* Active Mode Badge */
+.mode-badge {
+  font-size: 0.8rem;
+  font-weight: 900;
+  padding: 0.35rem 0.85rem;
+  border-radius: 0.75rem;
+  background: var(--sky-light);
+  border: 2px solid #0f172a;
+  color: var(--sky-dark);
+  text-transform: uppercase;
+}
+
+/* Modal Overlay Styling */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.25rem;
+  z-index: 10;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: #ffffff;
+  border: var(--border-lg);
+  box-shadow: var(--shadow-xl);
+  border-radius: 1.5rem;
+  padding: 1.5rem 1.1rem;
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.modal-title {
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.modal-desc {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.rules-list {
+  background: #f8fafc;
+  border: var(--border);
+  border-radius: 1rem;
+  padding: 0.65rem 0.85rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-align: left;
+}
+
+.modal-btn {
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 1.05rem;
+}
+
