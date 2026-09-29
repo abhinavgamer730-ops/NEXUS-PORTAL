@@ -99,6 +99,20 @@ body {
   color: var(--text-color);
 }
 
+.portal-brand-img {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  object-fit: cover;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease;
+}
+
+.portal-brand:hover .portal-brand-img {
+  transform: scale(1.08) rotate(-3deg);
+}
+
 .portal-brand-icon {
   width: 2.75rem;
   height: 2.75rem;
