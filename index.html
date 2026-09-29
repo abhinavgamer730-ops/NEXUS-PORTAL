@@ -76,7 +76,7 @@
       </ul>
 
       <div class="header-right">
-        <button class="pwa-install-btn" id="pwa-install-btn" style="display: none;">📲 INSTALL APP</button>
+        <button class="pwa-install-btn" id="pwa-install-btn">📲 INSTALL APP</button>
         <button class="theme-toggle-btn" id="theme-toggle-btn">🌙 DARK MODE</button>
 
         <div class="portal-search">
@@ -651,23 +651,22 @@
       });
 
       if (installBtn) {
-        // Show button on mobile iOS as well
-        const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-        if (isIos && !isStandalone) {
-          installBtn.style.display = 'inline-flex';
-        }
-
         installBtn.addEventListener('click', async () => {
           if (deferredPrompt) {
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
             if (outcome === 'accepted') {
-              installBtn.style.display = 'none';
+              installBtn.textContent = '✅ INSTALLED';
+              setTimeout(() => { installBtn.style.display = 'none'; }, 2000);
             }
             deferredPrompt = null;
           } else {
-            alert("📲 To install Nexus Portal on your phone:\n\n1. Tap the browser menu / Share button (⬆️ or ⋮)\n2. Select 'Add to Home Screen'\n\nEnjoy full-screen gaming with 0 download!");
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            if (isMobile) {
+              alert("📲 To install Nexus Portal on your phone:\n\n1. Tap the browser Share/Menu button (⬆️ or ⋮)\n2. Select 'Add to Home Screen'\n\nEnjoy full-screen gaming with zero downloads!");
+            } else {
+              alert("💻 To install Nexus Portal on your Laptop / PC:\n\n1. Look at the top-right of your browser address bar\n2. Click the 'Install' icon (🖥️⬇️ or ➕)\n3. Or click browser menu (⋮) > 'Install Nexus Game Portal'\n\nIt will open in a fast, standalone desktop app window!");
+            }
           }
         });
       }
