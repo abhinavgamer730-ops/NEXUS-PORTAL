@@ -91,6 +91,11 @@ body {
   justify-content: space-between;
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 .portal-brand {
   display: flex;
   align-items: center;
@@ -100,12 +105,15 @@ body {
 }
 
 .portal-brand-img {
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.75rem !important;
+  height: 2.75rem !important;
+  max-width: 2.75rem !important;
+  max-height: 2.75rem !important;
   border-radius: 0.75rem;
   object-fit: cover;
   border: var(--border);
   box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
   transition: transform 0.2s ease;
 }
 
