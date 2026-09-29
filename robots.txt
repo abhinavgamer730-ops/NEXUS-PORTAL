@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/sitemap.xml
