@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Flappy Bird 🐦⚡ - Play Free Online Arcade Game | Nexus Portal</title>
+    <meta name="description" content="Play classic Flappy Bird online for free! Tap or press space to flap your wings, dodge green pipes, and set the ultimate high score in this addictive arcade classic." />
+    <meta name="keywords" content="flappy bird online free, play flappy bird no download, flappy bird unblocked, floppy bird browser game" />
+    <link rel="canonical" href="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/flappy-bird/" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WSHC85LJYZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-WSHC85LJYZ');
+    </script>
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:url" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/flappy-bird/" />
+    <meta property="og:title" content="Flappy Bird 🐦⚡ - Play Free Online Arcade" />
+    <meta property="og:description" content="Play classic Flappy Bird online for free! Tap to flap, dodge pipes, and set high scores." />
+    <meta property="og:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Flappy Bird Arcade",
+      "url": "https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/flappy-bird/",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Arcade / Casual",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["Classic Tap to Flap", "Endless High Score Runner", "Instant Play No Download"]
+    }
+    </script>
+
+    <link rel="icon" type="image/jpeg" href="../../logo.jpg" />
+    <script src="../../theme-toggle.js"></script>
+
+    <style>
+      @import "https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Sniglet:wght@400;800&display=swap";
+
+      :root {
+        --bubblegum: #fb6f99;
+        --bubblegum-dark: #e11d56;
+        --sunny: #facc15;
+        --sunny-dark: #eab308;
+        --mint: #4ade80;
+        --sky: #38bdf8;
+        --sky-dark: #0284c7;
+        --dark: #0f172a;
+        --light: #ffffff;
+        --card-bg: #ffffff;
+        --text-color: #0f172a;
+        --sub-bg: #f8fafc;
+        --border: 3px solid #0f172a;
+        --border-lg: 4px solid #0f172a;
+        --shadow-sm: 2px 2px 0px #0f172a;
+        --shadow-md: 4px 4px 0px #0f172a;
+        --shadow-xl: 8px 8px 0px #0f172a;
+        --bg-gradient: linear-gradient(135deg, #fff1f8, #fef9c3, #e0f2fe);
+        --font-cartoon: "Fredoka", "Sniglet", "Comic Sans MS", cursive, sans-serif;
+      }
+
+      body.dark-mode {
+        --bg-gradient: linear-gradient(135deg, #090d16, #0f172a, #1e1b4b);
+        --card-bg: #1e293b;
+        --text-color: #f8fafc;
+        --border-color: #38bdf8;
+        --sub-bg: #0f172a;
+        --border: 3px solid #38bdf8;
+        --border-lg: 4px solid #38bdf8;
+        --shadow-sm: 2px 2px 0px rgba(56, 189, 248, 0.35);
+        --shadow-md: 4px 4px 0px rgba(56, 189, 248, 0.35);
+        --shadow-xl: 8px 8px 0px rgba(56, 189, 248, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+
+      body {
+        font-family: var(--font-cartoon);
+        background: var(--bg-gradient);
+        color: var(--text-color);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0.75rem;
+      }
+
+      .nav-header {
+        width: 100%;
+        max-width: 540px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        gap: 0.5rem;
+      }
+
+      .btn {
+        font-family: var(--font-cartoon);
+        font-weight: 800;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        padding: 0.45rem 0.9rem;
+        border-radius: 1rem;
+        border: var(--border);
+        box-shadow: var(--shadow-sm);
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .btn-slate {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+
+      .btn-gold {
+        background: var(--sunny);
+        color: #0f172a;
+      }
+
+      .game-container {
+        width: 100%;
+        max-width: 540px;
+        background: var(--card-bg);
+        border: var(--border-lg);
+        box-shadow: var(--shadow-xl);
+        border-radius: 1.5rem;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.85rem;
+      }
+
+      .game-title {
+        font-size: 1.6rem;
+        font-weight: 900;
+        text-align: center;
+        letter-spacing: 0.5px;
+      }
+
+      .game-iframe-wrapper {
+        width: 100%;
+        max-width: 480px;
+        height: 520px;
+        border-radius: 1.25rem;
+        overflow: hidden;
+        border: var(--border);
+        box-shadow: var(--shadow-md);
+        background: #4ec0ca;
+        position: relative;
+      }
+
+      .game-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+      }
+
+      .controls-card {
+        width: 100%;
+        background: var(--sub-bg);
+        border: var(--border);
+        border-radius: 1rem;
+        padding: 0.65rem 0.85rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+      }
+
+      .controls-card div {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top Navigation -->
+    <div class="nav-header">
+      <a href="../../index.html" class="btn btn-slate">⬅️ PORTAL MENU</a>
+      <button class="btn btn-gold" id="theme-toggle-btn">🌙 DARK MODE</button>
+      <span style="font-size: 1rem; color: var(--sunny); font-weight: 900;">🐦 FLAPPY BIRD</span>
+    </div>
+
+    <!-- Main Game Container -->
+    <div class="game-container">
+      <h1 class="game-title">FLAPPY BIRD 🐦⚡</h1>
+
+      <!-- Game Iframe Embed -->
+      <div class="game-iframe-wrapper">
+        <iframe 
+          src="https://nebezb.com/floppybird/" 
+          class="game-iframe" 
+          title="Flappy Bird Game"
+          allow="autoplay"
+          loading="lazy">
+        </iframe>
+      </div>
+
+      <!-- Controls & Tips -->
+      <div class="controls-card">
+        <div><span>🎮</span> <strong>Controls:</strong> Tap screen, Click mouse, or press <kbd style="background:#e2e8f0; padding:2px 6px; border-radius:4px; border:1px solid #000; color:#0f172a;">SPACE</kbd> to flap!</div>
+        <div><span>🎯</span> <strong>Goal:</strong> Fly through the green pipe gaps without crashing!</div>
+      </div>
+    </div>
+  </body>
+</html>
