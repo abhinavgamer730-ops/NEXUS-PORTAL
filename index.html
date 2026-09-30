@@ -57,7 +57,7 @@
     <link rel="apple-touch-icon" href="./logo.jpg" />
 
     <link rel="icon" type="image/jpeg" href="./logo.jpg" />
-    <link rel="stylesheet" href="./portal-style.css?v=11.0" />
+    <link rel="stylesheet" href="./portal-style.css?v=12.0" />
     <script src="./theme-toggle.js"></script>
   </head>
   <body>
@@ -71,29 +71,25 @@
 
       <ul class="portal-nav-links">
         <li><a href="./index.html" class="portal-nav-link active">Home</a></li>
-        <li><a href="#grid" class="portal-nav-link">All 15 Games</a></li>
       </ul>
 
       <div class="header-right">
         <button class="pwa-install-btn" id="pwa-install-btn">📲 INSTALL APP</button>
         <button class="theme-toggle-btn" id="theme-toggle-btn">🌙 DARK MODE</button>
-
-        <div class="portal-search">
-          <span>🔍</span>
-          <input type="text" placeholder="Search 15 games..." id="portal-search-input" />
-        </div>
       </div>
     </header>
 
     <!-- Main Portal Content -->
     <main class="portal-main">
 
-      <!-- RESPONSIVE GAME GRID (15 PLAYABLE GAMES) -->
+      <!-- Game Search Bar & Mode Switcher -->
       <section id="grid">
-        <div class="section-header">
-          <h2 class="section-title">
-            🕹️ ALL 15 PLAYABLE GAMES
-          </h2>
+        <div class="main-search-container">
+          <div class="main-search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Search games (Chess, Ludo, Flappy, Carrom...)" id="portal-search-input" autocomplete="off" />
+            <button class="clear-search-btn" id="clear-search-btn" style="display: none;" title="Clear search">✕</button>
+          </div>
         </div>
 
         <!-- Player Mode Switcher (2 Player vs 1 Player) -->
@@ -553,29 +549,54 @@
 
     <!-- Real-time Game Search & PWA Install Script -->
     <script>
+      let currentMode = '2p';
       const searchInput = document.getElementById('portal-search-input');
-      if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-          const query = e.target.value.toLowerCase().trim();
-          document.querySelectorAll('.game-card').forEach(card => {
-            const text = card.textContent.toLowerCase();
+      const clearSearchBtn = document.getElementById('clear-search-btn');
+      const modeButtons = document.querySelectorAll('.player-mode-toggle .mode-btn');
+
+      function filterGames() {
+        const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
+        if (clearSearchBtn) {
+          clearSearchBtn.style.display = query ? 'flex' : 'none';
+        }
+
+        document.querySelectorAll('.game-card').forEach(card => {
+          const text = card.textContent.toLowerCase();
+          const cardMode = (card.getAttribute('data-mode') || '').trim();
+
+          if (query) {
+            // When user types a search query, match across all games
             card.style.display = text.includes(query) ? 'flex' : 'none';
-          });
+          } else {
+            // When search is empty, filter strictly by selected mode
+            card.style.display = cardMode === currentMode ? 'flex' : 'none';
+          }
         });
       }
 
-      // Player Mode Filter (2 Player vs 1 Player)
-      const modeButtons = document.querySelectorAll('.player-mode-toggle .mode-btn');
+      if (searchInput) {
+        searchInput.addEventListener('input', filterGames);
+      }
+
+      if (clearSearchBtn) {
+        clearSearchBtn.addEventListener('click', () => {
+          if (searchInput) {
+            searchInput.value = '';
+            searchInput.focus();
+          }
+          filterGames();
+        });
+      }
 
       function filterGamesByMode(mode) {
+        currentMode = mode;
         modeButtons.forEach(b => {
           b.classList.toggle('active', b.getAttribute('data-filter') === mode);
         });
-
-        document.querySelectorAll('.game-card').forEach(card => {
-          const cardMode = (card.getAttribute('data-mode') || '').trim();
-          card.style.display = cardMode === mode ? 'flex' : 'none';
-        });
+        if (searchInput) {
+          searchInput.value = '';
+        }
+        filterGames();
       }
 
       modeButtons.forEach(btn => {
