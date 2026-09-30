@@ -539,6 +539,10 @@ img {
   touch-action: manipulation;
 }
 
+.game-card.hidden {
+  display: none !important;
+}
+
 .game-card:hover {
   transform: translateY(-5px) scale(1.02);
   box-shadow: 0 8px 0 var(--border-color), 0 12px 24px rgba(0, 0, 0, 0.2);
@@ -841,15 +845,19 @@ img {
   }
 
   .game-card {
-    display: flex !important;
-    flex-direction: column !important;
-    aspect-ratio: 1 / 1.05 !important;
-    border: 3.5px solid var(--border-color) !important;
-    border-radius: 1.25rem !important;
-    box-shadow: 0 4px 0 var(--border-color), 0 6px 12px rgba(0, 0, 0, 0.12) !important;
-    position: relative !important;
-    overflow: hidden !important;
-    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 1 / 1.05;
+    border: 3.5px solid var(--border-color);
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 0 var(--border-color), 0 6px 12px rgba(0, 0, 0, 0.12);
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .game-card.hidden {
+    display: none !important;
   }
 
   .card-badge {

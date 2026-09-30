@@ -57,7 +57,7 @@
     <link rel="apple-touch-icon" href="./logo.jpg" />
 
     <link rel="icon" type="image/jpeg" href="./logo.jpg" />
-    <link rel="stylesheet" href="./portal-style.css?v=12.0" />
+    <link rel="stylesheet" href="./portal-style.css?v=13.0" />
     <script src="./theme-toggle.js"></script>
   </head>
   <body>
@@ -564,12 +564,19 @@
           const text = card.textContent.toLowerCase();
           const cardMode = (card.getAttribute('data-mode') || '').trim();
 
+          let shouldShow = false;
           if (query) {
-            // When user types a search query, match across all games
-            card.style.display = text.includes(query) ? 'flex' : 'none';
+            shouldShow = text.includes(query);
           } else {
-            // When search is empty, filter strictly by selected mode
-            card.style.display = cardMode === currentMode ? 'flex' : 'none';
+            shouldShow = (cardMode === currentMode);
+          }
+
+          if (shouldShow) {
+            card.classList.remove('hidden');
+            card.style.setProperty('display', 'flex', 'important');
+          } else {
+            card.classList.add('hidden');
+            card.style.setProperty('display', 'none', 'important');
           }
         });
       }
