@@ -821,71 +821,8 @@ img {
   }
 
   .portal-footer {
-    padding: 1.5rem 1rem 5.5rem;
+    padding: 1.75rem 1rem;
     font-size: 0.85rem;
-  }
-}
-
-/* Native Mobile Bottom Navigation Bar */
-.mobile-bottom-nav {
-  display: none;
-}
-
-@media (max-width: 640px) {
-  .mobile-bottom-nav {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 64px;
-    background: var(--header-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-top: var(--border-lg);
-    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
-    z-index: 100;
-    align-items: center;
-    justify-content: space-around;
-    padding: 0 0.5rem;
-  }
-
-  .nav-tab {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: var(--gray-muted);
-    font-family: var(--font-cartoon);
-    font-weight: 800;
-    font-size: 0.72rem;
-    padding: 0.35rem 0.65rem;
-    border-radius: 0.85rem;
-    transition: all 0.15s ease;
-    touch-action: manipulation;
-  }
-
-  .tab-icon {
-    font-size: 1.3rem;
-    line-height: 1;
-  }
-
-  .nav-tab.active {
-    color: var(--bubblegum-dark);
-    background: var(--sunny-light);
-    border: 2px solid #0f172a;
-    box-shadow: 2px 2px 0px #0f172a;
-    transform: translateY(-2px);
-  }
-
-  [data-theme="dark"] .nav-tab.active {
-    color: #0f172a;
-    background: var(--sky);
-    border-color: #38bdf8;
   }
 }
 

@@ -57,7 +57,7 @@
     <link rel="apple-touch-icon" href="./logo.jpg" />
 
     <link rel="icon" type="image/jpeg" href="./logo.jpg" />
-    <link rel="stylesheet" href="./portal-style.css?v=8.0" />
+    <link rel="stylesheet" href="./portal-style.css?v=9.0" />
     <script src="./theme-toggle.js"></script>
   </head>
   <body>
@@ -615,26 +615,6 @@
       </div>
     </footer>
 
-    <!-- Native Mobile App Bottom Navigation Bar -->
-    <nav class="mobile-bottom-nav">
-      <button class="nav-tab" data-tab="home" id="nav-home-btn">
-        <span class="tab-icon">🏠</span>
-        <span class="tab-text">Home</span>
-      </button>
-      <button class="nav-tab active" data-tab="2p">
-        <span class="tab-icon">👥</span>
-        <span class="tab-text">2 Players</span>
-      </button>
-      <button class="nav-tab" data-tab="1p">
-        <span class="tab-icon">👤</span>
-        <span class="tab-text">1 Player</span>
-      </button>
-      <button class="nav-tab" id="mobile-theme-btn">
-        <span class="tab-icon">🌙</span>
-        <span class="tab-text">Theme</span>
-      </button>
-    </nav>
-
     <!-- Real-time Game Search & PWA Install Script -->
     <script>
       const searchInput = document.getElementById('portal-search-input');
@@ -648,18 +628,12 @@
         });
       }
 
-      // 0. Player Mode Filter (2 Player vs 1 Player)
+      // Player Mode Filter (2 Player vs 1 Player)
       const modeButtons = document.querySelectorAll('.player-mode-toggle .mode-btn');
-      const navTabs = document.querySelectorAll('.mobile-bottom-nav .nav-tab');
 
       function filterGamesByMode(mode) {
         modeButtons.forEach(b => {
           b.classList.toggle('active', b.getAttribute('data-filter') === mode);
-        });
-        navTabs.forEach(t => {
-          if (t.getAttribute('data-tab') && t.getAttribute('data-tab') !== 'home') {
-            t.classList.toggle('active', t.getAttribute('data-tab') === mode);
-          }
         });
 
         document.querySelectorAll('.game-card').forEach(card => {
@@ -676,31 +650,6 @@
         btn.addEventListener('click', () => {
           const filter = btn.getAttribute('data-filter');
           filterGamesByMode(filter);
-        });
-      });
-
-      // 1. Mobile Bottom Navigation Tabs Handler
-      const mobileThemeBtn = document.getElementById('mobile-theme-btn');
-      if (mobileThemeBtn) {
-        mobileThemeBtn.addEventListener('click', () => {
-          const themeBtn = document.getElementById('theme-toggle-btn');
-          if (themeBtn) themeBtn.click();
-        });
-      }
-
-      navTabs.forEach(tab => {
-        if (tab.id === 'mobile-theme-btn') return;
-        tab.addEventListener('click', () => {
-          const tabFilter = tab.getAttribute('data-tab');
-          if (tabFilter === 'home') {
-            navTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          } else if (tabFilter === '2p' || tabFilter === '1p') {
-            filterGamesByMode(tabFilter);
-            const gridEl = document.getElementById('grid');
-            if (gridEl) gridEl.scrollIntoView({ behavior: 'smooth' });
-          }
         });
       });
 
