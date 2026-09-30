@@ -57,7 +57,7 @@
     <link rel="apple-touch-icon" href="./logo.jpg" />
 
     <link rel="icon" type="image/jpeg" href="./logo.jpg" />
-    <link rel="stylesheet" href="./portal-style.css?v=13.0" />
+    <link rel="stylesheet" href="./portal-style.css?v=14.0" />
     <script src="./theme-toggle.js"></script>
   </head>
   <body>
@@ -106,6 +106,94 @@
 
         <div class="game-grid">
 
+          <!-- CARD: FLAPPY BIRD -->
+          <a href="./games/flappy-bird/index.html" class="game-card" data-mode="1p">
+            <div class="card-badge">NEW!</div>
+            <div class="card-art">
+              <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
+                
+      <rect width="300" height="300" fill="#4ec0ca"/>
+      <!-- Cloud -->
+      <circle cx="60" cy="50" r="22" fill="#fff" opacity="0.8"/>
+      <circle cx="85" cy="45" r="28" fill="#fff" opacity="0.8"/>
+      <circle cx="110" cy="50" r="20" fill="#fff" opacity="0.8"/>
+      <!-- Green Pipe Top -->
+      <rect x="205" y="0" width="45" height="75" fill="#73bf2e" stroke="#000" stroke-width="4"/>
+      <rect x="200" y="65" width="55" height="18" fill="#73bf2e" stroke="#000" stroke-width="4" rx="3"/>
+      <!-- Green Pipe Bottom -->
+      <rect x="205" y="160" width="45" height="140" fill="#73bf2e" stroke="#000" stroke-width="4"/>
+      <rect x="200" y="150" width="55" height="18" fill="#73bf2e" stroke="#000" stroke-width="4" rx="3"/>
+      <!-- Bird -->
+      <g transform="translate(110, 120)">
+        <circle cx="0" cy="0" r="28" fill="#facc15" stroke="#000" stroke-width="4"/>
+        <circle cx="9" cy="-8" r="9" fill="#fff" stroke="#000" stroke-width="2.5"/>
+        <circle cx="12" cy="-8" r="4" fill="#000"/>
+        <polygon points="18,-4 38,2 18,8" fill="#f97316" stroke="#000" stroke-width="3"/>
+        <ellipse cx="-10" cy="6" rx="14" ry="8" fill="#fff" stroke="#000" stroke-width="2.5" transform="rotate(-15)"/>
+      </g>
+      <!-- Ground -->
+      <rect x="0" y="275" width="300" height="25" fill="#ded895" stroke="#000" stroke-width="3"/>
+    
+              </svg>
+            </div>
+            <div class="card-title-overlay">
+              <span>FLAPPY BIRD</span>
+            </div>
+          </a>
+
+          <!-- CARD: RPS CLASH -->
+          <a href="./games/rock-paper-scissors/index.html" class="game-card" data-mode="2p">
+            <div class="card-badge">BOT ONLY</div>
+            <div class="card-art">
+              <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
+                
+      <rect width="300" height="300" fill="#1e1b4b"/>
+      <g transform="translate(150, 130)">
+        <circle cx="-55" cy="-20" r="36" fill="#facc15" stroke="#000" stroke-width="3"/>
+        <text x="-55" y="-6" font-size="34" text-anchor="middle">✊</text>
+        <circle cx="55" cy="-20" r="36" fill="#38bdf8" stroke="#000" stroke-width="3"/>
+        <text x="55" y="-6" font-size="34" text-anchor="middle">✋</text>
+        <circle cx="0" cy="45" r="36" fill="#fb6f99" stroke="#000" stroke-width="3"/>
+        <text x="0" y="59" font-size="34" text-anchor="middle">✌️</text>
+      </g>
+    
+              </svg>
+            </div>
+            <div class="card-title-overlay">
+              <span>RPS CLASH</span>
+            </div>
+          </a>
+
+          <!-- CARD: TIC TAC TOE -->
+          <a href="./games/tic-tac-toe/index.html" class="game-card" data-mode="2p">
+            <div class="card-badge">2P / BOT</div>
+            <div class="card-art">
+              <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
+                
+      <rect width="300" height="300" fill="#f8fafc"/>
+      <!-- Grid Lines -->
+      <line x1="105" y1="35" x2="105" y2="245" stroke="#0f172a" stroke-width="8" stroke-linecap="round"/>
+      <line x1="195" y1="35" x2="195" y2="245" stroke="#0f172a" stroke-width="8" stroke-linecap="round"/>
+      <line x1="35" y1="105" x2="265" y2="105" stroke="#0f172a" stroke-width="8" stroke-linecap="round"/>
+      <line x1="35" y1="195" x2="265" y2="195" stroke="#0f172a" stroke-width="8" stroke-linecap="round"/>
+      <!-- X Pieces -->
+      <g stroke="#0284c7" stroke-width="12" stroke-linecap="round">
+        <line x1="48" y1="48" x2="90" y2="90"/>
+        <line x1="90" y1="48" x2="48" y2="90"/>
+        <line x1="210" y1="138" x2="252" y2="180"/>
+        <line x1="252" y1="138" x2="210" y2="180"/>
+      </g>
+      <!-- O Pieces -->
+      <circle cx="150" cy="150" r="28" fill="none" stroke="#e11d56" stroke-width="12"/>
+      <circle cx="231" cy="69" r="24" fill="none" stroke="#e11d56" stroke-width="10"/>
+    
+              </svg>
+            </div>
+            <div class="card-title-overlay">
+              <span>TIC TAC TOE</span>
+            </div>
+          </a>
+
           <!-- CARD: LIGHTS OUT -->
           <a href="./games/logic-puzzle/index.html" class="game-card" data-mode="2p">
             <div class="card-badge">NEW!</div>
@@ -137,36 +225,6 @@
             </div>
             <div class="card-title-overlay">
               <span>LIGHTS OUT</span>
-            </div>
-          </a>
-
-          <!-- CARD: TIC TAC TOE -->
-          <a href="./games/tic-tac-toe/index.html" class="game-card" data-mode="2p">
-            <div class="card-badge">2P / BOT</div>
-            <div class="card-art">
-              <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
-                
-      <rect width="300" height="300" fill="#f8fafc"/>
-      <!-- Grid Lines -->
-      <line x1="105" y1="35" x2="105" y2="245" stroke="#0f172a" stroke-width="8" stroke-linecap="round"/>
-      <line x1="195" y1="35" x2="195" y2="245" stroke="#0f172a" stroke-width="8" stroke-linecap="round"/>
-      <line x1="35" y1="105" x2="265" y2="105" stroke="#0f172a" stroke-width="8" stroke-linecap="round"/>
-      <line x1="35" y1="195" x2="265" y2="195" stroke="#0f172a" stroke-width="8" stroke-linecap="round"/>
-      <!-- X Pieces -->
-      <g stroke="#0284c7" stroke-width="12" stroke-linecap="round">
-        <line x1="48" y1="48" x2="90" y2="90"/>
-        <line x1="90" y1="48" x2="48" y2="90"/>
-        <line x1="210" y1="138" x2="252" y2="180"/>
-        <line x1="252" y1="138" x2="210" y2="180"/>
-      </g>
-      <!-- O Pieces -->
-      <circle cx="150" cy="150" r="28" fill="none" stroke="#e11d56" stroke-width="12"/>
-      <circle cx="231" cy="69" r="24" fill="none" stroke="#e11d56" stroke-width="10"/>
-    
-              </svg>
-            </div>
-            <div class="card-title-overlay">
-              <span>TIC TAC TOE</span>
             </div>
           </a>
 
@@ -204,41 +262,6 @@
             </div>
             <div class="card-title-overlay">
               <span>CHESS MASTER</span>
-            </div>
-          </a>
-
-          <!-- CARD: FLAPPY BIRD -->
-          <a href="./games/flappy-bird/index.html" class="game-card" data-mode="1p">
-            <div class="card-badge">NEW!</div>
-            <div class="card-art">
-              <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
-                
-      <rect width="300" height="300" fill="#4ec0ca"/>
-      <!-- Cloud -->
-      <circle cx="60" cy="50" r="22" fill="#fff" opacity="0.8"/>
-      <circle cx="85" cy="45" r="28" fill="#fff" opacity="0.8"/>
-      <circle cx="110" cy="50" r="20" fill="#fff" opacity="0.8"/>
-      <!-- Green Pipe Top -->
-      <rect x="205" y="0" width="45" height="75" fill="#73bf2e" stroke="#000" stroke-width="4"/>
-      <rect x="200" y="65" width="55" height="18" fill="#73bf2e" stroke="#000" stroke-width="4" rx="3"/>
-      <!-- Green Pipe Bottom -->
-      <rect x="205" y="160" width="45" height="140" fill="#73bf2e" stroke="#000" stroke-width="4"/>
-      <rect x="200" y="150" width="55" height="18" fill="#73bf2e" stroke="#000" stroke-width="4" rx="3"/>
-      <!-- Bird -->
-      <g transform="translate(110, 120)">
-        <circle cx="0" cy="0" r="28" fill="#facc15" stroke="#000" stroke-width="4"/>
-        <circle cx="9" cy="-8" r="9" fill="#fff" stroke="#000" stroke-width="2.5"/>
-        <circle cx="12" cy="-8" r="4" fill="#000"/>
-        <polygon points="18,-4 38,2 18,8" fill="#f97316" stroke="#000" stroke-width="3"/>
-        <ellipse cx="-10" cy="6" rx="14" ry="8" fill="#fff" stroke="#000" stroke-width="2.5" transform="rotate(-15)"/>
-      </g>
-      <!-- Ground -->
-      <rect x="0" y="275" width="300" height="25" fill="#ded895" stroke="#000" stroke-width="3"/>
-    
-              </svg>
-            </div>
-            <div class="card-title-overlay">
-              <span>FLAPPY BIRD</span>
             </div>
           </a>
 
@@ -389,29 +412,6 @@
             </div>
             <div class="card-title-overlay">
               <span>DART MASTER</span>
-            </div>
-          </a>
-
-          <!-- CARD: RPS CLASH -->
-          <a href="./games/rock-paper-scissors/index.html" class="game-card" data-mode="2p">
-            <div class="card-badge">BOT ONLY</div>
-            <div class="card-art">
-              <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
-                
-      <rect width="300" height="300" fill="#1e1b4b"/>
-      <g transform="translate(150, 130)">
-        <circle cx="-55" cy="-20" r="36" fill="#facc15" stroke="#000" stroke-width="3"/>
-        <text x="-55" y="-6" font-size="34" text-anchor="middle">✊</text>
-        <circle cx="55" cy="-20" r="36" fill="#38bdf8" stroke="#000" stroke-width="3"/>
-        <text x="55" y="-6" font-size="34" text-anchor="middle">✋</text>
-        <circle cx="0" cy="45" r="36" fill="#fb6f99" stroke="#000" stroke-width="3"/>
-        <text x="0" y="59" font-size="34" text-anchor="middle">✌️</text>
-      </g>
-    
-              </svg>
-            </div>
-            <div class="card-title-overlay">
-              <span>RPS CLASH</span>
             </div>
           </a>
 
