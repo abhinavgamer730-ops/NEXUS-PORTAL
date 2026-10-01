@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nexus Game Portal 🎮⚡ - Play Free Online Browser Games (No Download)</title>
-    <meta name="description" content="Play free online browser games on Nexus Game Portal! Enjoy 14 arcade, logic, board & math games featuring 🤖 VS Bot & 👥 2-Player Local modes. Instant play on PC and mobile with no download or signup." />
-    <meta name="keywords" content="free browser games, online games no download, 2 player local games, unblocked web games, play chess online, math quiz, checkers, ludo online, sudoku, arcade games" />
+    <meta name="description" content="Play free online browser games on Nexus Game Portal! Enjoy 16 arcade, 3D jet action, logic, board & math games featuring VS Bot & 2-Player Local modes. Instant play on PC and mobile with no download." />
+    <meta name="keywords" content="sky warriors 2, free browser games, online games no download, 2 player local games, unblocked web games, play chess online, math quiz, checkers, ludo online, sudoku, arcade games" />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WSHC85LJYZ"></script>
     <script>
@@ -23,7 +23,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/" />
     <meta property="og:title" content="Nexus Game Portal 🎮⚡ - Play Free Online Browser Games" />
-    <meta property="og:description" content="Play free online browser games on Nexus Game Portal! Arcade, logic, board & math games with 🤖 VS Bot & 👥 2-Player Local modes." />
+    <meta property="og:description" content="Play free online browser games on Nexus Game Portal! 3D jet dogfights, arcade, logic, board & math games with VS Bot & 2-Player Local modes." />
     <meta property="og:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
     <meta property="og:site_name" content="Nexus Game Portal" />
 
@@ -31,7 +31,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/" />
     <meta name="twitter:title" content="Nexus Game Portal 🎮⚡ - Play Free Online Browser Games" />
-    <meta name="twitter:description" content="Play free online browser games! Arcade, logic, board & math games with 🤖 VS Bot & 👥 2-Player Local modes." />
+    <meta name="twitter:description" content="Play free online browser games! 3D jet dogfights, arcade, logic, board & math games with VS Bot & 2-Player Local modes." />
     <meta name="twitter:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
 
     <!-- Structured Data / JSON-LD Schema -->
@@ -43,7 +43,7 @@
       "url": "https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/",
       "description": "Play free online browser games with VS Bot and 2-Player Local modes.",
       "image": "https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg",
-      "genre": ["Arcade", "Board Games", "Logic Puzzles", "Math Games"]
+      "genre": ["3D Action", "Arcade", "Board Games", "Logic Puzzles", "Math Games"]
     }
     </script>
 
@@ -57,7 +57,7 @@
     <link rel="apple-touch-icon" href="./logo.jpg" />
 
     <link rel="icon" type="image/jpeg" href="./logo.jpg" />
-    <link rel="stylesheet" href="./portal-style.css?v=14.0" />
+    <link rel="stylesheet" href="./portal-style.css?v=15.0" />
     <script src="./theme-toggle.js"></script>
   </head>
   <body>
@@ -532,6 +532,74 @@
             </div>
             <div class="card-title-overlay">
               <span>SPACE SHOOTER</span>
+            </div>
+          </a>
+
+          <!-- CARD: SKY WARRIORS 2 -->
+          <a href="./games/sky-warriors/index.html" class="game-card" data-mode="1p">
+            <div class="card-badge">3D JET</div>
+            <div class="card-art">
+              <svg viewBox="0 0 300 300" class="card-svg" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="skyJetBg" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#0284c7"/>
+                    <stop offset="60%" stop-color="#0369a1"/>
+                    <stop offset="100%" stop-color="#0f172a"/>
+                  </linearGradient>
+                  <linearGradient id="afterburner" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#38bdf8"/>
+                    <stop offset="50%" stop-color="#f59e0b"/>
+                    <stop offset="100%" stop-color="#ef4444"/>
+                  </linearGradient>
+                </defs>
+                <rect width="300" height="300" fill="url(#skyJetBg)"/>
+                
+                <!-- Speed Lines / Contrails -->
+                <line x1="75" y1="15" x2="75" y2="285" stroke="#ffffff" stroke-width="2" opacity="0.25" stroke-dasharray="20,20"/>
+                <line x1="225" y1="15" x2="225" y2="285" stroke="#ffffff" stroke-width="2" opacity="0.25" stroke-dasharray="30,15"/>
+
+                <!-- Radar HUD Crosshair -->
+                <g transform="translate(150, 105)" stroke="#38bdf8" stroke-width="2" fill="none" opacity="0.75">
+                  <circle cx="0" cy="0" r="48" stroke-dasharray="6,4"/>
+                  <circle cx="0" cy="0" r="22"/>
+                  <line x1="-56" y1="0" x2="-38" y2="0"/>
+                  <line x1="38" y1="0" x2="56" y2="0"/>
+                  <line x1="0" y1="-56" x2="0" y2="-38"/>
+                  <line x1="0" y1="38" x2="0" y2="56"/>
+                  <text x="30" y="-30" font-size="10" font-family="sans-serif" font-weight="900" fill="#38bdf8" stroke="none">LOCK</text>
+                </g>
+
+                <!-- Fighter Jet -->
+                <g transform="translate(150, 130)">
+                  <!-- Afterburner Flames -->
+                  <polygon points="-14,50 -8,85 -2,50" fill="url(#afterburner)"/>
+                  <polygon points="2,50 8,85 14,50" fill="url(#afterburner)"/>
+
+                  <!-- Wing Outlines -->
+                  <polygon points="0,-72 -62,32 -38,44 -14,32 -12,50 12,50 14,32 38,44 62,32" fill="#0f172a" stroke="#000" stroke-width="4"/>
+                  
+                  <!-- Main Wings -->
+                  <polygon points="0,-68 -58,30 -36,42 -14,30 -10,48 10,48 14,30 36,42 58,30" fill="#38bdf8" stroke="#0284c7" stroke-width="2.5"/>
+
+                  <!-- Fuselage -->
+                  <polygon points="0,-68 -14,10 -10,46 10,46 14,10" fill="#f8fafc" stroke="#0f172a" stroke-width="2.5"/>
+                  
+                  <!-- Twin Tail Fins -->
+                  <polygon points="-20,24 -28,48 -16,42" fill="#0284c7" stroke="#000" stroke-width="2"/>
+                  <polygon points="20,24 28,48 16,42" fill="#0284c7" stroke="#000" stroke-width="2"/>
+
+                  <!-- Cockpit Canopy -->
+                  <ellipse cx="0" cy="-20" rx="6" ry="18" fill="#facc15" stroke="#000" stroke-width="2.5"/>
+                  <ellipse cx="-2" cy="-24" rx="2" ry="7" fill="#ffffff" opacity="0.85"/>
+
+                  <!-- Missiles -->
+                  <rect x="-60" y="14" width="4" height="20" rx="2" fill="#ef4444" stroke="#000" stroke-width="1.5"/>
+                  <rect x="56" y="14" width="4" height="20" rx="2" fill="#ef4444" stroke="#000" stroke-width="1.5"/>
+                </g>
+              </svg>
+            </div>
+            <div class="card-title-overlay">
+              <span>SKY WARRIORS 2</span>
             </div>
           </a>
         </div>
