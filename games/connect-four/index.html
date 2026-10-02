@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>Four in a Row 🔴🟡 - Play Connect 4 Online Free | Nexus Portal</title>
+    <meta name="description" content="Play Four in a Row (Connect 4) free online! Drop discs, connect 4 to win. Features smart AI Bot (Easy, Medium, Master) and 👥 2-Player Local pass &amp; play on mobile and desktop." />
+    <meta name="keywords" content="four in a row online, connect 4 online free, connect four 2 player, play connect 4 vs bot, unblocked connect four, 4 in a row browser game" />
+    <link rel="canonical" href="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/connect-four/" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WSHC85LJYZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WSHC85LJYZ');
+    </script>
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:url" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/connect-four/" />
+    <meta property="og:title" content="Four in a Row 🔴🟡 - Play Free Connect 4 Online" />
+    <meta property="og:description" content="Classic 7x6 Four in a Row with Smart AI Bot and 👥 2-Player Local modes. Instant play with zero download!" />
+    <meta property="og:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Four in a Row (Connect 4)",
+      "url": "https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/connect-four/",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Board Game / Strategy",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["Smart AI Bot", "👥 2-Player Local Mode", "Undo Move", "Smooth Physics Drop Animation"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+    <link rel="icon" type="image/jpeg" href="../../logo.jpg" />
+  </head>
+  <body>
+    <!-- Top Navigation Header -->
+    <header class="nav-header">
+      <a href="../../index.html" class="btn btn-slate" aria-label="Return to Nexus Portal">⬅️ PORTAL MENU</a>
+      <div class="nav-actions">
+        <button class="btn btn-sound" id="sound-toggle-btn" aria-label="Toggle Sound Effects">🔊</button>
+        <button class="btn btn-gold" id="theme-toggle-btn" aria-label="Toggle Theme">🌙 DARK</button>
+      </div>
+    </header>
+
+    <!-- Main Game Container -->
+    <main class="game-container">
+      <div class="game-card">
+        <h1 class="game-title">FOUR IN A ROW</h1>
+
+        <!-- Mode & Difficulty Selection Bar -->
+        <div class="controls-panel">
+          <div class="mode-select-group">
+            <button class="mode-pill active" id="btn-mode-bot" data-mode="bot">🤖 VS BOT</button>
+            <button class="mode-pill" id="btn-mode-2p" data-mode="2p">👥 2 PLAYERS</button>
+          </div>
+
+          <div class="difficulty-select-group" id="difficulty-group">
+            <label for="difficulty-select" class="sr-only">Bot Difficulty</label>
+            <select id="difficulty-select" class="select-pill" aria-label="Select AI Difficulty">
+              <option value="easy">🟢 Easy</option>
+              <option value="medium" selected>🟡 Medium</option>
+              <option value="hard">🔴 Master</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Scoreboard -->
+        <div class="scoreboard">
+          <div class="score-box player-1" id="score-box-p1">
+            <div class="player-disc disc-red"></div>
+            <div class="player-info">
+              <span class="player-name" id="name-p1">PLAYER 1</span>
+              <span class="player-score" id="score-p1">0</span>
+            </div>
+          </div>
+
+          <div class="score-box tie-box">
+            <span class="tie-label">DRAWS</span>
+            <span class="tie-score" id="score-draws">0</span>
+          </div>
+
+          <div class="score-box player-2" id="score-box-p2">
+            <div class="player-disc disc-yellow"></div>
+            <div class="player-info">
+              <span class="player-name" id="name-p2">BOT (AI)</span>
+              <span class="player-score" id="score-p2">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Banner / Turn Indicator -->
+        <div class="status-banner" id="status-banner" role="status" aria-live="polite">
+          <span class="status-icon" id="status-icon">🔴</span>
+          <span class="status-text" id="status-text">PLAYER 1'S TURN</span>
+        </div>
+
+        <!-- Game Board Container -->
+        <div class="board-wrapper">
+          <!-- Column Hover Drop Guides (Desktop) -->
+          <div class="column-indicators" id="column-indicators" aria-hidden="true">
+            <div class="indicator" data-col="0"></div>
+            <div class="indicator" data-col="1"></div>
+            <div class="indicator" data-col="2"></div>
+            <div class="indicator" data-col="3"></div>
+            <div class="indicator" data-col="4"></div>
+            <div class="indicator" data-col="5"></div>
+            <div class="indicator" data-col="6"></div>
+          </div>
+
+          <!-- 7x6 Connect 4 Grid -->
+          <div class="connect-grid" id="connect-grid" role="grid" aria-label="Connect Four Game Board">
+            <!-- 42 slots generated dynamically by game.js -->
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="game-actions">
+          <button class="btn btn-action btn-undo" id="btn-undo" title="Undo last move" aria-label="Undo move">↩️ UNDO</button>
+          <button class="btn btn-action btn-restart" id="btn-restart" title="Restart current match" aria-label="Restart game">🔄 RESTART</button>
+          <button class="btn btn-action btn-reset-score" id="btn-reset-score" title="Reset score" aria-label="Reset score counter">🧹 CLEAR SCORE</button>
+        </div>
+      </div>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
