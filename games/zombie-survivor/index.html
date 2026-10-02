@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no" />
+    <title>Zombie Survivor: Arena 2.5D 🧟🔫 - Free Top-Down Action Shooter | Nexus Portal</title>
+    <meta name="description" content="Play Zombie Survivor: Arena online for free! Battle endless zombie hordes, shoot explosive barrels, unlock powerful weapons, level up perks, and defeat giant mutant bosses!" />
+    <meta name="keywords" content="zombie survivor online free, zombie horde arena 2.5d, top down zombie shooter, vampire survivors web game, boxhead unblocked, play zombie arena mobile fullscreen" />
+    <link rel="canonical" href="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/zombie-survivor/" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WSHC85LJYZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WSHC85LJYZ');
+    </script>
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:url" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/zombie-survivor/" />
+    <meta property="og:title" content="Zombie Survivor: Arena 2.5D 🧟🔫 - Free Online Action Shooter" />
+    <meta property="og:description" content="Survive swarms of zombies, level up custom perks, shoot explosive barrels, and unlock heavy weapons in this addictive top-down shooter!" />
+    <meta property="og:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Zombie Survivor: Arena",
+      "url": "https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/zombie-survivor/",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Action / Top-Down Arena Shooter",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["Endless Horde Survival", "6 Upgradable Heavy Weapons", "Mid-Run Perk Cards", "Boss Battles", "Fullscreen Mobile Support"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+    <link rel="icon" type="image/jpeg" href="../../logo.jpg" />
+  </head>
+  <body>
+    <!-- Top Navigation Header -->
+    <header class="nav-header">
+      <a href="../../index.html" class="btn btn-slate" aria-label="Return to Nexus Portal">⬅️ PORTAL</a>
+      <div class="nav-actions">
+        <button class="btn btn-armory" id="btn-armory" aria-label="Armory & Shop">🛒 ARMORY</button>
+        <button class="btn btn-fullscreen" id="btn-fullscreen" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">⛶</button>
+        <button class="btn btn-sound" id="sound-toggle-btn" aria-label="Toggle Sound Effects">🔊</button>
+        <button class="btn btn-gold" id="theme-toggle-btn" aria-label="Toggle Theme">🌙 DARK</button>
+      </div>
+    </header>
+
+    <!-- Main Game Container -->
+    <main class="game-container" id="game-container">
+      <div class="game-card" id="game-card">
+
+        <!-- In-Game HUD: Health, XP Level, Wave, Coins -->
+        <div class="hud-top">
+          <!-- Left: Health Bar & Shield -->
+          <div class="hud-col hud-hp-col">
+            <div class="hp-bar-wrap">
+              <span class="hud-icon">❤️</span>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill hp-fill" id="hp-bar-fill" style="width: 100%;"></div>
+                <span class="hp-text" id="hp-text">100 / 100</span>
+              </div>
+            </div>
+            <div class="dash-shield-row">
+              <span class="badge-pill" id="shield-badge">🛡️ SHIELD: 0</span>
+              <span class="badge-pill" id="dash-badge">⚡ DASH: READY</span>
+            </div>
+          </div>
+
+          <!-- Center: XP Bar & Wave -->
+          <div class="hud-col hud-center-col">
+            <div class="wave-badge" id="wave-badge">🌊 WAVE 1</div>
+            <div class="xp-bar-wrap">
+              <span class="xp-lvl-tag" id="xp-lvl-tag">LVL 1</span>
+              <div class="progress-bar-bg xp-bg">
+                <div class="progress-bar-fill xp-fill" id="xp-bar-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Coins, Kills, Weapon -->
+          <div class="hud-col hud-stats-col">
+            <div class="coin-pill"><span id="hud-coins">💰 0</span></div>
+            <div class="kills-pill"><span id="hud-kills">💀 0</span></div>
+          </div>
+        </div>
+
+        <!-- Active Weapon Dock -->
+        <div class="weapon-dock" id="weapon-dock">
+          <!-- Populated dynamically with active equipped weapon & ammo -->
+          <div class="dock-item active" id="dock-weapon">
+            <span class="dock-icon" id="dock-weapon-icon">🔫</span>
+            <span class="dock-name" id="dock-weapon-name">Dual Pistols</span>
+          </div>
+          <button class="btn-autofire" id="btn-autofire">AUTO-FIRE: ON</button>
+        </div>
+
+        <!-- 2.5D Canvas Viewport -->
+        <div class="canvas-wrapper" id="canvas-wrapper">
+          <canvas id="game-canvas" width="600" height="520" aria-label="Zombie Survivor Canvas Viewport"></canvas>
+
+          <!-- Wave Alert Banner -->
+          <div class="wave-alert" id="wave-alert" style="display: none;">
+            <div class="alert-content" id="alert-content">⚠️ WAVE 1 INCOMING ⚠️</div>
+          </div>
+
+          <!-- Virtual Touch Joysticks (Mobile / Touch Devices) -->
+          <div class="touch-controls" id="touch-controls">
+            <!-- Left Movement Joystick Zone -->
+            <div class="joystick-zone" id="joystick-left">
+              <div class="joystick-base" id="stick-base-left">
+                <div class="joystick-knob" id="stick-knob-left"></div>
+              </div>
+            </div>
+
+            <!-- Right Action & Dash Area -->
+            <div class="touch-actions">
+              <button class="touch-btn btn-touch-dash" id="btn-touch-dash">⚡ DASH</button>
+              <div class="joystick-zone" id="joystick-right">
+                <div class="joystick-base stick-aim" id="stick-base-right">
+                  <div class="joystick-knob" id="stick-knob-right"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Mid-Run Level-Up Perk Card Modal (Vampire Survivors Style) -->
+    <div class="modal-overlay" id="levelup-modal" style="display: none;">
+      <div class="modal-card levelup-card">
+        <div class="levelup-header">
+          <div class="levelup-tag">✨ LEVEL UP! ✨</div>
+          <h2 class="levelup-title">CHOOSE A POWER-UP</h2>
+          <p class="levelup-subtitle">Select a perk to enhance your survivor for this run:</p>
+        </div>
+
+        <div class="perk-cards-grid" id="perk-cards-grid">
+          <!-- 3 Dynamic Perk Cards injected by game.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Permanent Armory & Shop Modal -->
+    <div class="modal-overlay" id="armory-modal" style="display: none;">
+      <div class="modal-card armory-card">
+        <div class="armory-header">
+          <h2 class="armory-title">🛒 WEAPON ARSENAL &amp; UPGRADES</h2>
+          <div class="armory-balance"><span id="armory-coins">💰 0</span></div>
+        </div>
+        <p class="armory-desc">Permanently unlock and upgrade weapons using coins earned from zombies!</p>
+
+        <!-- Arsenal Tab List -->
+        <div class="armory-tabs">
+          <button class="armory-tab-btn active" data-tab="weapons">🔫 Weapons</button>
+          <button class="armory-tab-btn" data-tab="stats">💪 Passive Perks</button>
+        </div>
+
+        <!-- Weapons Grid -->
+        <div class="armory-grid" id="armory-weapons-grid">
+          <!-- Dynamic Weapon items injected by game.js -->
+        </div>
+
+        <!-- Passive Stats Grid -->
+        <div class="armory-grid" id="armory-stats-grid" style="display: none;">
+          <!-- Dynamic Passive Upgrades (Max HP, Armor, Speed) -->
+        </div>
+
+        <button class="btn btn-gold btn-armory-close" id="btn-armory-close">DONE / CLOSE</button>
+      </div>
+    </div>
+
+    <!-- Game Over / Victory Modal -->
+    <div class="modal-overlay" id="gameover-modal" style="display: none;">
+      <div class="modal-card gameover-card">
+        <div class="modal-hero-icon" id="gameover-icon">💀</div>
+        <h2 class="modal-title" id="gameover-title">SURVIVOR DOWN!</h2>
+        <p class="modal-desc" id="gameover-desc">You were overrun by the zombie horde!</p>
+
+        <div class="modal-stats-grid">
+          <div class="modal-stat-item">
+            <span>Wave Reached</span>
+            <strong id="stat-wave">1</strong>
+          </div>
+          <div class="modal-stat-item">
+            <span>Zombies Slain</span>
+            <strong id="stat-kills">0</strong>
+          </div>
+          <div class="modal-stat-item">
+            <span>Coins Earned</span>
+            <strong id="stat-coins">💰 0</strong>
+          </div>
+          <div class="modal-stat-item">
+            <span>Score</span>
+            <strong id="stat-score">0</strong>
+          </div>
+        </div>
+
+        <p class="modal-toast" id="stat-new-best" style="display: none;">🎉 NEW HIGH SCORE!</p>
+        <div class="modal-actions-row">
+          <button class="btn btn-armory btn-modal-armory" id="btn-modal-armory">🛒 UPGRADE WEAPONS</button>
+          <button class="btn btn-gold btn-modal-play" id="btn-modal-restart">🔄 PLAY AGAIN</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
