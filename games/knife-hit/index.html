@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>Knife Hit 🎯🗡️ - Play Free Online Target Throwing Game | Nexus Portal</title>
+    <meta name="description" content="Play Knife Hit arcade game online for free! Throw knives into the rotating wooden log, slice juicy apples, conquer epic Boss levels, and unlock legendary blade skins." />
+    <meta name="keywords" content="knife hit online free, throw knife game, target blade game, unblocked knife hit, casual arcade game, slice apples game, play knife hit mobile, 2 player knife duel" />
+    <link rel="canonical" href="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/knife-hit/" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WSHC85LJYZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WSHC85LJYZ');
+    </script>
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:url" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/knife-hit/" />
+    <meta property="og:title" content="Knife Hit 🎯🗡️ - Play Free Online Arcade Game" />
+    <meta property="og:description" content="Throw knives into rotating logs, avoid existing blades, slice apples, defeat giant bosses, and play 2-Player duels!" />
+    <meta property="og:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Knife Hit",
+      "url": "https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/knife-hit/",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Arcade / Reflex & Timing",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["Rotating Log Physics", "Boss Battles", "Apple Slicing Economy", "Unlockable Knife Skins", "2-Player Duel Mode"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+    <link rel="icon" type="image/jpeg" href="../../logo.jpg" />
+  </head>
+  <body>
+    <!-- Navigation Header -->
+    <header class="nav-header">
+      <a href="../../index.html" class="btn btn-slate" aria-label="Return to Nexus Portal">⬅️ PORTAL MENU</a>
+      <div class="nav-actions">
+        <button class="btn btn-shop" id="btn-shop" aria-label="Knife Shop">🗡️ SKINS</button>
+        <button class="btn btn-sound" id="sound-toggle-btn" aria-label="Toggle Sound Effects">🔊</button>
+        <button class="btn btn-gold" id="theme-toggle-btn" aria-label="Toggle Theme">🌙 DARK</button>
+      </div>
+    </header>
+
+    <!-- Main Game Container -->
+    <main class="game-container">
+      <div class="game-card">
+        
+        <!-- Header & Mode Tabs -->
+        <div class="top-row">
+          <h1 class="game-title">KNIFE HIT</h1>
+          
+          <div class="mode-pills" role="tablist" aria-label="Game Mode">
+            <button class="mode-pill active" data-mode="solo" role="tab" aria-selected="true">🗡️ Stages</button>
+            <button class="mode-pill" data-mode="duel" role="tab" aria-selected="false">⚔️ 2P Duel</button>
+          </div>
+        </div>
+
+        <!-- In-Game HUD: Stage, Score, Apples, Best -->
+        <div class="hud-bar">
+          <div class="hud-item stage-indicator">
+            <span class="hud-label">STAGE</span>
+            <div class="stage-pills" id="stage-pills">
+              <span class="stage-dot active">1</span>
+              <span class="stage-dot">2</span>
+              <span class="stage-dot">3</span>
+              <span class="stage-dot">4</span>
+              <span class="stage-dot boss-dot">👑</span>
+            </div>
+          </div>
+
+          <div class="hud-item score-box">
+            <span class="hud-label">SCORE</span>
+            <span class="hud-val" id="score-val">0</span>
+          </div>
+
+          <div class="hud-item apple-box">
+            <span class="hud-label">APPLES</span>
+            <span class="hud-val" id="apple-val">🍎 0</span>
+          </div>
+
+          <div class="hud-item best-box">
+            <span class="hud-label">BEST</span>
+            <span class="hud-val" id="best-val">0</span>
+          </div>
+        </div>
+
+        <!-- 2-Player Turn Banner (hidden in Solo) -->
+        <div class="duel-turn-banner" id="duel-turn-banner" style="display: none;">
+          <div class="turn-pill" id="duel-turn-pill">
+            <span id="duel-turn-icon">🟦</span>
+            <span id="duel-turn-text">PLAYER 1 THROW</span>
+          </div>
+        </div>
+
+        <!-- Game Stage Canvas Area -->
+        <div class="canvas-wrapper" id="canvas-wrapper">
+          <!-- Remaining Knives Indicator Column -->
+          <div class="knife-stack" id="knife-stack" aria-label="Knives remaining">
+            <!-- Dynamic knife icons added by game.js -->
+          </div>
+
+          <!-- Boss Alert Banner -->
+          <div class="boss-banner" id="boss-banner" style="display: none;">
+            <div class="boss-text" id="boss-text">⚠️ BOSS FIGHT ⚠️</div>
+          </div>
+
+          <!-- Tap to Throw Prompt -->
+          <div class="tap-hint" id="tap-hint">TAP / CLICK / SPACE TO THROW</div>
+
+          <!-- HTML5 Canvas Viewport -->
+          <canvas id="game-canvas" width="400" height="520" aria-label="Knife Hit Game Canvas"></canvas>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Knife Skin Shop Modal -->
+    <div class="shop-modal" id="shop-modal" style="display: none;">
+      <div class="modal-card shop-card">
+        <div class="shop-header">
+          <h2 class="shop-title">🗡️ KNIFE ARSENAL</h2>
+          <div class="shop-apples"><span id="shop-apple-count">🍎 0</span></div>
+        </div>
+        <p class="shop-desc">Unlock and equip custom blades with collected apples!</p>
+
+        <div class="skin-grid" id="skin-grid">
+          <!-- Dynamic Knife Skins injected by game.js -->
+        </div>
+
+        <button class="btn btn-gold btn-shop-close" id="btn-shop-close">CLOSE</button>
+      </div>
+    </div>
+
+    <!-- Game Over / Victory Modal -->
+    <div class="victory-modal" id="game-modal" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-hero-icon" id="modal-hero-icon">💥</div>
+        <h2 class="modal-title" id="modal-title">GAME OVER</h2>
+        <p class="modal-desc" id="modal-desc">You hit another knife!</p>
+        
+        <div class="modal-stats-grid">
+          <div class="modal-stat-item">
+            <span>Score</span>
+            <strong id="modal-score">0</strong>
+          </div>
+          <div class="modal-stat-item">
+            <span>Stage</span>
+            <strong id="modal-stage">1</strong>
+          </div>
+          <div class="modal-stat-item">
+            <span>Apples</span>
+            <strong id="modal-apples">🍎 0</strong>
+          </div>
+        </div>
+
+        <p class="modal-toast" id="modal-new-best" style="display: none;">🎉 NEW HIGH SCORE!</p>
+        <button class="btn btn-gold btn-modal-play" id="btn-modal-restart">🔄 PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
