@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>2048 🔢✨ - Play 2048 Puzzle Online Free | Nexus Portal</title>
+    <meta name="description" content="Play the original 2048 number puzzle game online for free! Join tiles, reach 2048 and beyond. Smooth swipe controls on mobile, arrow keys on PC, with Undo move &amp; high score tracking." />
+    <meta name="keywords" content="2048 online free, play 2048, 2048 puzzle game, 2048 unblocked, 2048 with undo, slide merge puzzle, 2048 mobile browser game" />
+    <link rel="canonical" href="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/2048/" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WSHC85LJYZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WSHC85LJYZ');
+    </script>
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:url" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/2048/" />
+    <meta property="og:title" content="2048 🔢✨ - Play Free Online Number Puzzle" />
+    <meta property="og:description" content="Join the numbers and get to the 2048 tile! Featuring smooth animations, swipe controls, undo, and high score saving." />
+    <meta property="og:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "2048 Puzzle",
+      "url": "https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/2048/",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Puzzle / Brain Game",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["Smooth Swipe Controls", "Undo Move", "High Score Tracking", "Sound Effects", "Endless Mode After 2048"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+    <link rel="icon" type="image/jpeg" href="../../logo.jpg" />
+  </head>
+  <body>
+    <!-- Top Navigation Bar -->
+    <header class="nav-header">
+      <a href="../../index.html" class="btn btn-slate" aria-label="Return to Nexus Portal">⬅️ PORTAL MENU</a>
+      <div class="nav-actions">
+        <button class="btn btn-sound" id="sound-toggle-btn" aria-label="Toggle Sound Effects">🔊</button>
+        <button class="btn btn-gold" id="theme-toggle-btn" aria-label="Toggle Theme">🌙 DARK</button>
+      </div>
+    </header>
+
+    <!-- Main Game Container -->
+    <main class="game-container">
+      <div class="game-card">
+        
+        <!-- Header Info & Scoreboard -->
+        <div class="game-header">
+          <div class="title-area">
+            <h1 class="game-title">2048</h1>
+            <p class="game-subtitle">Join the numbers to get to the <strong>2048 tile!</strong></p>
+          </div>
+
+          <div class="score-container">
+            <div class="score-pill">
+              <span class="score-title">SCORE</span>
+              <span class="score-val" id="current-score">0</span>
+              <div class="score-addition" id="score-addition"></div>
+            </div>
+            <div class="score-pill best-pill">
+              <span class="score-title">BEST</span>
+              <span class="score-val" id="best-score">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls Toolbar -->
+        <div class="controls-toolbar">
+          <div class="action-buttons">
+            <button class="btn btn-action btn-undo" id="btn-undo" title="Undo last move" aria-label="Undo move">↩️ UNDO</button>
+            <button class="btn btn-action btn-restart" id="btn-restart" title="Start new game" aria-label="New game">🔄 NEW GAME</button>
+          </div>
+        </div>
+
+        <!-- 2048 Board Area -->
+        <div class="board-wrapper">
+          <div class="board-grid" id="board-grid" role="grid" aria-label="2048 Game Board">
+            <!-- Background grid cells (16 slots) -->
+            <div class="grid-row">
+              <div class="grid-cell"></div>
+              <div class="grid-cell"></div>
+              <div class="grid-cell"></div>
+              <div class="grid-cell"></div>
+            </div>
+            <div class="grid-row">
+              <div class="grid-cell"></div>
+              <div class="grid-cell"></div>
+              <div class="grid-cell"></div>
+              <div class="grid-cell"></div>
+            </div>
+            <div class="grid-row">
+              <div class="grid-cell"></div>
+              <div class="grid-cell"></div>
+              <div class="grid-cell"></div>
+              <div class="grid-cell"></div>
+            </div>
+            <div class="grid-row">
+              <div class="grid-cell"></div>
+              <div class="grid-cell"></div>
+              <div class="grid-cell"></div>
+              <div class="grid-cell"></div>
+            </div>
+
+            <!-- Dynamic Active Tiles Container -->
+            <div class="tile-container" id="tile-container"></div>
+
+            <!-- Game Overlay (Win / Game Over) -->
+            <div class="game-overlay" id="game-overlay">
+              <div class="overlay-content">
+                <div class="overlay-icon" id="overlay-icon">🏆</div>
+                <h2 class="overlay-title" id="overlay-title">YOU WIN!</h2>
+                <p class="overlay-msg" id="overlay-msg">You reached the 2048 tile!</p>
+                <div class="overlay-actions">
+                  <button class="btn btn-gold btn-keep-going" id="btn-keep-going" style="display: none;">KEEP PLAYING</button>
+                  <button class="btn btn-restart" id="btn-try-again">TRY AGAIN</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Touch Swipe Helper / Instructions -->
+        <div class="swipe-hint">
+          <span>👆 Swipe on phone or use <strong>Arrow Keys / WASD</strong> to slide tiles</span>
+        </div>
+
+        <!-- Virtual Directional Touch Pad (Mobile Friendly) -->
+        <div class="dpad-controls">
+          <button class="dpad-btn dpad-up" data-dir="up" aria-label="Slide Up">⬆️</button>
+          <div class="dpad-row">
+            <button class="dpad-btn dpad-left" data-dir="left" aria-label="Slide Left">⬅️</button>
+            <button class="dpad-btn dpad-down" data-dir="down" aria-label="Slide Down">⬇️</button>
+            <button class="dpad-btn dpad-right" data-dir="right" aria-label="Slide Right">➡️</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
