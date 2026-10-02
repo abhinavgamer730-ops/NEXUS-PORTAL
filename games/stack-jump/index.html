@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no" />
+    <title>Stack Jump 🐥🧱 - Free Timing &amp; Tower Jump Game | Nexus Portal</title>
+    <meta name="description" content="Play Stack Jump online for free! Jump at the perfect time to stack sliding blocks, build the tallest tower, and unlock combos. Instant play on mobile and PC with no download!" />
+    <meta name="keywords" content="stack jump online, bird tower jump, timing block jump, stack jump unblocked, jump on moving blocks, hyper casual browser game, free stack jump" />
+    <link rel="canonical" href="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/stack-jump/" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WSHC85LJYZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WSHC85LJYZ');
+    </script>
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:url" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/stack-jump/" />
+    <meta property="og:title" content="Stack Jump 🐥🧱 - Free Timing &amp; Tower Jump Game" />
+    <meta property="og:description" content="Jump at the right time onto sliding blocks to build the tallest tower! Perfect combos, cute bird physics, and high scores." />
+    <meta property="og:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Stack Jump",
+      "url": "https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/stack-jump/",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Hyper-Casual / Timing Game",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["One-Tap Jump Controls", "Perfect Landing Combos", "Parallax Sky Backgrounds", "High Score Tracking"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+    <link rel="icon" type="image/jpeg" href="../../logo.jpg" />
+  </head>
+  <body>
+    <!-- Top Navigation Bar -->
+    <header class="nav-header">
+      <a href="../../index.html" class="btn btn-slate" aria-label="Return to Nexus Portal">⬅️ PORTAL MENU</a>
+      <div class="nav-actions">
+        <button class="btn btn-sound" id="sound-toggle-btn" aria-label="Toggle Sound Effects">🔊</button>
+        <button class="btn btn-gold" id="theme-toggle-btn" aria-label="Toggle Theme">🌙 DARK</button>
+      </div>
+    </header>
+
+    <!-- Main Game Container -->
+    <main class="game-container">
+      <div class="game-card">
+        
+        <!-- Live HUD (Current Score & High Score) -->
+        <div class="game-hud">
+          <div class="hud-item score-item">
+            <span class="hud-label">SCORE</span>
+            <span class="hud-val" id="current-score">0</span>
+          </div>
+
+          <!-- Combo Multiplier Toast -->
+          <div class="combo-badge" id="combo-badge">PERFECT! x2</div>
+
+          <div class="hud-item best-item">
+            <span class="hud-label">BEST</span>
+            <span class="hud-val" id="best-score">0</span>
+          </div>
+        </div>
+
+        <!-- Canvas Game Stage -->
+        <div class="canvas-wrapper" id="canvas-wrapper">
+          <canvas id="game-canvas" width="400" height="580" aria-label="Stack Jump Game Canvas"></canvas>
+
+          <!-- Start Screen Overlay -->
+          <div class="game-overlay start-overlay" id="start-overlay">
+            <div class="overlay-content">
+              <div class="overlay-hero-icon">🐥🧱</div>
+              <h1 class="overlay-title">STACK JUMP</h1>
+              <p class="overlay-desc">Tap or press <strong>SPACE</strong> to jump onto sliding blocks and build your tower!</p>
+              <button class="btn btn-gold btn-play-main" id="btn-start-game">▶️ TAP TO PLAY</button>
+            </div>
+          </div>
+
+          <!-- Game Over Overlay -->
+          <div class="game-overlay gameover-overlay" id="gameover-overlay" style="display: none;">
+            <div class="overlay-content">
+              <div class="overlay-icon">💥</div>
+              <h2 class="overlay-title">GAME OVER</h2>
+              <div class="final-score-box">
+                <div class="final-score-item">
+                  <span>SCORE</span>
+                  <strong id="final-score">0</strong>
+                </div>
+                <div class="final-score-item">
+                  <span>BEST</span>
+                  <strong id="final-best">0</strong>
+                </div>
+              </div>
+              <p class="new-best-toast" id="new-best-toast" style="display: none;">🎉 NEW HIGH SCORE!</p>
+              <button class="btn btn-gold btn-play-main" id="btn-restart-game">🔄 PLAY AGAIN</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Controls Helper -->
+        <div class="controls-hint">
+          <span>👆 Tap anywhere on screen or press <strong>SPACE / UP ARROW</strong> to jump</span>
+        </div>
+
+      </div>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
