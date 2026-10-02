@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>Memory Card Match 🃏✨ - Play Free Memory Puzzle Online | Nexus Portal</title>
+    <meta name="description" content="Play Memory Card Match puzzle online for free! Flip cards, find matching pairs, beat the timer, and test your brain memory. Easy, Medium, and Hard modes on mobile and PC." />
+    <meta name="keywords" content="memory match online free, memory card game, card flip puzzle, brain memory training, find pairs online, matching cards unblocked, casual browser memory game" />
+    <link rel="canonical" href="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/memory-match/" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WSHC85LJYZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WSHC85LJYZ');
+    </script>
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:url" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/memory-match/" />
+    <meta property="og:title" content="Memory Card Match 🃏✨ - Play Free Online Memory Game" />
+    <meta property="og:description" content="Flip cards, match pairs, and test your brain memory! Multiple difficulty levels, cute themes, and combo streaks." />
+    <meta property="og:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Memory Card Match",
+      "url": "https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/memory-match/",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Puzzle / Memory Training",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["3D Card Flip Animations", "3 Difficulty Levels", "Timer & Move Counter", "Best Record Tracking", "Match Combo Streaks"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+    <link rel="icon" type="image/jpeg" href="../../logo.jpg" />
+  </head>
+  <body>
+    <!-- Top Navigation Header -->
+    <header class="nav-header">
+      <a href="../../index.html" class="btn btn-slate" aria-label="Return to Nexus Portal">⬅️ PORTAL MENU</a>
+      <div class="nav-actions">
+        <button class="btn btn-sound" id="sound-toggle-btn" aria-label="Toggle Sound Effects">🔊</button>
+        <button class="btn btn-gold" id="theme-toggle-btn" aria-label="Toggle Theme">🌙 DARK</button>
+      </div>
+    </header>
+
+    <!-- Main Game Container -->
+    <main class="game-container">
+      <div class="game-card">
+        
+        <h1 class="game-title">MEMORY MATCH</h1>
+
+        <!-- Controls & Difficulty Bar -->
+        <div class="controls-panel">
+          <div class="difficulty-group">
+            <button class="diff-pill" data-diff="easy">🟢 Easy (12)</button>
+            <button class="diff-pill active" data-diff="medium">🟡 Medium (16)</button>
+            <button class="diff-pill" data-diff="hard">🔴 Hard (20)</button>
+          </div>
+
+          <div class="theme-select-group">
+            <label for="theme-select" class="sr-only">Card Theme</label>
+            <select id="theme-select" class="select-pill" aria-label="Select Card Theme">
+              <option value="animals" selected>🐱 Animals</option>
+              <option value="food">🍕 Food &amp; Treats</option>
+              <option value="arcade">🎮 Arcade &amp; Gems</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Live Scoreboard & Stats -->
+        <div class="stats-bar">
+          <div class="stat-box">
+            <span class="stat-label">MOVES</span>
+            <span class="stat-val" id="move-count">0</span>
+          </div>
+
+          <div class="stat-box">
+            <span class="stat-label">TIME</span>
+            <span class="stat-val" id="timer-val">00:00</span>
+          </div>
+
+          <div class="stat-box">
+            <span class="stat-label">PAIRS</span>
+            <span class="stat-val" id="pairs-matched">0/8</span>
+          </div>
+
+          <div class="stat-box best-box">
+            <span class="stat-label">BEST MOVES</span>
+            <span class="stat-val" id="best-moves">-</span>
+          </div>
+        </div>
+
+        <!-- Combo Streak Banner -->
+        <div class="combo-banner" id="combo-banner">
+          🔥 COMBO x<span id="combo-multiplier">2</span>!
+        </div>
+
+        <!-- Card Grid Stage -->
+        <div class="grid-wrapper">
+          <div class="card-grid grid-medium" id="card-grid" role="grid" aria-label="Memory Card Matching Grid">
+            <!-- Dynamic cards generated by game.js -->
+          </div>
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div class="game-actions">
+          <button class="btn btn-action btn-restart" id="btn-restart" aria-label="Restart Game">🔄 NEW GAME</button>
+          <button class="btn btn-action btn-peek" id="btn-peek" title="Briefly peek all cards" aria-label="Peek Hint">💡 HINT PEEK</button>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Victory Modal Overlay -->
+    <div class="victory-modal" id="victory-modal" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-hero-icon">🏆</div>
+        <h2 class="modal-title">GREAT MEMORY!</h2>
+        <p class="modal-desc">You matched all cards successfully!</p>
+        
+        <div class="modal-stats-grid">
+          <div class="modal-stat-item">
+            <span>Total Moves</span>
+            <strong id="modal-moves">0</strong>
+          </div>
+          <div class="modal-stat-item">
+            <span>Time Taken</span>
+            <strong id="modal-time">00:00</strong>
+          </div>
+          <div class="modal-stat-item">
+            <span>Best Moves</span>
+            <strong id="modal-best">0</strong>
+          </div>
+        </div>
+
+        <p class="modal-toast" id="modal-new-best" style="display: none;">🎉 NEW BEST RECORD!</p>
+        <button class="btn btn-gold btn-modal-play" id="btn-modal-restart">▶️ PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
