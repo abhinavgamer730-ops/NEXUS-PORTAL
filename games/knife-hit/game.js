@@ -840,14 +840,14 @@
       }
 
       // 3. Draw Embedded Knives:
-      // Tip is buried at radius `logRadius - 12`, handle sticks OUTWARDS into the air!
+      // Tip is buried in wood (pointing towards center), handle sticks OUTWARDS into the air!
       embeddedKnives.forEach(k => {
         ctx.save();
-        ctx.rotate(k.angle);
-        // Translate to log surface: Guard is at logRadius, blade tip penetrates inwards!
+        // Rotate to the exact radial angle of contact
+        ctx.rotate(k.angle - Math.PI / 2);
+        // Translate radially to log perimeter
         ctx.translate(0, logRadius);
-        // Correct orientation: Tip points towards wood center (negative Y in local frame),
-        // Handle sticks out into the air (positive Y in local frame)!
+        // Draw knife: Tip points at log center (-Y), handle points outwards (+Y)
         drawKnife(0, 0, k.skin, k.player === 'p2', true);
         ctx.restore();
       });
@@ -856,7 +856,7 @@
       apples.forEach(apple => {
         if (!apple.sliced) {
           ctx.save();
-          ctx.rotate(apple.angle);
+          ctx.rotate(apple.angle - Math.PI / 2);
           ctx.translate(0, logRadius + 6);
           ctx.font = '26px sans-serif';
           ctx.textAlign = 'center';
