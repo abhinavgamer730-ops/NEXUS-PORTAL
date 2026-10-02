@@ -62,6 +62,13 @@
         
         <h1 class="game-title">MEMORY MATCH</h1>
 
+        <!-- Mode Selection Tabs -->
+        <div class="mode-selector-group" role="tablist" aria-label="Game Mode">
+          <button class="mode-pill active" data-mode="solo" role="tab" aria-selected="true">👤 Solo</button>
+          <button class="mode-pill" data-mode="bot" role="tab" aria-selected="false">🤖 vs Bot</button>
+          <button class="mode-pill" data-mode="2p" role="tab" aria-selected="false">👥 2 Players</button>
+        </div>
+
         <!-- Controls & Difficulty Bar -->
         <div class="controls-panel">
           <div class="difficulty-group">
@@ -80,26 +87,34 @@
           </div>
         </div>
 
-        <!-- Live Scoreboard & Stats -->
-        <div class="stats-bar">
-          <div class="stat-box">
-            <span class="stat-label">MOVES</span>
-            <span class="stat-val" id="move-count">0</span>
+        <!-- Dynamic Turn Banner for Bot & 2P Modes -->
+        <div class="turn-banner" id="turn-banner" style="display: none;">
+          <div class="turn-badge" id="turn-badge">
+            <span class="turn-icon" id="turn-icon">👤</span>
+            <span class="turn-text" id="turn-text">YOUR TURN</span>
+          </div>
+        </div>
+
+        <!-- Live Scoreboard & Stats (Adaptive for Solo, Bot, and 2P) -->
+        <div class="stats-bar" id="stats-bar">
+          <div class="stat-box" id="stat-box-1">
+            <span class="stat-label" id="stat-label-1">MOVES</span>
+            <span class="stat-val" id="stat-val-1">0</span>
           </div>
 
-          <div class="stat-box">
-            <span class="stat-label">TIME</span>
-            <span class="stat-val" id="timer-val">00:00</span>
+          <div class="stat-box" id="stat-box-2">
+            <span class="stat-label" id="stat-label-2">TIME</span>
+            <span class="stat-val" id="stat-val-2">00:00</span>
           </div>
 
-          <div class="stat-box">
-            <span class="stat-label">PAIRS</span>
-            <span class="stat-val" id="pairs-matched">0/8</span>
+          <div class="stat-box" id="stat-box-3">
+            <span class="stat-label" id="stat-label-3">PAIRS</span>
+            <span class="stat-val" id="stat-val-3">0/8</span>
           </div>
 
-          <div class="stat-box best-box">
-            <span class="stat-label">BEST MOVES</span>
-            <span class="stat-val" id="best-moves">-</span>
+          <div class="stat-box best-box" id="stat-box-4">
+            <span class="stat-label" id="stat-label-4">BEST</span>
+            <span class="stat-val" id="stat-val-4">-</span>
           </div>
         </div>
 
@@ -124,25 +139,25 @@
       </div>
     </main>
 
-    <!-- Victory Modal Overlay -->
+    <!-- Victory / Game Over Modal Overlay -->
     <div class="victory-modal" id="victory-modal" style="display: none;">
       <div class="modal-card">
-        <div class="modal-hero-icon">🏆</div>
-        <h2 class="modal-title">GREAT MEMORY!</h2>
-        <p class="modal-desc">You matched all cards successfully!</p>
+        <div class="modal-hero-icon" id="modal-hero-icon">🏆</div>
+        <h2 class="modal-title" id="modal-title">GREAT MEMORY!</h2>
+        <p class="modal-desc" id="modal-desc">You matched all cards successfully!</p>
         
-        <div class="modal-stats-grid">
+        <div class="modal-stats-grid" id="modal-stats-grid">
           <div class="modal-stat-item">
-            <span>Total Moves</span>
-            <strong id="modal-moves">0</strong>
+            <span id="modal-label-1">Total Moves</span>
+            <strong id="modal-val-1">0</strong>
           </div>
           <div class="modal-stat-item">
-            <span>Time Taken</span>
-            <strong id="modal-time">00:00</strong>
+            <span id="modal-label-2">Time Taken</span>
+            <strong id="modal-val-2">00:00</strong>
           </div>
           <div class="modal-stat-item">
-            <span>Best Moves</span>
-            <strong id="modal-best">0</strong>
+            <span id="modal-label-3">Best Moves</span>
+            <strong id="modal-val-3">0</strong>
           </div>
         </div>
 
