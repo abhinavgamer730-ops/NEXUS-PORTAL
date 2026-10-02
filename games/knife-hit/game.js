@@ -1,7 +1,8 @@
 /**
- * Knife Hit Arcade Game Engine
- * Features: 60FPS Canvas Physics, Rotating Log Physics, Boss Encounters,
- * Apple Slicing, Knife Skin Arsenal, 2-Player Duel Mode, Web Audio Synthesizer
+ * Knife Hit Arcade Game Engine (High-Fidelity Polish)
+ * Features: 60FPS Canvas Physics, Multi-Layer Realistic Synthesized Audio,
+ * Log Recoil Spring, Smooth Blade Insertion & Radial Handle Orientation,
+ * Apple Slicing Physics, Knife Arsenal Shop, 2-Player Duel Mode
  */
 
 (function () {
@@ -9,15 +10,15 @@
 
   // Knife Skins Catalog
   const SKINS = [
-    { id: 'classic', name: 'Classic Dagger', icon: '🗡️', price: 0, bladeColor: '#cbd5e1', hiltColor: '#94a3b8', glowColor: null },
-    { id: 'katana', name: 'Golden Katana', icon: '⚔️', price: 20, bladeColor: '#facc15', hiltColor: '#ca8a04', glowColor: '#fef08a' },
-    { id: 'kunai', name: 'Ninja Kunai', icon: '🥷', price: 40, bladeColor: '#38bdf8', hiltColor: '#0284c7', glowColor: '#7dd3fc' },
-    { id: 'laser', name: 'Cyber Saber', icon: '⚡', price: 70, bladeColor: '#a855f7', hiltColor: '#7e22ce', glowColor: '#c084fc' },
-    { id: 'ruby', name: 'Ruby Broadsword', icon: '💎', price: 100, bladeColor: '#fb7185', hiltColor: '#e11d48', glowColor: '#fda4af' },
-    { id: 'excalibur', name: 'Holy Excalibur', icon: '👑', price: 150, bladeColor: '#4ade80', hiltColor: '#16a34a', glowColor: '#86efac' }
+    { id: 'classic', name: 'Classic Dagger', icon: '🗡️', price: 0, bladeColor: '#e2e8f0', bladeEdge: '#94a3b8', hiltColor: '#64748b', gripColor: '#334155', glowColor: null },
+    { id: 'katana', name: 'Golden Katana', icon: '⚔️', price: 20, bladeColor: '#fef08a', bladeEdge: '#eab308', hiltColor: '#ca8a04', gripColor: '#854d0e', glowColor: '#fef08a' },
+    { id: 'kunai', name: 'Ninja Kunai', icon: '🥷', price: 40, bladeColor: '#7dd3fc', bladeEdge: '#0284c7', hiltColor: '#0369a1', gripColor: '#0c4a6e', glowColor: '#38bdf8' },
+    { id: 'laser', name: 'Cyber Saber', icon: '⚡', price: 70, bladeColor: '#e9d5ff', bladeEdge: '#a855f7', hiltColor: '#7e22ce', gripColor: '#581c87', glowColor: '#c084fc' },
+    { id: 'ruby', name: 'Ruby Blade', icon: '💎', price: 100, bladeColor: '#fecdd3', bladeEdge: '#f43f5e', hiltColor: '#e11d48', gripColor: '#9f1239', glowColor: '#fb7185' },
+    { id: 'excalibur', name: 'Excalibur', icon: '👑', price: 150, bladeColor: '#bbf7d0', bladeEdge: '#22c55e', hiltColor: '#16a34a', gripColor: '#14532d', glowColor: '#4ade80' }
   ];
 
-  // Boss Stage Definitions
+  // Boss Definitions
   const BOSS_CONFIGS = {
     5: { name: 'CHEESY PIZZA', icon: '🍕', color: '#f59e0b', ringColor: '#b45309', pattern: 'wobble', knives: 9 },
     10: { name: 'GIANT WATERMELON', icon: '🍉', color: '#22c55e', ringColor: '#15803d', pattern: 'reversal', knives: 10 },
@@ -37,7 +38,6 @@
 
   // 2-Player Duel State
   let duelTurn = 'p1'; // 'p1' | 'p2'
-  let duelScores = { p1: 0, p2: 0 };
 
   // Canvas & Physics Loop
   const canvas = document.getElementById('game-canvas');
@@ -51,16 +51,18 @@
   let logRadius = 75;
   let logAngle = 0;
   let logSpeed = 0.035;
-  let logPattern = 'constant'; // 'constant' | 'wobble' | 'reversal' | 'stutter' | 'hyper'
+  let logPattern = 'constant';
   let patternTimer = 0;
+  let logRecoilY = 0; // Micro recoil bounce on strike
 
   // Active Stage Objects
   let embeddedKnives = []; // [ { angle, skin, player } ]
-  let flyingKnife = null;  // { y, speed, skin, player }
-  let readyKnife = { y: 440, skin: 'classic', player: 'p1' };
-  let apples = []; // [ { angle, sliced, sliceTimer, pieces: [] } ]
+  let flyingKnife = null;  // { x, y, vy, vx, rot, skin, player, deflected }
+  let readyKnifeY = 440;
+  let targetReadyKnifeY = 440;
+  let apples = []; // [ { angle, sliced, pieces: [] } ]
   let particles = [];
-  let logPieces = []; // When log explodes
+  let logPieces = [];
   let screenShake = 0;
 
   let totalStageKnives = 7;
@@ -123,14 +125,27 @@
     } catch (e) {}
   }
 
-  // Web Audio Synthesizer
+  // Multi-Layer Realistic Web Audio Synthesizer
   let audioCtx = null;
+  let noiseBuffer = null;
+
   function getAudioContext() {
     if (!audioCtx) {
       const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtxClass) audioCtx = new AudioCtxClass();
+      if (AudioCtxClass) {
+        audioCtx = new AudioCtxClass();
+        // Generate pre-rendered white noise buffer for realistic wood crack & whoosh
+        const bufferSize = audioCtx.sampleRate * 1.5;
+        noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          output[i] = Math.random() * 2 - 1;
+        }
+      }
     }
-    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
     return audioCtx;
   }
 
@@ -139,90 +154,132 @@
     const ctxA = getAudioContext();
     if (!ctxA) return;
 
+    const now = ctxA.currentTime;
+
     try {
-      const now = ctxA.currentTime;
       if (type === 'throw') {
-        const osc = ctxA.createOscillator();
-        const gain = ctxA.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(600, now);
-        osc.frequency.exponentialRampToValueAtTime(150, now + 0.08);
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-        osc.connect(gain);
-        gain.connect(ctxA.destination);
-        osc.start(now);
-        osc.stop(now + 0.09);
+        // Aerodynamic Blade Whoosh (Filtered noise sweep)
+        if (noiseBuffer) {
+          const noise = ctxA.createBufferSource();
+          noise.buffer = noiseBuffer;
+          const filter = ctxA.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.Q.setValueAtTime(3.5, now);
+          filter.frequency.setValueAtTime(900, now);
+          filter.frequency.exponentialRampToValueAtTime(300, now + 0.08);
+
+          const gain = ctxA.createGain();
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctxA.destination);
+          noise.start(now);
+          noise.stop(now + 0.09);
+        }
       } else if (type === 'hit') {
-        // Wooden THWACK!
-        const osc = ctxA.createOscillator();
-        const gain = ctxA.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(180, now);
-        osc.frequency.exponentialRampToValueAtTime(40, now + 0.07);
-        gain.gain.setValueAtTime(0.35, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-        osc.connect(gain);
-        gain.connect(ctxA.destination);
-        osc.start(now);
-        osc.stop(now + 0.09);
+        // REALISTIC SOLID WOOD THWACK! (3 acoustic layers)
+        
+        // 1. Heavy Low Wood Body Thump
+        const oscThump = ctxA.createOscillator();
+        const gainThump = ctxA.createGain();
+        oscThump.type = 'sine';
+        oscThump.frequency.setValueAtTime(160, now);
+        oscThump.frequency.exponentialRampToValueAtTime(45, now + 0.07);
+        gainThump.gain.setValueAtTime(0.45, now);
+        gainThump.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        oscThump.connect(gainThump);
+        gainThump.connect(ctxA.destination);
+        oscThump.start(now);
+        oscThump.stop(now + 0.09);
+
+        // 2. Wood Fiber Penetration Crack (Filtered Noise Transient)
+        if (noiseBuffer) {
+          const noise = ctxA.createBufferSource();
+          noise.buffer = noiseBuffer;
+          const filter = ctxA.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.Q.setValueAtTime(2.0, now);
+          filter.frequency.setValueAtTime(1600, now);
+          filter.frequency.exponentialRampToValueAtTime(600, now + 0.04);
+
+          const gainNoise = ctxA.createGain();
+          gainNoise.gain.setValueAtTime(0.35, now);
+          gainNoise.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+
+          noise.connect(filter);
+          filter.connect(gainNoise);
+          gainNoise.connect(ctxA.destination);
+          noise.start(now);
+          noise.stop(now + 0.05);
+        }
+
+        // 3. High Tensile Steel Ring Ping
+        const oscPing = ctxA.createOscillator();
+        const gainPing = ctxA.createGain();
+        oscPing.type = 'triangle';
+        oscPing.frequency.setValueAtTime(2400, now);
+        oscPing.frequency.exponentialRampToValueAtTime(1800, now + 0.03);
+        gainPing.gain.setValueAtTime(0.15, now);
+        gainPing.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+        oscPing.connect(gainPing);
+        gainPing.connect(ctxA.destination);
+        oscPing.start(now);
+        oscPing.stop(now + 0.04);
+
+      } else if (type === 'clash') {
+        // High Metallic Blade Clang & Deflection
+        [880, 1760, 3150].forEach((freq, i) => {
+          const osc = ctxA.createOscillator();
+          const gain = ctxA.createGain();
+          osc.type = i === 0 ? 'sawtooth' : 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+          osc.frequency.exponentialRampToValueAtTime(freq * 0.7, now + 0.25);
+          gain.gain.setValueAtTime(0.3 / (i + 1), now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
+          osc.connect(gain);
+          gain.connect(ctxA.destination);
+          osc.start(now);
+          osc.stop(now + 0.27);
+        });
       } else if (type === 'apple') {
-        // Juicy squish
+        // Juicy Fruit Squelch + Pop
         const osc = ctxA.createOscillator();
         const gain = ctxA.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(800, now);
-        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.09);
-        gain.gain.setValueAtTime(0.25, now);
+        osc.frequency.setValueAtTime(900, now);
+        osc.frequency.exponentialRampToValueAtTime(1400, now + 0.08);
+        gain.gain.setValueAtTime(0.28, now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
         osc.connect(gain);
         gain.connect(ctxA.destination);
         osc.start(now);
-        osc.stop(now + 0.1);
-      } else if (type === 'clash') {
-        // Metallic CLANG & Deflect
-        const osc1 = ctxA.createOscillator();
-        const osc2 = ctxA.createOscillator();
-        const gain = ctxA.createGain();
-        osc1.type = 'sawtooth';
-        osc2.type = 'square';
-        osc1.frequency.setValueAtTime(880, now);
-        osc2.frequency.setValueAtTime(440, now);
-        osc1.frequency.exponentialRampToValueAtTime(220, now + 0.2);
-        gain.gain.setValueAtTime(0.3, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
-        osc1.connect(gain);
-        osc2.connect(gain);
-        gain.connect(ctxA.destination);
-        osc1.start(now);
-        osc2.start(now);
-        osc1.stop(now + 0.23);
-        osc2.stop(now + 0.23);
+        osc.stop(now + 0.09);
       } else if (type === 'stage') {
-        // Stage clear log fracture
-        [440, 554.37, 659.25, 880].forEach((f, i) => {
+        // Log Fracture Explosion & Chime
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
           const osc = ctxA.createOscillator();
           const gain = ctxA.createGain();
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(f, now + i * 0.05);
-          gain.gain.setValueAtTime(0.25, now + i * 0.05);
-          gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.05 + 0.18);
+          osc.frequency.setValueAtTime(freq, now + i * 0.06);
+          gain.gain.setValueAtTime(0.25, now + i * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.06 + 0.2);
           osc.connect(gain);
           gain.connect(ctxA.destination);
-          osc.start(now + i * 0.05);
-          osc.stop(now + i * 0.05 + 0.19);
+          osc.start(now + i * 0.06);
+          osc.stop(now + i * 0.06 + 0.21);
         });
       }
     } catch (e) {}
   }
 
-  // Update HUD Display
+  // Update HUD
   function updateHUD() {
     scoreValEl.textContent = score;
     appleValEl.textContent = `🍎 ${totalApples}`;
     bestValEl.textContent = bestScore;
 
-    // Stage Pills indicator (1 to 4, then Boss)
     const stageInCycle = ((currentStage - 1) % 5) + 1;
     const isBossStage = stageInCycle === 5;
 
@@ -238,7 +295,6 @@
     pillsHTML += `<span class="${bossCls}">👑</span>`;
     stagePillsEl.innerHTML = pillsHTML;
 
-    // 2-Player Turn Banner
     if (currentMode === 'duel') {
       duelTurnBanner.style.display = 'flex';
       if (duelTurn === 'p1') {
@@ -254,10 +310,10 @@
       duelTurnBanner.style.display = 'none';
     }
 
-    // Render Remaining Knives Stack
+    // Stack Icons
     let stackHTML = '';
     const skinDef = SKINS.find(s => s.id === equippedSkin) || SKINS[0];
-    const icon = currentMode === 'duel' ? (duelTurn === 'p1' ? '🗡️' : '🗡️') : (skinDef.icon || '🗡️');
+    const icon = skinDef.icon || '🗡️';
 
     for (let i = 0; i < totalStageKnives; i++) {
       const isUsed = i >= remainingKnives;
@@ -266,7 +322,7 @@
     knifeStackEl.innerHTML = stackHTML;
   }
 
-  // Set up New Stage
+  // Setup Stage
   function setupStage() {
     isStageTransition = false;
     isGameOver = false;
@@ -275,6 +331,9 @@
     apples = [];
     particles = [];
     logPieces = [];
+    logRecoilY = 0;
+    readyKnifeY = height * 0.88;
+    targetReadyKnifeY = height * 0.88;
 
     const isBoss = (currentStage % 5) === 0;
     const bossConfig = BOSS_CONFIGS[currentStage] || (isBoss ? BOSS_CONFIGS[5] : null);
@@ -284,14 +343,13 @@
       bossTextEl.textContent = `⚠️ BOSS: ${bossConfig.name} ⚠️`;
       totalStageKnives = bossConfig.knives || 9;
       logPattern = bossConfig.pattern || 'wobble';
-      logRadius = 82;
+      logRadius = 80;
       setTimeout(() => { bossBannerEl.style.display = 'none'; }, 2000);
     } else {
       bossBannerEl.style.display = 'none';
       totalStageKnives = Math.min(6 + Math.floor(currentStage / 2), 11);
-      logRadius = 75;
+      logRadius = 72;
 
-      // Assign rotation pattern based on difficulty
       if (currentStage === 1) logPattern = 'constant';
       else if (currentStage === 2) logPattern = 'wobble';
       else if (currentStage === 3) logPattern = 'reversal';
@@ -302,7 +360,7 @@
     logAngle = 0;
     logSpeed = 0.032 + Math.min(currentStage * 0.003, 0.035);
 
-    // Pre-embedded obstacles (from Stage 3 onwards)
+    // Pre-embedded obstacles (Stage 3+)
     if (!isBoss && currentStage >= 3) {
       const obstacleCount = Math.min(Math.floor((currentStage - 2) / 2), 3);
       for (let i = 0; i < obstacleCount; i++) {
@@ -315,22 +373,15 @@
       }
     }
 
-    // Apples on Log perimeter (25% to 50% spawn chance)
-    const appleCount = Math.random() < 0.65 ? (Math.random() < 0.3 ? 2 : 1) : 0;
+    // Apples on Log perimeter
+    const appleCount = Math.random() < 0.6 ? (Math.random() < 0.25 ? 2 : 1) : 0;
     for (let a = 0; a < appleCount; a++) {
       let randAppleAngle = Math.random() * Math.PI * 2;
-      // Make sure it doesn't collide with existing obstacles
-      const tooClose = embeddedKnives.some(k => Math.abs(normalizeAngle(k.angle - randAppleAngle)) < 0.35);
+      const tooClose = embeddedKnives.some(k => Math.abs(normalizeAngle(k.angle - randAppleAngle)) < 0.4);
       if (!tooClose) {
-        apples.push({ angle: randAppleAngle, sliced: false, sliceTimer: 0 });
+        apples.push({ angle: randAppleAngle, sliced: false });
       }
     }
-
-    readyKnife = {
-      y: 440,
-      skin: equippedSkin,
-      player: duelTurn
-    };
 
     updateHUD();
   }
@@ -340,7 +391,6 @@
     currentStage = 1;
     score = 0;
     duelTurn = 'p1';
-    duelScores = { p1: 0, p2: 0 };
     gameModal.style.display = 'none';
     loadSavedData();
     setupStage();
@@ -351,14 +401,13 @@
     }
   }
 
-  // Normalize Angle (-PI to PI)
   function normalizeAngle(a) {
     while (a > Math.PI) a -= Math.PI * 2;
     while (a < -Math.PI) a += Math.PI * 2;
     return a;
   }
 
-  // Throw Knife Trigger
+  // Throw Knife
   function throwKnife() {
     if (isGameOver || isStageTransition || flyingKnife || remainingKnives <= 0) return;
 
@@ -366,28 +415,30 @@
 
     flyingKnife = {
       x: logX,
-      y: readyKnife.y,
-      speed: 28,
+      y: readyKnifeY,
+      vy: -32, // High speed 60FPS travel
+      vx: 0,
+      rot: 0,
       skin: equippedSkin,
       player: duelTurn,
-      deflected: false,
-      vx: 0,
-      vy: -28,
-      rot: 0
+      deflected: false
     };
 
     remainingKnives--;
+    // Slide up next knife smoothly
+    readyKnifeY = height * 0.95;
+    targetReadyKnifeY = height * 0.88;
+
     updateHUD();
   }
 
-  // Handle Log Break / Stage Victory
+  // Handle Stage Cleared
   function handleStageClear() {
     isStageTransition = true;
     playSound('stage');
 
-    // Create log explosion shards
     const isBoss = (currentStage % 5) === 0;
-    const pieceCount = 12;
+    const pieceCount = 14;
     for (let i = 0; i < pieceCount; i++) {
       const ang = (Math.PI * 2 * i) / pieceCount;
       const spd = 4 + Math.random() * 6;
@@ -397,64 +448,59 @@
         vx: Math.cos(ang) * spd,
         vy: Math.sin(ang) * spd + 1,
         rot: Math.random() * Math.PI,
-        vRot: (Math.random() - 0.5) * 0.3,
+        vRot: (Math.random() - 0.5) * 0.25,
         size: 16 + Math.random() * 12,
         color: isBoss ? '#f43f5e' : '#d97706',
         alpha: 1
       });
     }
 
-    // Confetti on boss clear
     if (isBoss && typeof confetti === 'function') {
       confetti({
-        particleCount: 70,
-        spread: 60,
+        particleCount: 75,
+        spread: 65,
         origin: { y: 0.4 },
-        colors: ['#38bdf8', '#facc15', '#fb7185', '#4ade80']
+        colors: ['#38bdf8', '#facc15', '#fb7185', '#4ade80', '#c084fc']
       });
     }
 
     setTimeout(() => {
       currentStage++;
       setupStage();
-    }, 900);
+    }, 850);
   }
 
   // Handle Game Over
-  function handleGameOver(reason, hitKnife) {
+  function handleGameOver() {
     if (isGameOver) return;
     isGameOver = true;
-    screenShake = 16;
+    screenShake = 12;
     playSound('clash');
 
-    // Deflect flying knife
     if (flyingKnife) {
       flyingKnife.deflected = true;
-      flyingKnife.vx = (Math.random() - 0.5) * 12;
-      flyingKnife.vy = 8 + Math.random() * 8;
+      flyingKnife.vx = (Math.random() > 0.5 ? 1 : -1) * (5 + Math.random() * 5);
+      flyingKnife.vy = 10 + Math.random() * 6;
     }
 
-    // Spawn sparks at collision point
+    // Sparks
     for (let i = 0; i < 16; i++) {
       const ang = Math.random() * Math.PI * 2;
-      const spd = 3 + Math.random() * 7;
+      const spd = 3 + Math.random() * 6;
       particles.push({
         x: logX,
         y: logY + logRadius,
         vx: Math.cos(ang) * spd,
         vy: Math.sin(ang) * spd,
         color: '#facc15',
-        size: 3 + Math.random() * 3,
+        size: 3 + Math.random() * 2.5,
         alpha: 1
       });
     }
 
-    setTimeout(() => {
-      showGameOverModal();
-    }, 700);
+    setTimeout(showGameOverModal, 700);
   }
 
-  // Game Over Modal UI
   function showGameOverModal() {
     const isNewBest = score > bestScore;
     if (isNewBest) {
@@ -484,46 +530,52 @@
     gameModal.style.display = 'flex';
   }
 
-  // Core Physics & Update Step
+  // Update Engine Loop
   function update(dt) {
     patternTimer += dt;
+
+    // Smooth Reload animation
+    readyKnifeY += (targetReadyKnifeY - readyKnifeY) * 0.25;
+
+    // Spring Recoil decay
+    logRecoilY *= 0.72;
 
     // Rotation patterns
     if (logPattern === 'constant') {
       logAngle += logSpeed;
     } else if (logPattern === 'wobble') {
-      logAngle += logSpeed + Math.sin(patternTimer * 2.5) * 0.025;
+      logAngle += logSpeed + Math.sin(patternTimer * 2.8) * 0.022;
     } else if (logPattern === 'reversal') {
-      const wave = Math.sin(patternTimer * 1.6);
-      logAngle += logSpeed * (wave > 0.3 ? 1.4 : (wave < -0.3 ? -1.2 : 0.2));
+      const wave = Math.sin(patternTimer * 1.5);
+      logAngle += logSpeed * (wave > 0.35 ? 1.4 : (wave < -0.35 ? -1.3 : 0.15));
     } else if (logPattern === 'stutter') {
-      const step = Math.floor(patternTimer * 4) % 4;
-      logAngle += step === 0 ? 0.005 : logSpeed * 1.5;
+      const step = Math.floor(patternTimer * 4.5) % 4;
+      logAngle += step === 0 ? 0.003 : logSpeed * 1.5;
     } else if (logPattern === 'hyper') {
-      logAngle += (Math.sin(patternTimer * 3) > 0 ? 1 : -1) * logSpeed * 1.6;
+      logAngle += (Math.sin(patternTimer * 3.2) > 0 ? 1 : -1) * logSpeed * 1.6;
     }
 
-    // Screen Shake decay
-    if (screenShake > 0) screenShake *= 0.85;
+    if (screenShake > 0) screenShake *= 0.82;
 
-    // Update Flying Knife
+    // Flying Knife Update
     if (flyingKnife) {
       if (flyingKnife.deflected) {
         flyingKnife.x += flyingKnife.vx;
         flyingKnife.y += flyingKnife.vy;
-        flyingKnife.rot += 0.25;
+        flyingKnife.rot += 0.3;
         if (flyingKnife.y > height + 80) flyingKnife = null;
       } else {
         flyingKnife.y += flyingKnife.vy;
 
-        // Check distance to log perimeter
+        // Collision with log perimeter
         const targetY = logY + logRadius;
         if (flyingKnife.y <= targetY) {
-          // Calculate contact angle relative to log
+          // Precise impact angle in local rotating coordinates
+          // At bottom of circle, world angle is PI/2
           const hitAngle = normalizeAngle((Math.PI / 2) - logAngle);
 
-          // Check collision with already embedded knives
-          const MIN_BLADE_ANGLE = 0.22; // ~12.6 degrees
+          // Check clash against existing knives
+          const MIN_BLADE_ANGLE = 0.22; // ~12.6 degrees safety threshold
           let collidedKnife = null;
 
           for (const k of embeddedKnives) {
@@ -535,52 +587,53 @@
           }
 
           if (collidedKnife) {
-            handleGameOver('knife_clash', collidedKnife);
+            handleGameOver();
           } else {
-            // Successful Wood Embed!
+            // SUCCESSFUL WOOD EMBED!
             playSound('hit');
-            screenShake = 6;
+            screenShake = 3.5;
+            logRecoilY = -6; // Juicy micro recoil bounce upwards!
             score++;
+
             embeddedKnives.push({
               angle: hitAngle,
               skin: flyingKnife.skin,
               player: flyingKnife.player
             });
 
-            // Wood splinter particles
-            for (let i = 0; i < 8; i++) {
-              const ang = Math.PI / 2 + (Math.random() - 0.5) * 1.5;
+            // Wood Splinter Particles
+            for (let i = 0; i < 9; i++) {
+              const ang = Math.PI / 2 + (Math.random() - 0.5) * 1.4;
               particles.push({
                 x: logX,
                 y: targetY,
                 vx: Math.cos(ang) * (2 + Math.random() * 4),
                 vy: Math.sin(ang) * (2 + Math.random() * 4),
                 color: '#d97706',
-                size: 2.5 + Math.random() * 2.5,
+                size: 2.2 + Math.random() * 2,
                 alpha: 1
               });
             }
 
-            // Check if hit any Apple on log!
+            // Apple Slicing Check
             apples.forEach(apple => {
               if (!apple.sliced) {
                 const diff = Math.abs(normalizeAngle(apple.angle - hitAngle));
-                if (diff < 0.26) {
+                if (diff < 0.28) {
                   apple.sliced = true;
                   totalApples += 2;
                   saveGameData();
                   playSound('apple');
 
-                  // Apple juice particles
                   for (let j = 0; j < 12; j++) {
                     const aAng = Math.random() * Math.PI * 2;
                     particles.push({
                       x: logX,
                       y: targetY,
-                      vx: Math.cos(aAng) * (3 + Math.random() * 5),
-                      vy: Math.sin(aAng) * (3 + Math.random() * 5),
+                      vx: Math.cos(aAng) * (3 + Math.random() * 4),
+                      vy: Math.sin(aAng) * (3 + Math.random() * 4),
                       color: '#ef4444',
-                      size: 3 + Math.random() * 3,
+                      size: 3 + Math.random() * 2.5,
                       alpha: 1
                     });
                   }
@@ -590,14 +643,12 @@
 
             flyingKnife = null;
 
-            // In 2P Duel, switch turn after each throw
             if (currentMode === 'duel') {
               duelTurn = duelTurn === 'p1' ? 'p2' : 'p1';
             }
 
             updateHUD();
 
-            // Check if all knives embedded
             if (remainingKnives <= 0) {
               handleStageClear();
             }
@@ -606,17 +657,17 @@
       }
     }
 
-    // Update Particles
+    // Particles Update
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += 0.2; // Gravity
-      p.alpha -= 0.025;
+      p.vy += 0.22;
+      p.alpha -= 0.026;
       if (p.alpha <= 0) particles.splice(i, 1);
     }
 
-    // Update Log Exploding Pieces
+    // Exploding Pieces Update
     for (let i = logPieces.length - 1; i >= 0; i--) {
       const lp = logPieces[i];
       lp.x += lp.vx;
@@ -628,71 +679,95 @@
     }
   }
 
-  // Draw Blade Helper
-  function drawKnifeShape(cx, cy, skinId, isPlayer2) {
+  /**
+   * Draw Knife Shape
+   * Standard Orientation:
+   * (0, 0) is the Crossguard base.
+   * Tip is at (0, -38) [Pointed UP towards negative Y]
+   * Hilt & Grip are at (0, +28) [Pointed DOWN towards positive Y]
+   */
+  function drawKnife(cx, cy, skinId, isPlayer2, embeddedInLog = false) {
     const skin = SKINS.find(s => s.id === skinId) || SKINS[0];
     const bladeCol = isPlayer2 ? '#fb7185' : skin.bladeColor;
+    const bladeEdge = isPlayer2 ? '#f43f5e' : skin.bladeEdge;
     const hiltCol = isPlayer2 ? '#e11d48' : skin.hiltColor;
+    const gripCol = isPlayer2 ? '#9f1239' : skin.gripColor;
 
     ctx.save();
     ctx.translate(cx, cy);
 
-    // Glow Effect
     if (skin.glowColor) {
       ctx.shadowColor = skin.glowColor;
-      ctx.shadowBlur = 8;
+      ctx.shadowBlur = 7;
     }
 
-    // Blade Point & Edge
+    // 1. Blade Body
     ctx.fillStyle = bladeCol;
     ctx.beginPath();
-    ctx.moveTo(0, -45);       // Tip
-    ctx.lineTo(7, -10);       // Right blade edge
-    ctx.lineTo(7, 0);         // Guard
-    ctx.lineTo(-7, 0);        // Guard
-    ctx.lineTo(-7, -10);      // Left blade edge
+    ctx.moveTo(0, -38);      // Blade Sharp Tip
+    ctx.lineTo(6, -8);       // Right edge taper
+    ctx.lineTo(6, 0);        // Right base
+    ctx.lineTo(-6, 0);       // Left base
+    ctx.lineTo(-6, -8);      // Left edge taper
     ctx.closePath();
     ctx.fill();
 
+    // Blade Center Ridge Line
+    ctx.strokeStyle = bladeEdge;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, -34);
+    ctx.lineTo(0, 0);
+    ctx.stroke();
+
+    // Outline
     ctx.strokeStyle = '#0f172a';
     ctx.lineWidth = 2.2;
     ctx.stroke();
 
-    // Crossguard
+    // 2. Crossguard (Guard)
     ctx.fillStyle = hiltCol;
     ctx.beginPath();
-    ctx.roundRect(-11, 0, 22, 6, 3);
+    ctx.roundRect(-10, 0, 20, 5, 2.5);
     ctx.fill();
     ctx.stroke();
 
-    // Hilt Grip
-    ctx.fillStyle = hiltCol;
+    // 3. Handle Grip (Sticks OUT into space)
+    ctx.fillStyle = gripCol;
     ctx.beginPath();
-    ctx.roundRect(-4, 6, 8, 22, 2);
+    ctx.roundRect(-3.5, 5, 7, 20, 2);
     ctx.fill();
     ctx.stroke();
 
-    // Pommel Gem
+    // Grip Ribs
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(-3, 10); ctx.lineTo(3, 10);
+    ctx.moveTo(-3, 15); ctx.lineTo(3, 15);
+    ctx.moveTo(-3, 20); ctx.lineTo(3, 20);
+    ctx.stroke();
+
+    // 4. Pommel Ring / Gem at End of Handle
     ctx.fillStyle = isPlayer2 ? '#fda4af' : (skin.glowColor || '#ffffff');
     ctx.beginPath();
-    ctx.arc(0, 30, 4, 0, Math.PI * 2);
+    ctx.arc(0, 28, 4, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
 
     ctx.restore();
   }
 
-  // Main Render Routine
+  // Render Loop
   function render() {
     ctx.clearRect(0, 0, width, height);
 
     ctx.save();
-    // Screen Shake
     if (screenShake > 0.5) {
       ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
     }
 
-    // 1. Draw Exploding Log Pieces (if transitioning)
+    // 1. Draw Exploding Log Pieces
     logPieces.forEach(lp => {
       ctx.save();
       ctx.translate(lp.x, lp.y);
@@ -708,17 +783,16 @@
       ctx.restore();
     });
 
-    // 2. Draw Central Rotating Log / Boss Target
+    // 2. Draw Central Log with Spring Recoil Bounce
     if (!isStageTransition) {
       ctx.save();
-      ctx.translate(logX, logY);
+      ctx.translate(logX, logY + logRecoilY);
       ctx.rotate(logAngle);
 
       const isBoss = (currentStage % 5) === 0;
       const bossConfig = BOSS_CONFIGS[currentStage] || (isBoss ? BOSS_CONFIGS[5] : null);
 
       if (isBoss && bossConfig) {
-        // Boss Target
         ctx.fillStyle = bossConfig.color;
         ctx.strokeStyle = '#0f172a';
         ctx.lineWidth = 6;
@@ -727,20 +801,18 @@
         ctx.fill();
         ctx.stroke();
 
-        // Inner Rings
         ctx.strokeStyle = bossConfig.ringColor;
         ctx.lineWidth = 5;
         ctx.beginPath();
         ctx.arc(0, 0, logRadius * 0.65, 0, Math.PI * 2);
         ctx.stroke();
 
-        // Boss Hero Icon in Center
-        ctx.font = '40px sans-serif';
+        ctx.font = '38px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(bossConfig.icon, 0, 0);
       } else {
-        // Classic Cartoon Wood Log
+        // Classic Wood Target
         ctx.fillStyle = '#d97706';
         ctx.strokeStyle = '#0f172a';
         ctx.lineWidth = 5.5;
@@ -749,7 +821,6 @@
         ctx.fill();
         ctx.stroke();
 
-        // Wood Texture Growth Rings
         ctx.strokeStyle = '#b45309';
         ctx.lineWidth = 4;
         ctx.beginPath();
@@ -762,25 +833,26 @@
         ctx.arc(0, 0, logRadius * 0.42, 0, Math.PI * 2);
         ctx.stroke();
 
-        // Core Ring
         ctx.fillStyle = '#78350f';
         ctx.beginPath();
         ctx.arc(0, 0, logRadius * 0.15, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // 3. Draw Embedded Knives
+      // 3. Draw Embedded Knives:
+      // Tip is buried at radius `logRadius - 12`, handle sticks OUTWARDS into the air!
       embeddedKnives.forEach(k => {
         ctx.save();
         ctx.rotate(k.angle);
+        // Translate to log surface: Guard is at logRadius, blade tip penetrates inwards!
         ctx.translate(0, logRadius);
-        // Flip knife outwards
-        ctx.rotate(Math.PI);
-        drawKnifeShape(0, 0, k.skin, k.player === 'p2');
+        // Correct orientation: Tip points towards wood center (negative Y in local frame),
+        // Handle sticks out into the air (positive Y in local frame)!
+        drawKnife(0, 0, k.skin, k.player === 'p2', true);
         ctx.restore();
       });
 
-      // 4. Draw Apples on Log
+      // 4. Draw Apples on Log Perimeter
       apples.forEach(apple => {
         if (!apple.sliced) {
           ctx.save();
@@ -797,20 +869,20 @@
       ctx.restore();
     }
 
-    // 5. Draw Flying Knife
+    // 5. Draw Flying Knife (Tip facing UPwards towards the log)
     if (flyingKnife) {
       ctx.save();
       ctx.translate(flyingKnife.x, flyingKnife.y);
       if (flyingKnife.deflected) {
         ctx.rotate(flyingKnife.rot);
       }
-      drawKnifeShape(0, 0, flyingKnife.skin, flyingKnife.player === 'p2');
+      drawKnife(0, 0, flyingKnife.skin, flyingKnife.player === 'p2', false);
       ctx.restore();
     }
 
     // 6. Draw Ready Knife at Bottom Launcher
     if (!flyingKnife && remainingKnives > 0 && !isStageTransition && !isGameOver) {
-      drawKnifeShape(logX, readyKnife.y, equippedSkin, currentMode === 'duel' && duelTurn === 'p2');
+      drawKnife(logX, readyKnifeY, equippedSkin, currentMode === 'duel' && duelTurn === 'p2', false);
     }
 
     // 7. Draw Particles
@@ -838,7 +910,7 @@
     animationFrameId = requestAnimationFrame(gameLoop);
   }
 
-  // Skin Arsenal Shop UI
+  // Skin Arsenal Shop
   function openShop() {
     shopAppleCount.textContent = `🍎 ${totalApples}`;
     skinGrid.innerHTML = '';
@@ -894,7 +966,6 @@
     }
   });
 
-  // Mode Selection
   modePills.forEach(pill => {
     pill.addEventListener('click', () => {
       modePills.forEach(p => {
@@ -917,7 +988,6 @@
   btnShopClose.addEventListener('click', () => { shopModal.style.display = 'none'; });
   btnModalRestart.addEventListener('click', initGame);
 
-  // Resize Handler for crisp canvas resolution
   function handleResize() {
     const rect = wrapper.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
@@ -930,13 +1000,13 @@
 
     logX = width / 2;
     logY = height * 0.3;
-    readyKnife.y = height * 0.88;
+    targetReadyKnifeY = height * 0.88;
+    readyKnifeY = targetReadyKnifeY;
   }
 
   window.addEventListener('resize', handleResize);
   setTimeout(handleResize, 50);
 
-  // Start initial game
   loadSavedData();
   initGame();
 })();
