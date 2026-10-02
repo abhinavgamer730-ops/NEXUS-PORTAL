@@ -623,11 +623,15 @@
       if (touchP1.active) {
         p1.angle = Math.atan2(touchP1.y, touchP1.x);
         p1Forward = Math.min(1, Math.hypot(touchP1.x, touchP1.y));
+        p1.turretAngle = p1.angle;
       } else {
         p1.angle += p1Turn * p1.rotSpeed;
+        if (mouse.hasMoved && currentMode !== '2p') {
+          p1.turretAngle = Math.atan2(mouse.y - p1.y, mouse.x - p1.x);
+        } else {
+          p1.turretAngle = p1.angle;
+        }
       }
-
-      p1.turretAngle = p1.angle;
 
       if (p1Forward !== 0) {
         const nx = p1.x + Math.cos(p1.angle) * (p1.speed * p1Forward);
@@ -942,86 +946,119 @@
       ctx.fill();
       ctx.stroke();
 
-      // Active Powerup Icon on Turret
-      if (tank.powerup) {
-        const pow = POWERUPS.find(p => p.type === tank.powerup);
-        if (pow) {
-          ctx.font = '10px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(pow.icon, 0, 0);
+        // Active Powerup Icon on Turret
+        if (tank.powerup) {
+          const pow = POWERUPS.find(p => p.type === tank.powerup);
+          if (pow) {
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(pow.icon, 0, 0);
+          }
         }
+
+        // Aim Laser Guide for P1
+        if (tank.id === 'p1' && !isRoundOver) {
+          ctx.save();
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([4, 4]);
+          ctx.beginPath();
+          ctx.moveTo(18, 0);
+          ctx.lineTo(80, 0);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        ctx.restore();
+      });
+
+      // 6. Bouncing Bullets with Glow
+      bullets.forEach(b => {
+        ctx.save();
+        ctx.fillStyle = b.color;
+        ctx.shadowColor = b.color;
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // 7. Particles
+      particles.forEach(p => {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      ctx.restore();
+    }
+
+    // Game Loop
+    let lastTime = performance.now();
+    function gameLoop(time) {
+      const dt = Math.min((time - lastTime) / 1000, 0.1);
+      lastTime = time;
+
+      update(dt);
+      render();
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Resize Handler
+    function handleResize() {
+      const rect = wrapper.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const w = rect.width;
+      const h = rect.height;
+
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.scale(dpr, dpr);
+
+      cellSize = w / mazeCols;
+    }
+
+    // Fullscreen
+    function toggleFullscreen() {
+      document.body.classList.toggle('is-fullscreen');
+      setTimeout(handleResize, 100);
+    }
+
+    // Mouse Tracking & Click-to-Shoot for P1
+    let mouse = { x: 300, y: 220, hasMoved: false };
+    function updateMouse(e) {
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        mouse.x = (e.clientX - rect.left) * (canvas.width / (window.devicePixelRatio || 1) / rect.width);
+        mouse.y = (e.clientY - rect.top) * (canvas.height / (window.devicePixelRatio || 1) / rect.height);
+        mouse.hasMoved = true;
       }
+    }
 
-      ctx.restore();
+    window.addEventListener('mousemove', updateMouse);
+    canvas.addEventListener('mousedown', (e) => {
+      if (e.button === 0) {
+        updateMouse(e);
+        const p1 = tanks.find(t => t.id === 'p1');
+        if (p1 && !isRoundOver) fireTank(p1);
+      }
     });
 
-    // 6. Bouncing Bullets with Glow
-    bullets.forEach(b => {
-      ctx.save();
-      ctx.fillStyle = b.color;
-      ctx.shadowColor = b.color;
-      ctx.shadowBlur = 8;
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
+    // Event Listeners: Keyboard
+    window.addEventListener('keydown', (e) => {
+      keys[e.code] = true;
     });
 
-    // 7. Particles
-    particles.forEach(p => {
-      ctx.save();
-      ctx.globalAlpha = Math.max(0, p.alpha);
-      ctx.fillStyle = p.color;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
+    window.addEventListener('keyup', (e) => {
+      keys[e.code] = false;
     });
-
-    ctx.restore();
-  }
-
-  // Game Loop
-  let lastTime = performance.now();
-  function gameLoop(time) {
-    const dt = Math.min((time - lastTime) / 1000, 0.1);
-    lastTime = time;
-
-    update(dt);
-    render();
-
-    requestAnimationFrame(gameLoop);
-  }
-
-  // Resize Handler
-  function handleResize() {
-    const rect = wrapper.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    const w = rect.width;
-    const h = rect.height;
-
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    ctx.scale(dpr, dpr);
-
-    cellSize = w / mazeCols;
-  }
-
-  // Fullscreen
-  function toggleFullscreen() {
-    document.body.classList.toggle('is-fullscreen');
-    setTimeout(handleResize, 100);
-  }
-
-  // Event Listeners: Keyboard
-  window.addEventListener('keydown', (e) => {
-    keys[e.code] = true;
-  });
-
-  window.addEventListener('keyup', (e) => {
-    keys[e.code] = false;
-  });
 
   // Mode Selection
   modePills.forEach(pill => {

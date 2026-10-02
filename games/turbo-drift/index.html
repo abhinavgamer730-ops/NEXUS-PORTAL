@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no" />
+    <title>Turbo Drift: Neon Highway 🏎️💨 - Free 2.5D Synthwave Arcade Racing | Nexus Portal</title>
+    <meta name="description" content="Play Turbo Drift: Neon Highway online for free! High-speed 2.5D synthwave arcade racer with drifting, near-miss NOS nitro boosts, traffic weaving, police chases, and car upgrades." />
+    <meta name="keywords" content="turbo drift online, neon highway racer, synthwave racing game browser, 2.5d traffic dodger, drift game free online, arcade car racing unblocked" />
+    <link rel="canonical" href="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/turbo-drift/" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WSHC85LJYZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WSHC85LJYZ');
+    </script>
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:url" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/turbo-drift/" />
+    <meta property="og:title" content="Turbo Drift: Neon Highway 🏎️💨 - Free 2.5D Synthwave Racer" />
+    <meta property="og:description" content="Weave through traffic at 200+ MPH, drift around neon curves, hit near-misses for NOS boost, and upgrade cyber hypercars!" />
+    <meta property="og:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Turbo Drift: Neon Highway",
+      "url": "https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/turbo-drift/",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Arcade / 2.5D Racing & Drift",
+      "numberOfPlayers": { "@type": "QuantitativeValue", "minValue": 1, "maxValue": 1 },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["2.5D Synthwave Perspective", "Near-Miss NOS Boosts", "Drift Mechanics", "Garage Upgrades & Cars", "Police Chase & Endless Modes"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+    <link rel="icon" type="image/jpeg" href="../../logo.jpg" />
+  </head>
+  <body>
+    <!-- Top Navigation Header -->
+    <header class="nav-header">
+      <a href="../../index.html" class="btn btn-slate" aria-label="Return to Nexus Portal">⬅️ PORTAL</a>
+      <div class="nav-actions">
+        <button class="btn btn-garage" id="btn-garage" title="Open Garage">🚗 GARAGE</button>
+        <button class="btn btn-fullscreen" id="btn-fullscreen" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">⛶</button>
+        <button class="btn btn-sound" id="sound-toggle-btn" aria-label="Toggle Sound Effects">🔊</button>
+        <button class="btn btn-gold" id="theme-toggle-btn" aria-label="Toggle Theme">🌙 DARK</button>
+      </div>
+    </header>
+
+    <!-- Main Game Container -->
+    <main class="game-container" id="game-container">
+      <div class="game-card" id="game-card">
+
+        <!-- Header / Mode Select -->
+        <div class="top-row">
+          <h1 class="game-title">TURBO DRIFT</h1>
+
+          <!-- Mode Selector Tabs -->
+          <div class="mode-pills" role="tablist" aria-label="Game Mode">
+            <button class="mode-pill active" data-mode="endless" role="tab" aria-selected="true">🛣️ Endless</button>
+            <button class="mode-pill" data-mode="police" role="tab" aria-selected="false">🚨 Police</button>
+            <button class="mode-pill" data-mode="time" role="tab" aria-selected="false">⏱️ Time Rush</button>
+          </div>
+        </div>
+
+        <!-- Live Dashboard HUD -->
+        <div class="hud-dashboard">
+          <!-- Speedometer & Nitro -->
+          <div class="dash-col dash-speed">
+            <div class="speed-num" id="hud-speed">0</div>
+            <div class="speed-unit">MPH</div>
+            <!-- NOS Gauge Bar -->
+            <div class="nos-gauge">
+              <div class="nos-fill" id="hud-nos-fill" style="width: 100%;"></div>
+              <span class="nos-label">NOS [W / ⬆️]</span>
+            </div>
+          </div>
+
+          <!-- Score & Drift Multiplier -->
+          <div class="dash-col dash-center">
+            <div class="score-display" id="hud-score">0</div>
+            <div class="drift-badge" id="hud-drift-badge" style="display: none;">DRIFT x1.5 🔥</div>
+            <div class="time-left-badge" id="hud-time-badge" style="display: none;">⏱️ 60s</div>
+          </div>
+
+          <!-- Coins & Distance -->
+          <div class="dash-col dash-stats">
+            <div class="coin-pill"><span id="hud-coins">💰 0</span></div>
+            <div class="dist-pill"><span id="hud-dist">🏁 0.0 KM</span></div>
+            <div class="shield-pill" id="hud-shield-pill" style="display: none;">🛡️ SHIELD</div>
+          </div>
+        </div>
+
+        <!-- 2.5D Canvas Viewport -->
+        <div class="canvas-wrapper" id="canvas-wrapper">
+          <canvas id="game-canvas" width="600" height="460" aria-label="Turbo Drift Neon Highway Canvas Viewport"></canvas>
+
+          <!-- Floating Alert Overlay (Near Miss / Checkpoint / Nitro) -->
+          <div class="near-miss-banner" id="near-miss-banner" style="display: none;">
+            <div class="near-miss-text" id="near-miss-text">⚡ NEAR MISS! +150</div>
+          </div>
+
+          <!-- Virtual Touch Driving Controls (Mobile) -->
+          <div class="touch-controls" id="touch-controls">
+            <!-- Left / Right Steer Buttons -->
+            <div class="steer-buttons">
+              <button class="touch-steer-btn" id="btn-steer-left">◀</button>
+              <button class="touch-steer-btn" id="btn-steer-right">▶</button>
+            </div>
+
+            <!-- Action Buttons (NOS & Drift) -->
+            <div class="action-buttons">
+              <button class="touch-action-btn btn-touch-drift" id="btn-touch-drift">💨 DRIFT</button>
+              <button class="touch-action-btn btn-touch-nos" id="btn-touch-nos">🚀 NOS</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Bottom Controls Legend -->
+        <div class="controls-legend">
+          <span><b>A / D</b> or <b>◀ / ▶</b> Steer</span>
+          <span><b>W</b> or <b>▲</b> Nitro NOS</span>
+          <span><b>S</b> or <b>SHIFT</b> Drift Brake</span>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Garage & Tuning Modal -->
+    <div class="modal-overlay" id="garage-modal" style="display: none;">
+      <div class="modal-content garage-content">
+        <div class="modal-header">
+          <h2>🏎️ NEON GARAGE &amp; TUNING</h2>
+          <button class="modal-close-btn" id="garage-close-btn">✖</button>
+        </div>
+
+        <div class="garage-coins" id="garage-coins">💰 0 CREDITS</div>
+
+        <!-- Car Showcase Carousel -->
+        <div class="car-carousel">
+          <div class="car-card" id="car-card-0">
+            <div class="car-icon">🚗</div>
+            <div class="car-name">NEON RUNNER</div>
+            <div class="car-class">MUSCLE GT • BALANCED</div>
+            <div class="car-stat-row">
+              <span>Top Speed: 180 MPH</span>
+              <span>Handling: Good</span>
+            </div>
+            <button class="btn-select-car selected" id="btn-car-0">SELECTED</button>
+          </div>
+
+          <div class="car-card" id="car-card-1">
+            <div class="car-icon">🏎️</div>
+            <div class="car-name">TOKYO DRIFTER</div>
+            <div class="car-class">JDM TURBO • DRIFT MASTER</div>
+            <div class="car-stat-row">
+              <span>Top Speed: 205 MPH</span>
+              <span>Handling: Ultra Drift</span>
+            </div>
+            <button class="btn-select-car" id="btn-car-1">UNLOCK 💰300</button>
+          </div>
+
+          <div class="car-card" id="car-card-2">
+            <div class="car-icon">⚡</div>
+            <div class="car-name">CYBER PHANTOM</div>
+            <div class="car-class">HYPERCAR • WARP SPEED</div>
+            <div class="car-stat-row">
+              <span>Top Speed: 240 MPH</span>
+              <span>Handling: Extreme</span>
+            </div>
+            <button class="btn-select-car" id="btn-car-2">UNLOCK 💰750</button>
+          </div>
+        </div>
+
+        <!-- Performance Upgrade Tuning -->
+        <h3 class="upgrade-heading">⚡ PERFORMANCE TUNING</h3>
+        <div class="tuning-grid">
+          <div class="tuning-item">
+            <div class="tune-info">
+              <span class="tune-title">🔥 Top Speed</span>
+              <span class="tune-level" id="tune-lvl-speed">LVL 1/5</span>
+            </div>
+            <button class="btn-tune" id="btn-tune-speed">UPGRADE 💰80</button>
+          </div>
+
+          <div class="tuning-item">
+            <div class="tune-info">
+              <span class="tune-title">🚀 NOS Nitro Boost</span>
+              <span class="tune-level" id="tune-lvl-nos">LVL 1/5</span>
+            </div>
+            <button class="btn-tune" id="btn-tune-nos">UPGRADE 💰100</button>
+          </div>
+
+          <div class="tuning-item">
+            <div class="tune-info">
+              <span class="tune-title">💨 Drift Control</span>
+              <span class="tune-level" id="tune-lvl-drift">LVL 1/5</span>
+            </div>
+            <button class="btn-tune" id="btn-tune-drift">UPGRADE 💰90</button>
+          </div>
+        </div>
+
+        <!-- Neon Underglow Customization -->
+        <h3 class="upgrade-heading">✨ NEON UNDERGLOW</h3>
+        <div class="underglow-pills">
+          <button class="neon-color-pill active" data-color="#06b6d4" style="background:#06b6d4;"></button>
+          <button class="neon-color-pill" data-color="#f43f5e" style="background:#f43f5e;"></button>
+          <button class="neon-color-pill" data-color="#facc15" style="background:#facc15;"></button>
+          <button class="neon-color-pill" data-color="#10b981" style="background:#10b981;"></button>
+          <button class="neon-color-pill" data-color="#a855f7" style="background:#a855f7;"></button>
+        </div>
+
+        <button class="btn btn-gold btn-large" id="garage-drive-btn">🏁 HIT THE HIGHWAY</button>
+      </div>
+    </div>
+
+    <!-- Crash / Game Over Modal -->
+    <div class="modal-overlay" id="gameover-modal" style="display: none;">
+      <div class="modal-content">
+        <h2 class="gameover-title" id="go-title">💥 HIGHWAY CRASH!</h2>
+        
+        <div class="stat-grid">
+          <div class="stat-box">
+            <span class="stat-label">DISTANCE</span>
+            <span class="stat-value" id="go-dist">0.0 KM</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">TOP SPEED</span>
+            <span class="stat-value" id="go-top-speed">0 MPH</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">NEAR MISSES</span>
+            <span class="stat-value" id="go-misses">0</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">COINS EARNED</span>
+            <span class="stat-value" id="go-coins">💰 0</span>
+          </div>
+        </div>
+
+        <div class="final-score-box">
+          <div class="score-num-huge" id="go-score">0</div>
+          <div class="new-best-tag" id="go-new-best" style="display: none;">⭐ NEW HIGH SCORE! ⭐</div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-gold btn-large" id="btn-restart">🔄 DRIVE AGAIN</button>
+          <button class="btn btn-slate btn-large" id="btn-open-garage">🚗 TUNING GARAGE</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

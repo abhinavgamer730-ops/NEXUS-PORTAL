@@ -962,8 +962,22 @@
     // 2. Hero Aim Direction
     if (touchAim.active) {
       hero.angle = Math.atan2(touchAim.y, touchAim.x);
+    } else if (autoFire && !mousePos.isDown && !mousePos.hasMoved) {
+      // Auto aim when player is idle and autofire is active
+      let nearestZombie = null;
+      let minDist = 450;
+      zombies.forEach(z => {
+        const d = Math.hypot(z.x - hero.x, z.y - hero.y);
+        if (d < minDist) {
+          minDist = d;
+          nearestZombie = z;
+        }
+      });
+      if (nearestZombie) {
+        hero.angle = Math.atan2(nearestZombie.y - hero.y, nearestZombie.x - hero.x);
+      }
     } else {
-      // Aim at mouse in world coordinates
+      // ALWAYS aim directly at mouse in world coordinates
       const worldMouseX = mousePos.x + camera.x;
       const worldMouseY = mousePos.y + camera.y;
       hero.angle = Math.atan2(worldMouseY - hero.y, worldMouseX - hero.x);
@@ -975,26 +989,8 @@
 
     const wantsToShoot = mousePos.isDown || touchAim.active || autoFire;
     if (wantsToShoot && shootTimer >= stats.fireRate) {
-      // If auto-fire, only shoot if zombies exist nearby
-      if (autoFire && !mousePos.isDown && !touchAim.active) {
-        let nearestZombie = null;
-        let minDist = 380;
-        zombies.forEach(z => {
-          const d = Math.hypot(z.x - hero.x, z.y - hero.y);
-          if (d < minDist) {
-            minDist = d;
-            nearestZombie = z;
-          }
-        });
-        if (nearestZombie) {
-          hero.angle = Math.atan2(nearestZombie.y - hero.y, nearestZombie.x - hero.x);
-          shoot();
-          shootTimer = 0;
-        }
-      } else {
-        shoot();
-        shootTimer = 0;
-      }
+      shoot();
+      shootTimer = 0;
     }
 
     // 4. Update Orbiting Orbs Perk
@@ -1205,9 +1201,11 @@
 
   // Render Game Scene
   function render() {
+    const dpr = window.devicePixelRatio || 1;
+    ctx.save();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, camera.width, camera.height);
 
-    ctx.save();
     if (screenShake > 0.5) {
       ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
     }
@@ -1456,6 +1454,36 @@
       ctx.restore();
     });
 
+    // 12. Laser Sight & Crosshair Reticle
+    if (!touchAim.active) {
+      const worldMouseX = mousePos.x + camera.x;
+      const worldMouseY = mousePos.y + camera.y;
+
+      // Laser aiming guide line
+      ctx.save();
+      ctx.strokeStyle = 'rgba(239, 68, 68, 0.35)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(hero.x, hero.y);
+      ctx.lineTo(worldMouseX, worldMouseY);
+      ctx.stroke();
+
+      // Crosshair Reticle
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.arc(worldMouseX, worldMouseY, 8, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(worldMouseX, worldMouseY, 2, 0, Math.PI * 2);
+      ctx.fillStyle = '#ef4444';
+      ctx.fill();
+      ctx.restore();
+    }
+
     ctx.restore();
   }
 
@@ -1598,14 +1626,13 @@
 
   // Resize Handler
   function handleResize() {
-    const rect = wrapper.getBoundingClientRect();
+    const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
-    camera.width = rect.width;
-    camera.height = rect.height;
+    camera.width = rect.width || wrapper.clientWidth || 600;
+    camera.height = rect.height || wrapper.clientHeight || 440;
 
-    canvas.width = camera.width * dpr;
-    canvas.height = camera.height * dpr;
-    ctx.scale(dpr, dpr);
+    canvas.width = Math.floor(camera.width * dpr);
+    canvas.height = Math.floor(camera.height * dpr);
   }
 
   // Fullscreen Toggle
@@ -1627,14 +1654,24 @@
     keys[e.code] = false;
   });
 
-  wrapper.addEventListener('mousemove', (e) => {
-    const rect = wrapper.getBoundingClientRect();
-    mousePos.x = e.clientX - rect.left;
-    mousePos.y = e.clientY - rect.top;
-  });
+  function updateMouse(e) {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width > 0 && rect.height > 0) {
+      mousePos.x = (e.clientX - rect.left) * (camera.width / rect.width);
+      mousePos.y = (e.clientY - rect.top) * (camera.height / rect.height);
+      mousePos.hasMoved = true;
+    }
+  }
 
-  wrapper.addEventListener('mousedown', (e) => {
-    if (e.button === 0) mousePos.isDown = true;
+  window.addEventListener('mousemove', updateMouse);
+
+  window.addEventListener('mousedown', (e) => {
+    if (e.target === canvas || wrapper.contains(e.target)) {
+      if (e.button === 0) {
+        mousePos.isDown = true;
+        updateMouse(e);
+      }
+    }
   });
 
   window.addEventListener('mouseup', () => {
