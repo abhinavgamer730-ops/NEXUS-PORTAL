@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no" />
+    <title>Micro Tank Battle 🪖💥 - Free 2.5D Ricochet Maze Tank Duel | Nexus Portal</title>
+    <meta name="description" content="Play Micro Tank Battle online for free! Tactical 2.5D tank maze shooter with bouncing ricochet bullets, power-up crates, smart AI Bot battles, and 2-Player local duels." />
+    <meta name="keywords" content="micro tank battle online, tank trouble unblocked, wii tanks browser game, bouncing bullet tank game, 2 player tank duel local, ricochet tanks online free" />
+    <link rel="canonical" href="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/micro-tanks/" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WSHC85LJYZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WSHC85LJYZ');
+    </script>
+
+    <!-- Open Graph & Twitter -->
+    <meta property="og:type" content="game" />
+    <meta property="og:url" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/micro-tanks/" />
+    <meta property="og:title" content="Micro Tank Battle 🪖💥 - Free Online 2-Player &amp; Bot Maze Shooter" />
+    <meta property="og:description" content="Bank bouncing shells off maze walls, collect power-ups, defeat smart AI bots, and challenge friends in 2-Player local tank duels!" />
+    <meta property="og:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/og-image.jpg" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Micro Tank Battle",
+      "url": "https://abhinavgamer730-ops.github.io/NEXUS-PORTAL/games/micro-tanks/",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Arcade / 2-Player Action Duel",
+      "numberOfPlayers": { "@type": "QuantitativeValue", "minValue": 1, "maxValue": 2 },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": ["Ricochet Bullet Physics", "2-Player Local Split Duel", "Smart Bot AI", "Power-up Crates", "Fullscreen Mobile Support"]
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="../../theme-toggle.js"></script>
+    <link rel="icon" type="image/jpeg" href="../../logo.jpg" />
+  </head>
+  <body>
+    <!-- Top Navigation Header -->
+    <header class="nav-header">
+      <a href="../../index.html" class="btn btn-slate" aria-label="Return to Nexus Portal">⬅️ PORTAL</a>
+      <div class="nav-actions">
+        <button class="btn btn-fullscreen" id="btn-fullscreen" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">⛶</button>
+        <button class="btn btn-sound" id="sound-toggle-btn" aria-label="Toggle Sound Effects">🔊</button>
+        <button class="btn btn-gold" id="theme-toggle-btn" aria-label="Toggle Theme">🌙 DARK</button>
+      </div>
+    </header>
+
+    <!-- Main Game Container -->
+    <main class="game-container" id="game-container">
+      <div class="game-card" id="game-card">
+
+        <!-- Top Header & Mode Tabs -->
+        <div class="top-row">
+          <h1 class="game-title">MICRO TANKS</h1>
+
+          <!-- Mode Selector -->
+          <div class="mode-pills" role="tablist" aria-label="Game Mode">
+            <button class="mode-pill active" data-mode="bot" role="tab" aria-selected="true">🤖 vs Bot</button>
+            <button class="mode-pill" data-mode="2p" role="tab" aria-selected="false">👥 2P Duel</button>
+            <button class="mode-pill" data-mode="chaos" role="tab" aria-selected="false">💥 3P Chaos</button>
+          </div>
+        </div>
+
+        <!-- Live Scoreboard & Match Stats -->
+        <div class="scoreboard-bar">
+          <div class="score-card p1-card">
+            <div class="score-label">🟦 P1 (YOU)</div>
+            <div class="score-num" id="p1-score">0</div>
+          </div>
+
+          <div class="match-info">
+            <div class="target-badge" id="target-badge">FIRST TO 5</div>
+            <div class="round-badge" id="round-badge">ROUND 1</div>
+          </div>
+
+          <div class="score-card p2-card" id="p2-card">
+            <div class="score-label" id="p2-label">🤖 BOT</div>
+            <div class="score-num" id="p2-score">0</div>
+          </div>
+        </div>
+
+        <!-- Canvas Arena Wrapper -->
+        <div class="canvas-wrapper" id="canvas-wrapper">
+          <canvas id="game-canvas" width="600" height="460" aria-label="Micro Tank Battle Canvas Viewport"></canvas>
+
+          <!-- Round Over Announcement Banner -->
+          <div class="round-banner" id="round-banner" style="display: none;">
+            <div class="banner-text" id="banner-text">🎉 PLAYER 1 SCORES! 🎉</div>
+          </div>
+
+          <!-- Virtual Touch Controls (Mobile / Tablet) -->
+          <div class="touch-controls" id="touch-controls">
+            <!-- P1 Left Joystick -->
+            <div class="joystick-zone" id="touch-joy-p1">
+              <div class="joystick-base" id="joy-base-p1">
+                <div class="joystick-knob" id="joy-knob-p1"></div>
+              </div>
+            </div>
+
+            <!-- P1 Action Buttons -->
+            <div class="touch-actions-p1">
+              <button class="touch-fire-btn" id="touch-fire-p1">🔥 FIRE</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Controls Guide Footer -->
+        <div class="controls-guide" id="controls-guide">
+          <div class="guide-col">
+            <span class="guide-title">🟦 Player 1:</span>
+            <span class="guide-keys"><strong>WASD</strong> to Move | <strong>SPACE</strong> to Shoot</span>
+          </div>
+          <div class="guide-col" id="guide-p2-col">
+            <span class="guide-title">🟪 Player 2:</span>
+            <span class="guide-keys"><strong>ARROWS</strong> to Move | <strong>ENTER / M</strong> to Shoot</span>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Match Victory Modal Overlay -->
+    <div class="modal-overlay" id="victory-modal" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-hero-icon" id="modal-icon">🏆</div>
+        <h2 class="modal-title" id="modal-title">PLAYER 1 WINS THE MATCH!</h2>
+        <p class="modal-desc" id="modal-desc">Master of tactical ricochet shots!</p>
+
+        <div class="modal-stats-grid">
+          <div class="modal-stat-item">
+            <span>🟦 P1 Score</span>
+            <strong id="modal-p1-score">5</strong>
+          </div>
+          <div class="modal-stat-item">
+            <span id="modal-p2-label">🟪 P2 Score</span>
+            <strong id="modal-p2-score">3</strong>
+          </div>
+        </div>
+
+        <button class="btn btn-gold btn-modal-play" id="btn-modal-restart">🔄 PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
