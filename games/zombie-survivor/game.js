@@ -959,13 +959,18 @@
       hero.dashCooldown -= dt;
     }
 
-    // 2. Hero Aim Direction
+    // 2. Hero Aim Direction (Effortless Auto-Targeting by default)
     if (touchAim.active) {
       hero.angle = Math.atan2(touchAim.y, touchAim.x);
-    } else if (autoFire && !mousePos.isDown && !mousePos.hasMoved) {
-      // Auto aim when player is idle and autofire is active
+    } else if (mousePos.isDown) {
+      // Manual aim when holding mouse
+      const worldMouseX = mousePos.x + camera.x;
+      const worldMouseY = mousePos.y + camera.y;
+      hero.angle = Math.atan2(worldMouseY - hero.y, worldMouseX - hero.x);
+    } else {
+      // 360 Auto-Aim directly at nearest zombie threat
       let nearestZombie = null;
-      let minDist = 450;
+      let minDist = 550;
       zombies.forEach(z => {
         const d = Math.hypot(z.x - hero.x, z.y - hero.y);
         if (d < minDist) {
@@ -975,15 +980,12 @@
       });
       if (nearestZombie) {
         hero.angle = Math.atan2(nearestZombie.y - hero.y, nearestZombie.x - hero.x);
+      } else if (Math.hypot(hero.vx, hero.vy) > 0.1) {
+        hero.angle = Math.atan2(hero.vy, hero.vx);
       }
-    } else {
-      // ALWAYS aim directly at mouse in world coordinates
-      const worldMouseX = mousePos.x + camera.x;
-      const worldMouseY = mousePos.y + camera.y;
-      hero.angle = Math.atan2(worldMouseY - hero.y, worldMouseX - hero.x);
     }
 
-    // 3. Shooting Logic
+    // 3. Shooting Logic (Continuous effortless blast)
     const stats = getActiveWeaponStats();
     shootTimer += dt;
 
@@ -1140,17 +1142,17 @@
       }
     }
 
-    // 9. Magnet & Collect XP Gems
+    // 9. Magnet & Collect XP Gems (Super Smooth Vacuum)
     for (let i = gems.length - 1; i >= 0; i--) {
       const g = gems[i];
       const dist = Math.hypot(hero.x - g.x, hero.y - g.y);
-      if (dist < 140) {
+      if (dist < 220) {
         // Magnet suction towards hero
         const ang = Math.atan2(hero.y - g.y, hero.x - g.x);
-        g.x += Math.cos(ang) * 9;
-        g.y += Math.sin(ang) * 9;
+        g.x += Math.cos(ang) * 12;
+        g.y += Math.sin(ang) * 12;
       }
-      if (dist < hero.radius + 12) {
+      if (dist < hero.radius + 16) {
         addXP(g.value);
         gems.splice(i, 1);
       }

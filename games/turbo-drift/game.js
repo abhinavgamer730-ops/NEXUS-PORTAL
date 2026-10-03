@@ -342,87 +342,75 @@
     const nosBonus = 1 + (upgrades.nos - 1) * 0.15;
     const driftBonus = activeCar.driftMultiplier * (1 + (upgrades.drift - 1) * 0.12);
 
-    // 1. Inputs: Steering & Drifting
+    // 1. Inputs: Steering & NOS
     let steerInput = 0;
     if (keys['KeyA'] || keys['ArrowLeft'] || player.steerDir < 0) steerInput -= 1;
     if (keys['KeyD'] || keys['ArrowRight'] || player.steerDir > 0) steerInput += 1;
 
     const wantsNos = (keys['KeyW'] || keys['ArrowUp'] || keys['Space'] || keys['nos_touch']) && player.nosGauge > 0;
-    const wantsDrift = keys['KeyS'] || keys['ArrowDown'] || keys['ShiftLeft'] || keys['ShiftRight'] || keys['drift_touch'];
+    const wantsBrake = keys['KeyS'] || keys['ArrowDown'];
 
-    // 2. NOS Nitro Acceleration
+    // 2. Auto-Cruising & Nitro NOS Acceleration
     if (wantsNos && player.nosGauge > 0) {
       player.isNos = true;
       player.nosGauge = Math.max(0, player.nosGauge - 28 * dt);
       const nosTopSpeed = player.maxSpeed * (1.35 * nosBonus);
       player.speed += 140 * dt;
       if (player.speed > nosTopSpeed) player.speed = nosTopSpeed;
-      if (Math.random() < 0.4) playSound('nos');
+      if (Math.random() < 0.35) playSound('nos');
+    } else if (wantsBrake) {
+      player.isNos = false;
+      player.speed = Math.max(50, player.speed - 120 * dt);
+      player.nosGauge = Math.min(100, player.nosGauge + 12 * dt);
     } else {
       player.isNos = false;
-      // Normal acceleration / natural coast
+      // Auto-cruise smoothly to top cruising speed
       if (player.speed < player.maxSpeed) {
-        player.speed += 50 * dt;
-      } else {
+        player.speed += 80 * dt;
+      } else if (player.speed > player.maxSpeed) {
         player.speed -= 40 * dt;
       }
-      // Slow passive NOS recharge
-      player.nosGauge = Math.min(100, player.nosGauge + 6 * dt);
+      // Passive NOS recharge
+      player.nosGauge = Math.min(100, player.nosGauge + 10 * dt);
     }
 
     if (player.speed > maxSpeedAchieved) maxSpeedAchieved = Math.round(player.speed);
 
-    // 3. Drift Mechanics
-    if (wantsDrift && Math.abs(steerInput) > 0.1 && player.speed > 60) {
+    // 3. Auto-Drift & Score Multipliers
+    if (Math.abs(steerInput) > 0.1 && player.speed > 70) {
       player.isDrifting = true;
       driftMultiplier = Math.min(3.5, driftMultiplier + 1.2 * dt);
-      player.driftAngle += (steerInput * 0.45 - player.driftAngle) * 0.15;
-      score += Math.round(80 * driftMultiplier * dt);
+      player.driftAngle += (steerInput * 0.45 - player.driftAngle) * 0.2;
+      score += Math.round(90 * driftMultiplier * dt);
 
       // Spawn Skidmarks and Smoke
       if (Math.random() < 0.6) {
         playSound('drift');
-        skidMarks.push({
-          x: player.x - 0.08,
-          z: 30,
-          alpha: 0.8
-        });
-        skidMarks.push({
-          x: player.x + 0.08,
-          z: 30,
-          alpha: 0.8
-        });
+        skidMarks.push({ x: player.x - 0.08, z: 30, alpha: 0.8 });
+        skidMarks.push({ x: player.x + 0.08, z: 30, alpha: 0.8 });
       }
     } else {
       player.isDrifting = false;
-      player.driftAngle *= 0.85;
+      player.driftAngle *= 0.82;
       driftMultiplier = Math.max(1.0, driftMultiplier - 1.5 * dt);
     }
 
-    // 4. Steer Position Clamping
-    const turnRate = (player.isDrifting ? 1.6 : 1.1) * activeCar.handling * (player.speed / 120);
+    // 4. Effortless Responsive Steer
+    const turnRate = 2.4 * activeCar.handling * (player.speed / 130);
     player.x += steerInput * turnRate * dt;
+    player.x = Math.max(-1.1, Math.min(1.1, player.x));
 
-    // Grass / Shoulder drag penalty
-    if (Math.abs(player.x) > 0.95) {
-      player.speed = Math.max(40, player.speed - 90 * dt);
-      screenShake = 3;
-    }
-    player.x = Math.max(-1.25, Math.min(1.25, player.x));
-
-    // 5. Dynamic Highway Road Curvature
+    // 5. Highway Curvature
     curveTimer -= dt;
     if (curveTimer <= 0) {
       curveTimer = 3 + Math.random() * 4;
-      targetCurve = (Math.random() * 2 - 1) * 1.5;
+      targetCurve = (Math.random() * 2 - 1) * 1.2;
     }
     roadCurve += (targetCurve - roadCurve) * 0.05;
     roadPosition += (player.speed * 2.5) * dt;
+    player.x -= roadCurve * (player.speed / 450) * dt;
 
-    // Pull car with road curve
-    player.x -= roadCurve * (player.speed / 350) * dt;
-
-    // 6. Distance & Score Increment
+    // 6. Distance & Score
     const distanceDelta = (player.speed / 3600) * dt;
     distance += distanceDelta;
     score += Math.round((player.speed * (player.isNos ? 1.5 : 1.0) * driftMultiplier) * dt);
@@ -439,14 +427,13 @@
     // 8. Update Traffic Cars
     for (let i = trafficCars.length - 1; i >= 0; i--) {
       const car = trafficCars[i];
-      // Relative speed towards player
       const relSpeed = player.speed - car.speed;
       car.z -= relSpeed * 2.2 * dt;
 
-      // Check Collision with Player
-      if (car.z > -20 && car.z < 45) {
+      // Check Collision
+      if (car.z > -20 && car.z < 42) {
         const dx = Math.abs(player.x - car.x);
-        if (dx < 0.28) {
+        if (dx < 0.22) {
           if (player.hasShield) {
             player.hasShield = false;
             playSound('crash');
@@ -461,34 +448,40 @@
         }
       }
 
-      // Check Near-Miss (Passing within 0.45 horizontal distance closely)
+      // Check Near-Miss
       if (!car.passed && car.z < 0 && car.z > -40) {
         const dx = Math.abs(player.x - car.x);
-        if (dx >= 0.28 && dx <= 0.48 && player.speed > 100) {
+        if (dx >= 0.22 && dx <= 0.48 && player.speed > 80) {
           car.passed = true;
           nearMissCount++;
           const bonus = Math.round(150 * (player.isNos ? 2 : 1));
           score += bonus;
-          player.nosGauge = Math.min(100, player.nosGauge + 35);
+          player.nosGauge = Math.min(100, player.nosGauge + 40);
           playSound('miss');
           showBanner(`⚡ NEAR MISS! +${bonus}`);
         }
       }
 
-      // Recycle cars that passed far behind
       if (car.z < -100) {
         trafficCars.splice(i, 1);
         spawnTraffic(700 + Math.random() * 200);
       }
     }
 
-    // 9. Update Collectibles
+    // 9. Update Magnetic Collectibles
     for (let i = collectibles.length - 1; i >= 0; i--) {
       const item = collectibles[i];
       item.z -= player.speed * 2.2 * dt;
 
+      // Magnetic Attraction
+      const dist = Math.hypot((player.x - item.x) * 200, item.z);
+      if (dist < 180 && item.z > -20) {
+        const ang = Math.atan2(0 - item.z, (player.x - item.x) * 200);
+        item.x += (player.x - item.x) * 6 * dt;
+      }
+
       if (!item.collected && item.z > -15 && item.z < 40) {
-        if (Math.abs(player.x - item.x) < 0.3) {
+        if (Math.abs(player.x - item.x) < 0.35) {
           item.collected = true;
           if (item.type === 'coin') {
             coins += 5;
@@ -513,7 +506,7 @@
       }
     }
 
-    // 10. Update Skid Marks
+    // 10. Skid Marks
     for (let i = skidMarks.length - 1; i >= 0; i--) {
       skidMarks[i].z -= player.speed * 2.2 * dt;
       skidMarks[i].alpha -= 0.6 * dt;
@@ -1089,14 +1082,52 @@
     keys[e.code] = false;
   });
 
+  // Canvas Pointer & Screen Tap Controls (Left half = Steer Left, Right half = Steer Right, Tap with 2 fingers or Double tap = NOS)
+  let isPointerDown = false;
+  let lastTapTime = 0;
+
+  function handlePointer(e) {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width > 0) {
+      const relX = (e.clientX - rect.left) / rect.width;
+      // Convert 0..1 to -1.0 .. 1.0
+      player.x += ((relX * 2 - 1) * 1.0 - player.x) * 0.18;
+    }
+  }
+
+  canvas.addEventListener('pointerdown', (e) => {
+    initAudio();
+    isPointerDown = true;
+    const now = performance.now();
+    if (now - lastTapTime < 300) {
+      // Double tap to activate NOS!
+      keys['nos_touch'] = true;
+      setTimeout(() => { keys['nos_touch'] = false; }, 400);
+    }
+    lastTapTime = now;
+    handlePointer(e);
+  });
+
+  window.addEventListener('pointermove', (e) => {
+    if (isPointerDown) handlePointer(e);
+  });
+
+  window.addEventListener('pointerup', () => {
+    isPointerDown = false;
+  });
+
+  window.addEventListener('pointercancel', () => {
+    isPointerDown = false;
+  });
+
   // Touch Virtual Buttons
   btnSteerLeft.addEventListener('touchstart', (e) => { e.preventDefault(); player.steerDir = -1; });
   btnSteerLeft.addEventListener('touchend', (e) => { e.preventDefault(); player.steerDir = 0; });
   btnSteerRight.addEventListener('touchstart', (e) => { e.preventDefault(); player.steerDir = 1; });
   btnSteerRight.addEventListener('touchend', (e) => { e.preventDefault(); player.steerDir = 0; });
 
-  btnTouchDrift.addEventListener('touchstart', (e) => { e.preventDefault(); keys['drift_touch'] = true; });
-  btnTouchDrift.addEventListener('touchend', (e) => { e.preventDefault(); keys['drift_touch'] = false; });
+  btnTouchDrift.addEventListener('touchstart', (e) => { e.preventDefault(); keys['nos_touch'] = true; });
+  btnTouchDrift.addEventListener('touchend', (e) => { e.preventDefault(); keys['nos_touch'] = false; });
   btnTouchNos.addEventListener('touchstart', (e) => { e.preventDefault(); keys['nos_touch'] = true; });
   btnTouchNos.addEventListener('touchend', (e) => { e.preventDefault(); keys['nos_touch'] = false; });
 

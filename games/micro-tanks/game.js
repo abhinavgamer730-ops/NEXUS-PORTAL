@@ -606,45 +606,53 @@
   function update(dt) {
     if (isMatchOver) return;
 
-    // 1. Player 1 Movement (WASD / Touch)
+    // 1. Player 1 Movement (Direct 8-Way Arcade / Touch)
     const p1 = tanks.find(t => t.id === 'p1');
     if (p1 && !isRoundOver) {
       if (p1.recoil > 0) p1.recoil *= 0.8;
       if (p1.shootCooldown > 0) p1.shootCooldown -= dt;
 
-      let p1Turn = 0;
-      let p1Forward = 0;
+      let mx = 0, my = 0;
+      if (keys['KeyA']) mx -= 1;
+      if (keys['KeyD']) mx += 1;
+      if (keys['KeyW']) my -= 1;
+      if (keys['KeyS']) my += 1;
 
-      if (keys['KeyA']) p1Turn -= 1;
-      if (keys['KeyD']) p1Turn += 1;
-      if (keys['KeyW']) p1Forward += 1;
-      if (keys['KeyS']) p1Forward -= 0.6;
-
-      if (touchP1.active) {
-        p1.angle = Math.atan2(touchP1.y, touchP1.x);
-        p1Forward = Math.min(1, Math.hypot(touchP1.x, touchP1.y));
-        p1.turretAngle = p1.angle;
-      } else {
-        p1.angle += p1Turn * p1.rotSpeed;
-        if (mouse.hasMoved && currentMode !== '2p') {
-          p1.turretAngle = Math.atan2(mouse.y - p1.y, mouse.x - p1.x);
-        } else {
-          p1.turretAngle = p1.angle;
-        }
+      // In 1-player mode, Arrow keys can also be used for P1
+      if (currentMode === 'bot') {
+        if (keys['ArrowLeft']) mx -= 1;
+        if (keys['ArrowRight']) mx += 1;
+        if (keys['ArrowUp']) my -= 1;
+        if (keys['ArrowDown']) my += 1;
       }
 
-      if (p1Forward !== 0) {
-        const nx = p1.x + Math.cos(p1.angle) * (p1.speed * p1Forward);
-        const ny = p1.y + Math.sin(p1.angle) * (p1.speed * p1Forward);
+      if (touchP1.active) {
+        mx = touchP1.x;
+        my = touchP1.y;
+      }
+
+      const moveMag = Math.hypot(mx, my);
+      if (moveMag > 0.1) {
+        const moveAng = Math.atan2(my, mx);
+        p1.angle = moveAng;
+
+        const nx = p1.x + (mx / (moveMag > 1 ? moveMag : 1)) * p1.speed;
+        const ny = p1.y + (my / (moveMag > 1 ? moveMag : 1)) * p1.speed;
 
         if (!checkWallCollision(nx, p1.y, p1.radius)) p1.x = nx;
         if (!checkWallCollision(p1.x, ny, p1.radius)) p1.y = ny;
 
-        // Leave track marks periodically
         if (Math.random() < 0.25) {
           if (treadTracks.length > 60) treadTracks.shift();
           treadTracks.push({ x: p1.x, y: p1.y, angle: p1.angle, alpha: 0.3 });
         }
+      }
+
+      // Turret Aiming (Mouse if moved, otherwise follows tank facing direction)
+      if (mouse.hasMoved && currentMode !== '2p') {
+        p1.turretAngle = Math.atan2(mouse.y - p1.y, mouse.x - p1.x);
+      } else {
+        p1.turretAngle = p1.angle;
       }
 
       if (keys['Space']) {
@@ -661,20 +669,19 @@
       if (p2.isBot) {
         updateBot(p2, p1, dt);
       } else {
-        let p2Turn = 0;
-        let p2Forward = 0;
+        let mx2 = 0, my2 = 0;
+        if (keys['ArrowLeft'] || keys['KeyJ']) mx2 -= 1;
+        if (keys['ArrowRight'] || keys['KeyL']) mx2 += 1;
+        if (keys['ArrowUp'] || keys['KeyI']) my2 -= 1;
+        if (keys['ArrowDown'] || keys['KeyK']) my2 += 1;
 
-        if (keys['ArrowLeft']) p2Turn -= 1;
-        if (keys['ArrowRight']) p2Turn += 1;
-        if (keys['ArrowUp']) p2Forward += 1;
-        if (keys['ArrowDown']) p2Forward -= 0.6;
+        const moveMag2 = Math.hypot(mx2, my2);
+        if (moveMag2 > 0.1) {
+          p2.angle = Math.atan2(my2, mx2);
+          p2.turretAngle = p2.angle;
 
-        p2.angle += p2Turn * p2.rotSpeed;
-        p2.turretAngle = p2.angle;
-
-        if (p2Forward !== 0) {
-          const nx = p2.x + Math.cos(p2.angle) * (p2.speed * p2Forward);
-          const ny = p2.y + Math.sin(p2.angle) * (p2.speed * p2Forward);
+          const nx = p2.x + (mx2 / (moveMag2 > 1 ? moveMag2 : 1)) * p2.speed;
+          const ny = p2.y + (my2 / (moveMag2 > 1 ? moveMag2 : 1)) * p2.speed;
 
           if (!checkWallCollision(nx, p2.y, p2.radius)) p2.x = nx;
           if (!checkWallCollision(p2.x, ny, p2.radius)) p2.y = ny;
@@ -685,7 +692,7 @@
           }
         }
 
-        if (keys['Enter'] || keys['KeyM']) {
+        if (keys['Enter'] || keys['KeyM'] || keys['ControlRight']) {
           fireTank(p2);
         }
       }
