@@ -511,14 +511,18 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-// Canvas Click Handler (Left Half = P1, Right Half = P2)
+// Canvas Click Handler (VS Bot / P1 = Anywhere / Left Half, P2 = Right Half in 2P mode)
 canvas.addEventListener('click', (e) => {
-  const rect = canvas.getBoundingClientRect();
-  const clickX = e.clientX - rect.left;
-  if (clickX < rect.width / 2) {
+  if (isVsBot) {
     handleThrow(1);
-  } else if (!isVsBot) {
-    handleThrow(2);
+  } else {
+    const rect = canvas.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    if (clickX < rect.width / 2) {
+      handleThrow(1);
+    } else {
+      handleThrow(2);
+    }
   }
 });
 
