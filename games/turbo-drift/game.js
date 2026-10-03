@@ -101,7 +101,8 @@
   // Virtual Touch Controls
   const btnSteerLeft = document.getElementById('btn-steer-left');
   const btnSteerRight = document.getElementById('btn-steer-right');
-  const btnTouchDrift = document.getElementById('btn-touch-drift');
+  const btnTouchGas = document.getElementById('btn-touch-gas');
+  const btnTouchBrake = document.getElementById('btn-touch-brake');
   const btnTouchNos = document.getElementById('btn-touch-nos');
 
   // Audio Context
@@ -342,45 +343,48 @@
     const nosBonus = 1 + (upgrades.nos - 1) * 0.15;
     const driftBonus = activeCar.driftMultiplier * (1 + (upgrades.drift - 1) * 0.12);
 
-    // 1. Inputs: Steering & NOS
+    // 1. Inputs: Steering, Gas, Brake, NOS
     let steerInput = 0;
     if (keys['KeyA'] || keys['ArrowLeft'] || player.steerDir < 0) steerInput -= 1;
     if (keys['KeyD'] || keys['ArrowRight'] || player.steerDir > 0) steerInput += 1;
 
-    const wantsNos = (keys['KeyW'] || keys['ArrowUp'] || keys['Space'] || keys['nos_touch']) && player.nosGauge > 0;
-    const wantsBrake = keys['KeyS'] || keys['ArrowDown'];
+    const wantsGas = keys['KeyW'] || keys['ArrowUp'] || keys['gas_touch'];
+    const wantsBrake = keys['KeyS'] || keys['ArrowDown'] || keys['brake_touch'];
+    const wantsNos = (keys['Space'] || keys['nos_touch']) && player.nosGauge > 0;
 
-    // 2. Auto-Cruising & Nitro NOS Acceleration
+    // 2. Full Responsive Manual Speed Control
     if (wantsNos && player.nosGauge > 0) {
       player.isNos = true;
-      player.nosGauge = Math.max(0, player.nosGauge - 28 * dt);
+      player.nosGauge = Math.max(0, player.nosGauge - 32 * dt);
       const nosTopSpeed = player.maxSpeed * (1.35 * nosBonus);
-      player.speed += 140 * dt;
-      if (player.speed > nosTopSpeed) player.speed = nosTopSpeed;
+      player.speed = Math.min(nosTopSpeed, player.speed + 180 * dt);
       if (Math.random() < 0.35) playSound('nos');
+    } else if (wantsGas) {
+      player.isNos = false;
+      player.speed = Math.min(player.maxSpeed, player.speed + 120 * dt);
+      player.nosGauge = Math.min(100, player.nosGauge + 8 * dt);
     } else if (wantsBrake) {
       player.isNos = false;
-      player.speed = Math.max(50, player.speed - 120 * dt);
-      player.nosGauge = Math.min(100, player.nosGauge + 12 * dt);
+      player.speed = Math.max(25, player.speed - 160 * dt);
+      player.nosGauge = Math.min(100, player.nosGauge + 15 * dt);
     } else {
       player.isNos = false;
-      // Auto-cruise smoothly to top cruising speed
-      if (player.speed < player.maxSpeed) {
-        player.speed += 80 * dt;
-      } else if (player.speed > player.maxSpeed) {
-        player.speed -= 40 * dt;
+      // Gentle coasting settling into 100 MPH cruising speed
+      if (player.speed < 100) {
+        player.speed += 50 * dt;
+      } else if (player.speed > 100) {
+        player.speed -= 35 * dt;
       }
-      // Passive NOS recharge
-      player.nosGauge = Math.min(100, player.nosGauge + 10 * dt);
+      player.nosGauge = Math.min(100, player.nosGauge + 8 * dt);
     }
 
     if (player.speed > maxSpeedAchieved) maxSpeedAchieved = Math.round(player.speed);
 
-    // 3. Auto-Drift & Score Multipliers
-    if (Math.abs(steerInput) > 0.1 && player.speed > 70) {
+    // 3. Auto-Drift & Score Multipliers on Steer
+    if (Math.abs(steerInput) > 0.1 && player.speed > 60) {
       player.isDrifting = true;
       driftMultiplier = Math.min(3.5, driftMultiplier + 1.2 * dt);
-      player.driftAngle += (steerInput * 0.45 - player.driftAngle) * 0.2;
+      player.driftAngle += (steerInput * 0.45 - player.driftAngle) * 0.22;
       score += Math.round(90 * driftMultiplier * dt);
 
       // Spawn Skidmarks and Smoke
@@ -396,19 +400,12 @@
     }
 
     // 4. Effortless Responsive Steer
-    const turnRate = 2.4 * activeCar.handling * (player.speed / 130);
+    const turnRate = 2.4 * activeCar.handling * (player.speed / 120);
     player.x += steerInput * turnRate * dt;
     player.x = Math.max(-1.1, Math.min(1.1, player.x));
 
-    // 5. Highway Curvature
-    curveTimer -= dt;
-    if (curveTimer <= 0) {
-      curveTimer = 3 + Math.random() * 4;
-      targetCurve = (Math.random() * 2 - 1) * 1.2;
-    }
-    roadCurve += (targetCurve - roadCurve) * 0.05;
+    // 5. Straight Rock-Solid Highway (Zero sliding/curve distortion)
     roadPosition += (player.speed * 2.5) * dt;
-    player.x -= roadCurve * (player.speed / 450) * dt;
 
     // 6. Distance & Score
     const distanceDelta = (player.speed / 3600) * dt;
@@ -614,7 +611,7 @@
 
     // 2. Glowing Neon Sun on Horizon
     const sunRadius = 65;
-    const sunX = w / 2 + roadCurve * 35;
+    const sunX = w / 2;
     const sunGrad = ctx.createRadialGradient(sunX, horizonY - 10, 5, sunX, horizonY - 10, sunRadius);
     sunGrad.addColorStop(0, '#fef08a');
     sunGrad.addColorStop(0.4, '#facc15');
@@ -810,12 +807,11 @@
     ctx.restore();
   }
 
-  // Perspective Projection Helper
+  // Perspective Projection Helper (Straight Highway)
   function project(z, w, h, horizonY) {
     const scale = 160 / (z + 160);
     const y = horizonY + (h - horizonY) * scale;
-    const curveOffset = roadCurve * (1 - scale) * (w * 0.45);
-    const x = (w / 2) + curveOffset;
+    const x = (w / 2);
     const roadWidth = (w * 0.42) * scale;
     return { x, y, w: roadWidth, scale };
   }
@@ -1126,8 +1122,10 @@
   btnSteerRight.addEventListener('touchstart', (e) => { e.preventDefault(); player.steerDir = 1; });
   btnSteerRight.addEventListener('touchend', (e) => { e.preventDefault(); player.steerDir = 0; });
 
-  btnTouchDrift.addEventListener('touchstart', (e) => { e.preventDefault(); keys['nos_touch'] = true; });
-  btnTouchDrift.addEventListener('touchend', (e) => { e.preventDefault(); keys['nos_touch'] = false; });
+  btnTouchBrake.addEventListener('touchstart', (e) => { e.preventDefault(); keys['brake_touch'] = true; });
+  btnTouchBrake.addEventListener('touchend', (e) => { e.preventDefault(); keys['brake_touch'] = false; });
+  btnTouchGas.addEventListener('touchstart', (e) => { e.preventDefault(); keys['gas_touch'] = true; });
+  btnTouchGas.addEventListener('touchend', (e) => { e.preventDefault(); keys['gas_touch'] = false; });
   btnTouchNos.addEventListener('touchstart', (e) => { e.preventDefault(); keys['nos_touch'] = true; });
   btnTouchNos.addEventListener('touchend', (e) => { e.preventDefault(); keys['nos_touch'] = false; });
 

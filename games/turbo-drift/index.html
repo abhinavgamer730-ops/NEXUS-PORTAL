@@ -116,13 +116,14 @@
           <div class="touch-controls" id="touch-controls">
             <!-- Left / Right Steer Buttons -->
             <div class="steer-buttons">
-              <button class="touch-steer-btn" id="btn-steer-left">◀</button>
-              <button class="touch-steer-btn" id="btn-steer-right">▶</button>
+              <button class="touch-steer-btn" id="btn-steer-left" aria-label="Steer Left">◀</button>
+              <button class="touch-steer-btn" id="btn-steer-right" aria-label="Steer Right">▶</button>
             </div>
 
-            <!-- Action Buttons (NOS & Drift) -->
+            <!-- Action Buttons (Brake, Gas, NOS) -->
             <div class="action-buttons">
-              <button class="touch-action-btn btn-touch-drift" id="btn-touch-drift">💨 DRIFT</button>
+              <button class="touch-action-btn btn-touch-brake" id="btn-touch-brake">🛑 BRAKE</button>
+              <button class="touch-action-btn btn-touch-gas" id="btn-touch-gas">⚡ GAS</button>
               <button class="touch-action-btn btn-touch-nos" id="btn-touch-nos">🚀 NOS</button>
             </div>
           </div>
@@ -131,9 +132,10 @@
 
         <!-- Bottom Controls Legend -->
         <div class="controls-legend">
-          <span><b>A / D</b> or <b>◀ / ▶</b> Steer</span>
-          <span><b>W</b> or <b>▲</b> Nitro NOS</span>
-          <span><b>S</b> or <b>SHIFT</b> Drift Brake</span>
+          <span><b>W / ▲</b> Gas (Speed Up)</span>
+          <span><b>S / ▼</b> Brake (Slow Down)</span>
+          <span><b>A / D / ◀ ▶</b> Steer</span>
+          <span><b>SPACE</b> Nitro NOS</span>
         </div>
 
       </div>
