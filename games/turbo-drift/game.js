@@ -272,6 +272,7 @@
     player.maxSpeed = activeCar.baseSpeed + speedBonus;
     player.speed = 30;
     player.x = 0;
+    player.steerVel = 0;
     player.angle = 0;
     player.driftAngle = 0;
     player.isDrifting = false;
@@ -305,13 +306,13 @@
     updateHUD();
   }
 
-  // Spawn Traffic Ahead
+  // Spawn Traffic Ahead (3 Wide Highway Lanes)
   function spawnTraffic(zPos) {
     const typeIdx = Math.floor(Math.random() * (currentMode === 'police' ? 5 : 4));
     const type = TRAFFIC_TYPES[typeIdx];
 
-    // Pick 1 of 3 Highway Lanes: -0.65, 0, +0.65
-    const lanes = [-0.65, 0, 0.65];
+    // 3 Generous Lanes across wide road
+    const lanes = [-0.66, 0, 0.66];
     const laneX = lanes[Math.floor(Math.random() * lanes.length)];
 
     trafficCars.push({
@@ -384,11 +385,11 @@
     if (Math.abs(steerInput) > 0.1 && player.speed > 60) {
       player.isDrifting = true;
       driftMultiplier = Math.min(3.5, driftMultiplier + 1.2 * dt);
-      player.driftAngle += (steerInput * 0.45 - player.driftAngle) * 0.22;
+      player.driftAngle += (steerInput * 0.35 - player.driftAngle) * 0.16;
       score += Math.round(90 * driftMultiplier * dt);
 
       // Spawn Skidmarks and Smoke
-      if (Math.random() < 0.6) {
+      if (Math.random() < 0.5) {
         playSound('drift');
         skidMarks.push({ x: player.x - 0.08, z: 30, alpha: 0.8 });
         skidMarks.push({ x: player.x + 0.08, z: 30, alpha: 0.8 });
@@ -399,10 +400,13 @@
       driftMultiplier = Math.max(1.0, driftMultiplier - 1.5 * dt);
     }
 
-    // 4. Smooth, Non-Twitchy Steering (Grounded & Controlled)
-    const turnRate = 1.45 * activeCar.handling;
-    player.x += steerInput * turnRate * dt;
-    player.x = Math.max(-1.15, Math.min(1.15, player.x));
+    // 4. Low-Sensitivity, Buttery-Smooth Controlled Steering (Zero Twitchiness)
+    const baseTurnSpeed = 0.72 * activeCar.handling;
+    const targetSteerSpeed = steerInput * baseTurnSpeed;
+    // Smooth velocity interpolation
+    player.steerVel += (targetSteerSpeed - player.steerVel) * Math.min(1.0, 7.0 * dt);
+    player.x += player.steerVel * dt;
+    player.x = Math.max(-0.95, Math.min(0.95, player.x));
 
     // 5. Straight Rock-Solid Highway (Zero sliding/curve distortion)
     roadPosition += (player.speed * 2.5) * dt;
@@ -427,10 +431,10 @@
       const relSpeed = player.speed - car.speed;
       car.z -= relSpeed * 2.2 * dt;
 
-      // Check Collision (Tuned for spacious wide highway)
+      // Check Collision (Spacious safety buffer between lanes)
       if (car.z > -20 && car.z < 45) {
         const dx = Math.abs(player.x - car.x);
-        if (dx < 0.24) {
+        if (dx < 0.22) {
           if (player.hasShield) {
             player.hasShield = false;
             playSound('crash');
@@ -445,10 +449,10 @@
         }
       }
 
-      // Check Near-Miss (Generous reward for passing close)
+      // Check Near-Miss (Generous reward for close pass without crashing)
       if (!car.passed && car.z < 0 && car.z > -40) {
         const dx = Math.abs(player.x - car.x);
-        if (dx >= 0.24 && dx <= 0.48 && player.speed > 80) {
+        if (dx >= 0.22 && dx <= 0.44 && player.speed > 80) {
           car.passed = true;
           nearMissCount++;
           const bonus = Math.round(150 * (player.isNos ? 2 : 1));
@@ -743,7 +747,7 @@
     collectibles.forEach(c => {
       if (c.z > 0 && c.z < 650) {
         const p = project(c.z, w, h, horizonY);
-        const cx = p.x + (c.x * p.w);
+        const cx = p.x + (c.x * p.w * 0.72);
         const size = Math.max(6, 24 * p.scale);
 
         ctx.save();
@@ -787,12 +791,12 @@
       }
     });
 
-    // 7. Draw Traffic Vehicles (Sorted by distance)
+    // 7. Draw Traffic Vehicles (Sorted by distance on wide highway)
     const sortedTraffic = [...trafficCars].sort((a, b) => b.z - a.z);
     sortedTraffic.forEach(car => {
       if (car.z > 0 && car.z < 650) {
         const p = project(car.z, w, h, horizonY);
-        const cx = p.x + (car.x * p.w);
+        const cx = p.x + (car.x * p.w * 0.72);
         const carW = car.type.width * p.scale;
         const carH = (car.type.length * 0.55) * p.scale;
 
@@ -800,9 +804,10 @@
       }
     });
 
-    // 8. Draw Player Car (Bottom Center)
-    const playerScreenY = h * 0.82;
-    const playerScreenX = (w / 2) + (player.x * (w * 0.44));
+    // 8. Draw Player Car (Bottom Center on Wide Highway)
+    const pPlayer = project(24, w, h, horizonY);
+    const playerScreenY = pPlayer.y;
+    const playerScreenX = pPlayer.x + (player.x * pPlayer.w * 0.72);
     drawPlayerCar(playerScreenX, playerScreenY);
 
     // 9. NOS Speed Warp Lines Effect
@@ -822,12 +827,13 @@
     ctx.restore();
   }
 
-  // Perspective Projection Helper (Spacious Wide Highway)
+  // Perspective Projection Helper (Super Wide & Spacious Highway)
   function project(z, w, h, horizonY) {
-    const scale = 160 / (z + 160);
+    const scale = 175 / (z + 175);
     const y = horizonY + (h - horizonY) * scale;
     const x = (w / 2);
-    const roadWidth = (w * 0.58) * scale;
+    // Highway fills ~90% of screen width at base for a massive road!
+    const roadWidth = (w * 0.92) * scale;
     return { x, y, w: roadWidth, scale };
   }
 
@@ -1291,7 +1297,7 @@
     keys[e.code] = false;
   });
 
-  // Canvas Pointer & Screen Tap Controls (Left half = Steer Left, Right half = Steer Right, Tap with 2 fingers or Double tap = NOS)
+  // Canvas Pointer & Screen Tap Controls (Low Sensitivity Smooth Drag / Tap)
   let isPointerDown = false;
   let lastTapTime = 0;
 
@@ -1299,8 +1305,10 @@
     const rect = canvas.getBoundingClientRect();
     if (rect.width > 0) {
       const relX = (e.clientX - rect.left) / rect.width;
-      // Convert 0..1 to -1.0 .. 1.0
-      player.x += ((relX * 2 - 1) * 1.0 - player.x) * 0.18;
+      // Gentle, low-sensitivity tracking
+      const targetX = (relX * 2 - 1) * 0.92;
+      player.x += (targetX - player.x) * 0.07;
+      player.x = Math.max(-0.95, Math.min(0.95, player.x));
     }
   }
 
@@ -1359,8 +1367,45 @@
   garageDriveBtn.addEventListener('click', closeGarage);
   btnRestart.addEventListener('click', startRun);
 
-  btnFullscreen.addEventListener('click', () => {
-    document.body.classList.toggle('is-fullscreen');
+  // Cross-Browser True Fullscreen Toggle
+  function toggleFullScreen() {
+    const elem = document.documentElement;
+    const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+
+    if (!isFs) {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      } else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      }
+      document.body.classList.add('is-fullscreen');
+      btnFullscreen.textContent = '✕ EXIT';
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+      document.body.classList.remove('is-fullscreen');
+      btnFullscreen.textContent = '⛶ FULLSCREEN';
+    }
+    setTimeout(handleResize, 150);
+  }
+
+  btnFullscreen.addEventListener('click', toggleFullScreen);
+
+  document.addEventListener('fullscreenchange', () => {
+    const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    document.body.classList.toggle('is-fullscreen', isFs);
+    btnFullscreen.textContent = isFs ? '✕ EXIT' : '⛶ FULLSCREEN';
     setTimeout(handleResize, 100);
   });
 
