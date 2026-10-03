@@ -1,5 +1,5 @@
-// Nexus Portal Service Worker v27 (Instant Network First)
-const CACHE_NAME = 'nexus-portal-v27';
+// Nexus Portal Service Worker v28 (Instant Network First)
+const CACHE_NAME = 'nexus-portal-v28';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
