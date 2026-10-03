@@ -399,10 +399,10 @@
       driftMultiplier = Math.max(1.0, driftMultiplier - 1.5 * dt);
     }
 
-    // 4. Effortless Responsive Steer
-    const turnRate = 2.4 * activeCar.handling * (player.speed / 120);
+    // 4. Smooth, Non-Twitchy Steering (Grounded & Controlled)
+    const turnRate = 1.45 * activeCar.handling;
     player.x += steerInput * turnRate * dt;
-    player.x = Math.max(-1.1, Math.min(1.1, player.x));
+    player.x = Math.max(-1.15, Math.min(1.15, player.x));
 
     // 5. Straight Rock-Solid Highway (Zero sliding/curve distortion)
     roadPosition += (player.speed * 2.5) * dt;
@@ -427,10 +427,10 @@
       const relSpeed = player.speed - car.speed;
       car.z -= relSpeed * 2.2 * dt;
 
-      // Check Collision
-      if (car.z > -20 && car.z < 42) {
+      // Check Collision (Tuned for spacious wide highway)
+      if (car.z > -20 && car.z < 45) {
         const dx = Math.abs(player.x - car.x);
-        if (dx < 0.22) {
+        if (dx < 0.24) {
           if (player.hasShield) {
             player.hasShield = false;
             playSound('crash');
@@ -445,10 +445,10 @@
         }
       }
 
-      // Check Near-Miss
+      // Check Near-Miss (Generous reward for passing close)
       if (!car.passed && car.z < 0 && car.z > -40) {
         const dx = Math.abs(player.x - car.x);
-        if (dx >= 0.22 && dx <= 0.48 && player.speed > 80) {
+        if (dx >= 0.24 && dx <= 0.48 && player.speed > 80) {
           car.passed = true;
           nearMissCount++;
           const bonus = Math.round(150 * (player.isNos ? 2 : 1));
@@ -665,7 +665,7 @@
       const isAlt = Math.floor((z1 + roadPosition) / 40) % 2 === 0;
 
       // Road Asphalt
-      ctx.fillStyle = isAlt ? '#13112c' : '#191538';
+      ctx.fillStyle = isAlt ? '#110e28' : '#181438';
       ctx.beginPath();
       ctx.moveTo(p1.x - p1.w, p1.y);
       ctx.lineTo(p1.x + p1.w, p1.y);
@@ -676,8 +676,8 @@
 
       // Neon Curbs (Cyan / Magenta)
       ctx.fillStyle = isAlt ? '#06b6d4' : '#f43f5e';
-      const curbW1 = p1.w * 0.08;
-      const curbW2 = p2.w * 0.08;
+      const curbW1 = p1.w * 0.07;
+      const curbW2 = p2.w * 0.07;
 
       // Left Curb
       ctx.beginPath();
@@ -697,16 +697,31 @@
       ctx.closePath();
       ctx.fill();
 
-      // Dashed Lane Center Line
+      // Two Dashed Highway Lane Dividers (Left Divider & Right Divider for 3 Wide Lanes)
       if (isAlt) {
         ctx.fillStyle = '#facc15';
-        const lineW1 = p1.w * 0.03;
-        const lineW2 = p2.w * 0.03;
+        const lineW1 = p1.w * 0.02;
+        const lineW2 = p2.w * 0.02;
+
+        // Left Lane Line (at -33% road width)
+        const l1 = -0.33 * p1.w;
+        const l2 = -0.33 * p2.w;
         ctx.beginPath();
-        ctx.moveTo(p1.x - lineW1, p1.y);
-        ctx.lineTo(p1.x + lineW1, p1.y);
-        ctx.lineTo(p2.x + lineW2, p2.y);
-        ctx.lineTo(p2.x - lineW2, p2.y);
+        ctx.moveTo(p1.x + l1 - lineW1, p1.y);
+        ctx.lineTo(p1.x + l1 + lineW1, p1.y);
+        ctx.lineTo(p2.x + l2 + lineW2, p2.y);
+        ctx.lineTo(p2.x + l2 - lineW2, p2.y);
+        ctx.closePath();
+        ctx.fill();
+
+        // Right Lane Line (at +33% road width)
+        const r1 = 0.33 * p1.w;
+        const r2 = 0.33 * p2.w;
+        ctx.beginPath();
+        ctx.moveTo(p1.x + r1 - lineW1, p1.y);
+        ctx.lineTo(p1.x + r1 + lineW1, p1.y);
+        ctx.lineTo(p2.x + r2 + lineW2, p2.y);
+        ctx.lineTo(p2.x + r2 - lineW2, p2.y);
         ctx.closePath();
         ctx.fill();
       }
@@ -719,7 +734,7 @@
         const sx = p.x + (s.x * p.w);
         ctx.save();
         ctx.fillStyle = `rgba(15, 23, 42, ${s.alpha})`;
-        ctx.fillRect(sx - 4, p.y - 2, 8, 4);
+        ctx.fillRect(sx - 5, p.y - 3, 10, 5);
         ctx.restore();
       }
     });
@@ -787,19 +802,19 @@
 
     // 8. Draw Player Car (Bottom Center)
     const playerScreenY = h * 0.82;
-    const playerScreenX = (w / 2) + (player.x * (w * 0.38));
+    const playerScreenX = (w / 2) + (player.x * (w * 0.44));
     drawPlayerCar(playerScreenX, playerScreenY);
 
     // 9. NOS Speed Warp Lines Effect
     if (player.isNos) {
-      ctx.strokeStyle = 'rgba(6, 182, 212, 0.4)';
+      ctx.strokeStyle = 'rgba(6, 182, 212, 0.45)';
       ctx.lineWidth = 2;
-      for (let i = 0; i < 12; i++) {
+      for (let i = 0; i < 14; i++) {
         const lx = Math.random() * w;
         const ly = horizonY + Math.random() * (h - horizonY);
         ctx.beginPath();
         ctx.moveTo(lx, ly);
-        ctx.lineTo(lx + (lx - w / 2) * 0.35, ly + 40);
+        ctx.lineTo(lx, ly + 50);
         ctx.stroke();
       }
     }
@@ -807,81 +822,150 @@
     ctx.restore();
   }
 
-  // Perspective Projection Helper (Straight Highway)
+  // Perspective Projection Helper (Spacious Wide Highway)
   function project(z, w, h, horizonY) {
     const scale = 160 / (z + 160);
     const y = horizonY + (h - horizonY) * scale;
     const x = (w / 2);
-    const roadWidth = (w * 0.42) * scale;
+    const roadWidth = (w * 0.58) * scale;
     return { x, y, w: roadWidth, scale };
   }
 
-  // Draw Player Car
+  // Draw Realistic Player Sports Car
   function drawPlayerCar(x, y) {
     const activeCar = CARS.find(c => c.id === selectedCarId) || CARS[0];
     ctx.save();
     ctx.translate(x, y);
-    ctx.rotate(player.driftAngle * 0.85);
+    ctx.rotate(player.driftAngle * 0.82);
 
-    // Neon Underglow
+    // 1. Neon Underglow
     ctx.shadowColor = selectedUnderglow;
-    ctx.shadowBlur = 18;
+    ctx.shadowBlur = 22;
     ctx.fillStyle = selectedUnderglow;
-    ctx.fillRect(-35, -15, 70, 32);
+    ctx.fillRect(-38, -16, 76, 36);
     ctx.shadowBlur = 0;
 
-    // Rear Wheels & Treads
+    // 2. Wide Racing Tires with Alloy Rims & Calipers
+    // Left Rear Tire
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(-38, -12, 10, 26);
-    ctx.fillRect(28, -12, 10, 26);
-
-    // Main Body Chassis
-    ctx.fillStyle = activeCar.color;
-    ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.roundRect(-32, -18, 64, 38, 8);
+    ctx.roundRect(-42, -14, 12, 30, 3);
+    ctx.fill();
+    ctx.fillStyle = '#64748b'; // Rim
+    ctx.fillRect(-40, -10, 8, 22);
+    ctx.fillStyle = '#ef4444'; // Brake Caliper
+    ctx.fillRect(-39, -4, 4, 8);
+
+    // Right Rear Tire
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.roundRect(30, -14, 12, 30, 3);
+    ctx.fill();
+    ctx.fillStyle = '#64748b'; // Rim
+    ctx.fillRect(32, -10, 8, 22);
+    ctx.fillStyle = '#ef4444'; // Brake Caliper
+    ctx.fillRect(35, -4, 4, 8);
+
+    // 3. Widebody Aerodynamic Chassis with Metallic Shading
+    const carGrad = ctx.createLinearGradient(-35, 0, 35, 0);
+    carGrad.addColorStop(0, activeCar.roofColor);
+    carGrad.addColorStop(0.3, activeCar.color);
+    carGrad.addColorStop(0.7, activeCar.color);
+    carGrad.addColorStop(1, activeCar.roofColor);
+
+    ctx.fillStyle = carGrad;
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.roundRect(-36, -20, 72, 42, 9);
     ctx.fill();
     ctx.stroke();
 
-    // Cabin / Windshield
-    ctx.fillStyle = '#0f172a';
+    // 4. Aerodynamic Cabin & Roof
+    const roofGrad = ctx.createLinearGradient(0, -18, 0, 5);
+    roofGrad.addColorStop(0, '#090d16');
+    roofGrad.addColorStop(1, '#1e293b');
+    ctx.fillStyle = roofGrad;
     ctx.beginPath();
-    ctx.roundRect(-22, -14, 44, 20, 5);
+    ctx.roundRect(-24, -16, 48, 22, 6);
+    ctx.fill();
+    ctx.stroke();
+
+    // 5. Rear Tinted Windshield Glass with Specular Reflection
+    const glassGrad = ctx.createLinearGradient(-18, -12, 18, 0);
+    glassGrad.addColorStop(0, '#0284c7');
+    glassGrad.addColorStop(0.5, '#38bdf8');
+    glassGrad.addColorStop(1, '#0f172a');
+    ctx.fillStyle = glassGrad;
+    ctx.fillRect(-20, -12, 40, 14);
+
+    // Glass Reflection Beam
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.beginPath();
+    ctx.moveTo(-16, -12);
+    ctx.lineTo(-6, -12);
+    ctx.lineTo(-12, 2);
+    ctx.lineTo(-20, 2);
+    ctx.closePath();
     ctx.fill();
 
-    // Rear Windshield Glass
-    ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(-18, -10, 36, 12);
-
-    // Tail Lights (Red Glow)
+    // 6. Modern Full-Width LED Tail Lightbar
     ctx.fillStyle = '#ef4444';
     ctx.shadowColor = '#ef4444';
-    ctx.shadowBlur = 8;
-    ctx.fillRect(-28, 14, 16, 5);
-    ctx.fillRect(12, 14, 16, 5);
+    ctx.shadowBlur = 10;
+    ctx.fillRect(-32, 16, 64, 4);
+    // Reverse/Signal accents
+    ctx.fillStyle = '#fef08a';
+    ctx.fillRect(-32, 18, 8, 2);
+    ctx.fillRect(24, 18, 8, 2);
     ctx.shadowBlur = 0;
 
-    // Spoiler Wing
-    ctx.fillStyle = activeCar.roofColor;
-    ctx.fillRect(-32, 18, 64, 5);
+    // 7. Dual Chrome Exhaust Tips & Carbon Diffuser
+    ctx.fillStyle = '#0f172a'; // Diffuser
+    ctx.fillRect(-28, 20, 56, 4);
+    ctx.fillStyle = '#94a3b8'; // Left Chrome Pipe
+    ctx.beginPath(); ctx.arc(-16, 21, 3.5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.arc(-16, 21, 2, 0, Math.PI * 2); ctx.fill();
 
-    // NOS Nitro Flame Exhaust
+    ctx.fillStyle = '#94a3b8'; // Right Chrome Pipe
+    ctx.beginPath(); ctx.arc(16, 21, 3.5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.arc(16, 21, 2, 0, Math.PI * 2); ctx.fill();
+
+    // 8. High-Downforce Carbon Rear Spoiler Wing with Struts
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(-18, 14, 4, 8); // Left Strut
+    ctx.fillRect(14, 14, 4, 8);  // Right Strut
+
+    ctx.fillStyle = '#1e293b';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(-36, 19, 72, 5, 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // 9. NOS Nitro Flame Exhaust
     if (player.isNos) {
       ctx.fillStyle = '#06b6d4';
       ctx.shadowColor = '#06b6d4';
-      ctx.shadowBlur = 12;
+      ctx.shadowBlur = 14;
+      // Left Flame
       ctx.beginPath();
-      ctx.moveTo(-16, 22);
-      ctx.lineTo(-12, 38 + Math.random() * 10);
-      ctx.lineTo(-8, 22);
+      ctx.moveTo(-19, 23);
+      ctx.lineTo(-16, 42 + Math.random() * 12);
+      ctx.lineTo(-13, 23);
+      ctx.fill();
+      // Right Flame
+      ctx.beginPath();
+      ctx.moveTo(13, 23);
+      ctx.lineTo(16, 42 + Math.random() * 12);
+      ctx.lineTo(19, 23);
       ctx.fill();
 
-      ctx.beginPath();
-      ctx.moveTo(8, 22);
-      ctx.lineTo(12, 38 + Math.random() * 10);
-      ctx.lineTo(16, 22);
-      ctx.fill();
+      // Yellow Core
+      ctx.fillStyle = '#fef08a';
+      ctx.beginPath(); ctx.moveTo(-18, 23); ctx.lineTo(-16, 34); ctx.lineTo(-14, 23); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(14, 23); ctx.lineTo(16, 34); ctx.lineTo(18, 23); ctx.fill();
       ctx.shadowBlur = 0;
     }
 
@@ -891,48 +975,177 @@
       ctx.lineWidth = 3;
       ctx.setLineDash([6, 4]);
       ctx.beginPath();
-      ctx.arc(0, 0, 48, 0, Math.PI * 2);
+      ctx.arc(0, 0, 52, 0, Math.PI * 2);
       ctx.stroke();
     }
 
     ctx.restore();
   }
 
-  // Draw Traffic Car
+  // Draw Detailed Realistic Traffic Vehicles
   function drawTrafficCar(x, y, w, h, type) {
     ctx.save();
     ctx.translate(x, y);
 
-    // Shadow
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-    ctx.fillRect(-w / 2, -h / 2 + 5, w, h);
-
-    // Chassis
-    ctx.fillStyle = type.color;
-    ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = Math.max(1.5, 2.5 * (w / 60));
+    // Ground Shadow
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
     ctx.beginPath();
-    ctx.roundRect(-w / 2, -h, w, h, 6);
+    ctx.roundRect(-w / 2 - 2, -h / 2, w + 4, h + 4, 6);
     ctx.fill();
-    ctx.stroke();
 
-    // Rear Windshield
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(-w * 0.35, -h * 0.85, w * 0.7, h * 0.35);
+    if (type.name === 'SemiTruck') {
+      // ===== HEAVY 18-WHEELER FREIGHT TRUCK =====
+      // Container Body
+      ctx.fillStyle = '#1e3a8a';
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.roundRect(-w / 2, -h, w, h * 0.95, 4);
+      ctx.fill();
+      ctx.stroke();
 
-    // Tail Lights
-    ctx.fillStyle = '#ef4444';
-    ctx.fillRect(-w * 0.45, -h * 0.15, w * 0.3, h * 0.12);
-    ctx.fillRect(w * 0.15, -h * 0.15, w * 0.3, h * 0.12);
+      // Corrugated Cargo Container Ribs
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 1.5;
+      for (let rib = -h + 10; rib < -10; rib += 12) {
+        ctx.beginPath();
+        ctx.moveTo(-w / 2 + 4, rib);
+        ctx.lineTo(w / 2 - 4, rib);
+        ctx.stroke();
+      }
 
-    // Police Lights Siren (if Police car)
-    if (type.isPolice) {
-      const isRed = Math.floor(Date.now() / 150) % 2 === 0;
+      // Hazard Warning Red/White Tape
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(-w / 2 + 2, -8, w - 4, 5);
+      ctx.fillStyle = '#ffffff';
+      for (let wt = -w / 2 + 4; wt < w / 2 - 8; wt += 12) {
+        ctx.fillRect(wt, -8, 6, 5);
+      }
+
+      // Heavy Taillights & Top Marker Lights
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(-w / 2 + 4, -3, 10, 4);
+      ctx.fillRect(w / 2 - 14, -3, 10, 4);
+      // Top Amber Clearance Lights
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(-w / 2 + 4, -h + 2, 4, 3);
+      ctx.fillRect(-2, -h + 2, 4, 3);
+      ctx.fillRect(w / 2 - 8, -h + 2, 4, 3);
+
+    } else if (type.name === 'Taxi') {
+      // ===== NYC YELLOW TAXI =====
+      ctx.fillStyle = '#eab308';
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(-w / 2, -h, w, h, 6);
+      ctx.fill();
+      ctx.stroke();
+
+      // Checkered Roof Stripe
+      ctx.fillStyle = '#0f172a';
+      for (let chk = -w * 0.35; chk < w * 0.35; chk += 10) {
+        ctx.fillRect(chk, -h * 0.6, 5, 4);
+      }
+
+      // Lighted TAXI Roof Box Sign
+      ctx.fillStyle = '#fef08a';
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 1.5;
+      ctx.fillRect(-w * 0.22, -h * 0.98, w * 0.44, 7);
+      ctx.strokeRect(-w * 0.22, -h * 0.98, w * 0.44, 7);
+      ctx.fillStyle = '#0f172a';
+      ctx.font = `bold ${Math.max(6, Math.round(w * 0.12))}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('TAXI', 0, -h * 0.98 + 3.5);
+
+      // Rear Windshield & Taillights
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(-w * 0.35, -h * 0.8, w * 0.7, h * 0.32);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(-w * 0.44, -h * 0.14, w * 0.28, h * 0.12);
+      ctx.fillRect(w * 0.16, -h * 0.14, w * 0.28, h * 0.12);
+
+    } else if (type.name === 'Police') {
+      // ===== POLICE INTERCEPTOR CRUISER =====
+      // Black Body with White Roof
+      ctx.fillStyle = '#0f172a';
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(-w / 2, -h, w, h, 6);
+      ctx.fill();
+      ctx.stroke();
+
+      // White Roof Panel
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(-w * 0.35, -h * 0.75, w * 0.7, h * 0.4);
+
+      // Flashing Police Strobe Lightbar
+      const isRed = Math.floor(Date.now() / 140) % 2 === 0;
       ctx.fillStyle = isRed ? '#ef4444' : '#3b82f6';
       ctx.shadowColor = ctx.fillStyle;
-      ctx.shadowBlur = 8;
-      ctx.fillRect(-w * 0.25, -h * 0.95, w * 0.5, h * 0.15);
+      ctx.shadowBlur = 10;
+      ctx.fillRect(-w * 0.28, -h * 0.98, w * 0.28, 7);
+      ctx.fillStyle = isRed ? '#3b82f6' : '#ef4444';
+      ctx.shadowColor = ctx.fillStyle;
+      ctx.fillRect(0, -h * 0.98, w * 0.28, 7);
       ctx.shadowBlur = 0;
+
+      // Rear Windshield & Red Police Taillights
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(-w * 0.32, -h * 0.78, w * 0.64, h * 0.3);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(-w * 0.45, -h * 0.14, w * 0.28, h * 0.12);
+      ctx.fillRect(w * 0.17, -h * 0.14, w * 0.28, h * 0.12);
+
+    } else if (type.name === 'SportsCar') {
+      // ===== EXOTIC SUPERCAR =====
+      ctx.fillStyle = '#dc2626';
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(-w / 2, -h, w, h, 8);
+      ctx.fill();
+      ctx.stroke();
+
+      // Engine Louver Slits
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(-w * 0.3, -h * 0.8, w * 0.6, h * 0.4);
+      ctx.strokeStyle = '#475569';
+      for (let sl = -h * 0.75; sl < -h * 0.45; sl += 6) {
+        ctx.beginPath(); ctx.moveTo(-w * 0.25, sl); ctx.lineTo(w * 0.25, sl); ctx.stroke();
+      }
+
+      // Aggressive LED Tail-strip
+      ctx.fillStyle = '#f87171';
+      ctx.fillRect(-w * 0.42, -h * 0.14, w * 0.84, 4);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(-w * 0.44, -h * 0.18, w * 0.25, 6);
+      ctx.fillRect(w * 0.19, -h * 0.18, w * 0.25, 6);
+
+    } else {
+      // ===== STANDARD MODERN SEDAN =====
+      ctx.fillStyle = type.color;
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(-w / 2, -h, w, h, 6);
+      ctx.fill();
+      ctx.stroke();
+
+      // Rear Windshield Glass
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(-w * 0.35, -h * 0.8, w * 0.7, h * 0.32);
+
+      // Tail Lights with Amber Turn Accents
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(-w * 0.45, -h * 0.15, w * 0.28, h * 0.12);
+      ctx.fillRect(w * 0.17, -h * 0.15, w * 0.28, h * 0.12);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(-w * 0.45, -h * 0.15, 4, h * 0.12);
+      ctx.fillRect(w * 0.45 - 4, -h * 0.15, 4, h * 0.12);
     }
 
     ctx.restore();
