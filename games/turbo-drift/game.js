@@ -400,11 +400,14 @@
       driftMultiplier = Math.max(1.0, driftMultiplier - 1.5 * dt);
     }
 
-    // 4. Low-Sensitivity, Buttery-Smooth Controlled Steering (Zero Twitchiness)
-    const baseTurnSpeed = 0.72 * activeCar.handling;
+    // 4. Low-Sensitivity, Responsive & Smooth Steering at All Speeds
+    // Dynamic NOS handling boost ensures crisp steering responsiveness at 200+ MPH
+    const nosHandlingBoost = player.isNos ? 1.3 : 1.0;
+    const baseTurnSpeed = 0.92 * activeCar.handling * nosHandlingBoost;
     const targetSteerSpeed = steerInput * baseTurnSpeed;
-    // Smooth velocity interpolation
-    player.steerVel += (targetSteerSpeed - player.steerVel) * Math.min(1.0, 7.0 * dt);
+
+    // Fast & smooth velocity interpolation
+    player.steerVel += (targetSteerSpeed - player.steerVel) * Math.min(1.0, 10.0 * dt);
     player.x += player.steerVel * dt;
     player.x = Math.max(-0.95, Math.min(0.95, player.x));
 
@@ -1297,27 +1300,28 @@
     keys[e.code] = false;
   });
 
-  // Canvas Pointer & Screen Tap Controls (Low Sensitivity Smooth Drag / Tap)
-  let isPointerDown = false;
+  // Canvas Direct Pointer/Tap Controls (Isolated from Virtual Buttons)
+  let activeCanvasPointerId = null;
   let lastTapTime = 0;
 
   function handlePointer(e) {
     const rect = canvas.getBoundingClientRect();
     if (rect.width > 0) {
       const relX = (e.clientX - rect.left) / rect.width;
-      // Gentle, low-sensitivity tracking
+      // Gentle, low-sensitivity direct tracking
       const targetX = (relX * 2 - 1) * 0.92;
-      player.x += (targetX - player.x) * 0.07;
+      player.x += (targetX - player.x) * 0.08;
       player.x = Math.max(-0.95, Math.min(0.95, player.x));
     }
   }
 
   canvas.addEventListener('pointerdown', (e) => {
+    // If clicking on or near virtual touch controls, let the buttons handle it exclusively
+    if (e.target.closest && e.target.closest('.touch-controls')) return;
     initAudio();
-    isPointerDown = true;
+    activeCanvasPointerId = e.pointerId;
     const now = performance.now();
     if (now - lastTapTime < 300) {
-      // Double tap to activate NOS!
       keys['nos_touch'] = true;
       setTimeout(() => { keys['nos_touch'] = false; }, 400);
     }
@@ -1326,29 +1330,53 @@
   });
 
   window.addEventListener('pointermove', (e) => {
-    if (isPointerDown) handlePointer(e);
+    if (activeCanvasPointerId === e.pointerId && player.steerDir === 0) {
+      handlePointer(e);
+    }
   });
 
-  window.addEventListener('pointerup', () => {
-    isPointerDown = false;
-  });
+  const clearCanvasPointer = (e) => {
+    if (activeCanvasPointerId === e.pointerId) {
+      activeCanvasPointerId = null;
+    }
+  };
+  window.addEventListener('pointerup', clearCanvasPointer);
+  window.addEventListener('pointercancel', clearCanvasPointer);
 
-  window.addEventListener('pointercancel', () => {
-    isPointerDown = false;
-  });
+  // Robust Multi-Touch Virtual Button Handler (Prevents cross-touch blocking)
+  function bindVirtualButton(elem, onStart, onEnd) {
+    if (!elem) return;
 
-  // Touch Virtual Buttons
-  btnSteerLeft.addEventListener('touchstart', (e) => { e.preventDefault(); player.steerDir = -1; });
-  btnSteerLeft.addEventListener('touchend', (e) => { e.preventDefault(); player.steerDir = 0; });
-  btnSteerRight.addEventListener('touchstart', (e) => { e.preventDefault(); player.steerDir = 1; });
-  btnSteerRight.addEventListener('touchend', (e) => { e.preventDefault(); player.steerDir = 0; });
+    const handleStart = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      initAudio();
+      onStart();
+    };
 
-  btnTouchBrake.addEventListener('touchstart', (e) => { e.preventDefault(); keys['brake_touch'] = true; });
-  btnTouchBrake.addEventListener('touchend', (e) => { e.preventDefault(); keys['brake_touch'] = false; });
-  btnTouchGas.addEventListener('touchstart', (e) => { e.preventDefault(); keys['gas_touch'] = true; });
-  btnTouchGas.addEventListener('touchend', (e) => { e.preventDefault(); keys['gas_touch'] = false; });
-  btnTouchNos.addEventListener('touchstart', (e) => { e.preventDefault(); keys['nos_touch'] = true; });
-  btnTouchNos.addEventListener('touchend', (e) => { e.preventDefault(); keys['nos_touch'] = false; });
+    const handleEnd = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onEnd();
+    };
+
+    elem.addEventListener('pointerdown', handleStart);
+    elem.addEventListener('pointerup', handleEnd);
+    elem.addEventListener('pointercancel', handleEnd);
+    elem.addEventListener('pointerleave', handleEnd);
+
+    elem.addEventListener('touchstart', handleStart, { passive: false });
+    elem.addEventListener('touchend', handleEnd, { passive: false });
+    elem.addEventListener('touchcancel', handleEnd, { passive: false });
+    elem.addEventListener('mousedown', handleStart);
+    elem.addEventListener('mouseup', handleEnd);
+  }
+
+  bindVirtualButton(btnSteerLeft, () => { player.steerDir = -1; }, () => { if (player.steerDir === -1) player.steerDir = 0; });
+  bindVirtualButton(btnSteerRight, () => { player.steerDir = 1; }, () => { if (player.steerDir === 1) player.steerDir = 0; });
+  bindVirtualButton(btnTouchBrake, () => { keys['brake_touch'] = true; }, () => { keys['brake_touch'] = false; });
+  bindVirtualButton(btnTouchGas, () => { keys['gas_touch'] = true; }, () => { keys['gas_touch'] = false; });
+  bindVirtualButton(btnTouchNos, () => { keys['nos_touch'] = true; }, () => { keys['nos_touch'] = false; });
 
   // Mode Selection
   modePills.forEach(pill => {

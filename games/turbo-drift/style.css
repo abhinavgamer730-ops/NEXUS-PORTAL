@@ -407,7 +407,9 @@ body.is-fullscreen .canvas-wrapper {
   justify-content: center;
   align-items: center;
   backdrop-filter: blur(4px);
-  touch-action: manipulation;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .touch-steer-btn:active {
@@ -426,7 +428,9 @@ body.is-fullscreen .canvas-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  touch-action: manipulation;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
